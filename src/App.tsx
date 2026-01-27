@@ -1,7 +1,9 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import HomePage from './pages/Home/HomePage';
 import { LoginPage } from './pages/Login/LoginPage';
+import ProductsPage from './pages/Products/ProductsPage';
 import './App.css';
+import CategoriesPage from './pages/Categories/CategoriesPage';
 
 function App() {
   return (
@@ -13,25 +15,11 @@ function App() {
         {/* Ruta de Login */}
         <Route path="/login" element={<LoginPage />} />
 
-        {/* Ruta de Productos - Por implementar */}
-        <Route path="/productos" element={
-          <div className="min-h-screen flex items-center justify-center bg-background">
-            <div className="text-center">
-              <h1 className="text-4xl font-bold text-foreground mb-4">Catálogo de Productos</h1>
-              <p className="text-muted-foreground">Próximamente...</p>
-            </div>
-          </div>
-        } />
+        {/* Ruta de Productos */}
+        <Route path="/productos" element={<ProductsPage />} />
 
-        {/* Ruta de Categorías - Por implementar */}
-        <Route path="/categorias" element={
-          <div className="min-h-screen flex items-center justify-center bg-background">
-            <div className="text-center">
-              <h1 className="text-4xl font-bold text-foreground mb-4">Categorías</h1>
-              <p className="text-muted-foreground">Próximamente...</p>
-            </div>
-          </div>
-        } />
+        {/* Ruta de Categorías (Redirige al catálogo filtrado) */}
+        <Route path="/categorias" element={<CategoriesPage />} />
       </Routes>
     </Router>
   );
