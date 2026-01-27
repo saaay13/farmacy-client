@@ -57,7 +57,7 @@ export default function Header({ categoryCount = 0 }: HeaderProps) {
                                     onClick={logout}
                                     className="ml-2 px-2 py-1 bg-error text-error-foreground rounded-lg hover:bg-error-700 transition-colors"
                                 >
-                                    Logout
+                                    Cerrar Sesión
                                 </button>
                                 {categoryCount > 0 && (
                                     <span className="absolute -top-2 -right-2 bg-error text-error-foreground w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold">
@@ -67,7 +67,7 @@ export default function Header({ categoryCount = 0 }: HeaderProps) {
                             </div>
                         ) : (
                             <Link
-                                to="/iniciarsesion"
+                                to="/login"
                                 className="relative flex items-center gap-2 bg-primary text-primary-foreground hover:bg-primary-700 px-4 py-2 rounded-lg font-medium transition-colors"
                             >
                                 <LayoutGrid className="w-5 h-5" />

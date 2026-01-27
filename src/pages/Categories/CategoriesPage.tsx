@@ -1,7 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useCategories } from '../../hooks/useCategories';
-import Header from '../../components/organisms/Header/Header';
-import Footer from '../../components/organisms/Footer/Footer';
+import { Header, Footer } from '../../components/organisms';
 import { LayoutGrid, ArrowRight, Loader2 } from 'lucide-react';
 
 export default function CategoriesPage() {

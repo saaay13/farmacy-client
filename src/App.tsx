@@ -24,6 +24,7 @@ function App() {
 
         {/* Ruta de Sucursales */}
         <Route path="/sucursales" element={<BanchPage />} />
+        <Route path="/login" element={<LoginPage />} />
       </Routes>
     </Router>
   );

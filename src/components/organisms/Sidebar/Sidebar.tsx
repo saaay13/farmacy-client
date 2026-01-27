@@ -16,7 +16,7 @@ const NAV_ITEMS: NavItemProps[] = [
     { label: 'Mis Compras', icon: '📜', roles: ['cliente'] },
 ];
 
-export const Sidebar = () => {
+export function Sidebar() {
     const { role } = useAuth();
 
     const filteredItems = NAV_ITEMS.filter(item => item.roles.includes(role));

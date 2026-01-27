@@ -1,5 +1,4 @@
-import Header from "../../components/organisms/Header/Header";
-import Footer from "../../components/organisms/Footer/Footer";
+import { Header, Footer } from '../../components/organisms';
 import { Link } from "react-router-dom";
 import { Heart, Shield, Users, ArrowRight, Pill, ShoppingBag, Loader2, LayoutGrid } from "lucide-react";
 import { useProducts } from "../../hooks/useProducts";

@@ -1,7 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useBanch } from '../../hooks/useBanch';
-import Header from '../../components/organisms/Header/Header';
-import Footer from '../../components/organisms/Footer/Footer';
+import { Header, Footer } from '../../components/organisms';
 import { Store, ArrowRight, Loader2 } from 'lucide-react';
 
 export default function BanchPage() {
