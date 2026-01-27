@@ -71,3 +71,38 @@ export default defineConfig([
   },
 ])
 ```
+Estructura del Proyecto: Store Farmacy
+Se ha creado la estructura base del proyecto siguiendo la arquitectura cliente-servidor solicitada.
+
+Estructura de Directorios
+d:/store-farmacy
+├── client/                 # Frontend (Vite + React + TypeScript)
+│   ├── src/
+│   │   ├── components/     # Atomic Design
+│   │   │   ├── atoms/
+│   │   │   ├── molecules/
+│   │   │   ├── organisms/
+│   │   │   └── templates/
+│   │   ├── pages/
+│   │   └── index.css       # Configurado con TailwindCSS v4.1
+│   └── vite.config.ts      # Plugin de Tailwind integrado
+│
+└── server/                 # Backend (Node.js + Express + TypeScript)
+    ├── src/
+    │   └── index.ts        # Punto de entrada básico
+    ├── package.json
+    └── tsconfig.json
+Cómo Ejecutar
+Cliente (Frontend)
+Navega a la carpeta del cliente: cd client
+Instala dependencias (ya realizado): npm install
+Inicia el servidor de desarrollo: npm run dev
+Servidor (Backend)
+Navega a la carpeta del servidor: cd server
+Instala dependencias (ya realizado): npm install
+Compila y ejecuta (puedes usar ts-node o compilar): npx ts-node src/index.ts
+Detalles Técnicos
+Frontend: React 18, TypeScript, TailwindCSS v4.1 (vía @tailwindcss/vite).
+Backend: Express 4, TypeScript, CORS habilitado.
+Diseño: Estructura de carpetas lista para Atomic Design (Atomos, Moléculas, Organismos).
+
