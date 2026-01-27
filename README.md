@@ -22,31 +22,46 @@ Sistema de gestión integral para farmacias multisucursales - Cliente Web desarr
 ```
 client/
 ├── public/
-│   └── vite.svg
+│   ├── img/
+│   │   ├── home.png
+│   │   └── vite.svg
 ├── src/
 │   ├── assets/
 │   │   └── react.svg
 │   ├── components/
 │   │   ├── atoms/          # Componentes básicos indivisibles
-│   │   │   └── Button/
-│   │   │       └── Button.tsx
+│   │   │   ├── Button/
+│   │   │   │   └── Button.tsx
+│   │   │   ├── Input/
+│   │   │   │   └── Input.tsx
+│   │   │   ├── Toggle/
+│   │   │   │   └── ThemeToggle.tsx
+│   │   │   └── index.ts
 │   │   ├── molecules/      # Combinaciones simples de átomos
+│   │   │   ├── Login/
+│   │   │   │   └── LoginForm.tsx
+│   │   │   └── index.ts
 │   │   ├── organisms/      # Secciones complejas
 │   │   │   ├── Footer/
 │   │   │   │   └── Footer.tsx
 │   │   │   ├── Header/
 │   │   │   │   └── Header.tsx
-│   │   │   └── Sidebar/
-│   │   │       └── Sidebar.tsx
+│   │   │   ├── Login/
+│   │   │   │   └── LoginCard.tsx
+│   │   │   ├── Sidebar/
+│   │   │   │   └── Sidebar.tsx
+│   │   │   └── index.ts
 │   │   └── templates/      # Vistas completas
 │   │       └── MainLayout/
 │   │           └── MainLayout.tsx
 │   ├── context/
 │   │   └── AuthContext.tsx
 │   ├── hooks/
+│   │   ├── useAuth.ts
 │   │   ├── useBanch.ts
 │   │   ├── useCategories.ts
-│   │   └── useProducts.ts
+│   │   ├── useProducts.ts
+│   │   └── useTheme.ts
 │   ├── pages/
 │   │   ├── Banch/
 │   │   │   └── BanchPage.tsx
@@ -69,6 +84,7 @@ client/
 ├── index.html
 ├── package.json
 ├── README.md
+├── sugerencia.txt
 ├── tsconfig.app.json
 ├── tsconfig.json
 ├── tsconfig.node.json
@@ -101,7 +117,7 @@ npm install react-router-dom
 npm install lucide-react
 
 # Dependencias de desarrollo
-npm install -D @types/node typescript-eslint eslint-plugin-react-hooks eslint-plugin-react-refresh
+npm install -D @types/node typescript-eslint eslint-plugin-react-hooks eslint-plugin-react-refresh globals
 ```
 
 ### 4. Configurar TailwindCSS

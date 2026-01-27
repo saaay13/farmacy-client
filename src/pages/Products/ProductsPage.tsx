@@ -1,9 +1,9 @@
 import { useSearchParams } from "react-router-dom";
 import { useProducts } from "../../hooks/useProducts";
 import { useCategories } from "../../hooks/useCategories";
-import Header from "../../components/organisms/Header/Header";
-import Footer from "../../components/organisms/Footer/Footer";
-import { Filter, X, ChevronRight, Pill } from "lucide-react";
+import { Header, Footer } from "../../components/organisms/"
+import { ChevronRight, Loader2 } from "lucide-react";
+
 import type { Product, Category } from "../../services/api";
 
 export default function ProductsPage() {
@@ -27,16 +27,15 @@ export default function ProductsPage() {
     };
 
     return (
-        <div className="min-h-screen bg-neutral-50 flex flex-col">
+        <div className="min-h-screen bg-background flex flex-col">
             <Header />
 
-            {/* Hero Section */}
-            <section className="bg-gradient-to-br from-primary-600 via-primary-600/95 to-primary-700 text-white py-16 md:py-20">
+            <section className="bg-gradient-to-br from-primary-600 via-primary-600/95 to-primary-700 text-primary-foreground py-16 md:py-20">
                 <div className="container mx-auto px-4 text-center">
                     <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">
                         Nuestros Productos
                     </h1>
-                    <p className="text-lg text-white/90 max-w-2xl mx-auto">
+                    <p className="text-lg text-primary-foreground/90 max-w-2xl mx-auto">
                         Descubre nuestra amplia gama de productos farmacéuticos organizados por categoría
                     </p>
                 </div>
@@ -47,99 +46,64 @@ export default function ProductsPage() {
 
                     {/* Sidebar Filtros */}
                     <aside className="w-full md:w-64 flex-shrink-0">
-                        <div className="bg-white rounded-xl border border-border p-6 sticky top-24 shadow-sm">
-                            <div className="flex items-center justify-between mb-6">
-                                <h3 className="font-bold flex items-center gap-2">
-                                    <Filter className="w-4 h-4 text-primary" />
-                                    Filtros
-                                </h3>
-                                {activeCategory && (
-                                    <button
-                                        onClick={() => handleCategoryChange(null)}
-                                        className="text-xs text-muted-foreground hover:text-primary flex items-center gap-1 transition-colors"
-                                    >
-                                        Limpiar <X className="w-3 h-3" />
-                                    </button>
-                                )}
-                            </div>
+                        <div className="bg-background rounded-xl border border-border p-6 sticky top-24 shadow-sm">
+                            {/* Botón Todas las Categorías */}
+                            <button
+                                onClick={() => handleCategoryChange(null)}
+                                className={`w-full text-left px-3 py-2 rounded-lg text-sm mb-2 transition-all ${!activeCategory
+                                    ? "bg-primary text-primary-foreground font-bold shadow-md"
+                                    : "hover:bg-primary-50 text-muted-foreground"
+                                    }`}
+                            >
+                                Todas las Categorías
+                            </button>
 
-                            <div>
-                                <h4 className="text-sm font-semibold mb-4 text-foreground/70 uppercase tracking-wider">
-                                    Categorías
-                                </h4>
-                                <div className="space-y-2">
-                                    <button
-                                        onClick={() => handleCategoryChange(null)}
-                                        className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-all ${!activeCategory
-                                            ? "bg-primary text-primary-foreground font-bold shadow-md"
-                                            : "hover:bg-primary-50 text-muted-foreground"
-                                            }`}
-                                    >
-                                        Todas las Categorías
-                                    </button>
-                                    {categoriesLoading ? (
-                                        Array.from({ length: 5 }).map((_, i) => (
-                                            <div key={i} className="h-9 bg-neutral-100 animate-pulse rounded-lg" />
-                                        ))
-                                    ) : (
-                                        categories.map((category: Category) => (
-                                            <button
-                                                key={category.id}
-                                                onClick={() => handleCategoryChange(category.id)}
-                                                className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-all flex items-center justify-between group ${activeCategory === category.id
-                                                    ? "bg-primary text-primary-foreground font-bold shadow-md"
-                                                    : "hover:bg-primary-50 text-foreground"
-                                                    }`}
-                                            >
-                                                {category.nombre}
-                                                <ChevronRight className={`w-3 h-3 transition-transform ${activeCategory === category.id ? "translate-x-1" : "opacity-0 group-hover:opacity-100"}`} />
-                                            </button>
-                                        ))
-                                    )}
+                            {/* Listado de Categorías */}
+                            {categoriesLoading ? (
+                                <div className="flex flex-col gap-2">
+                                    {Array.from({ length: 6 }).map((_, i) => (
+                                        <div key={i} className="h-8 bg-muted rounded animate-pulse"></div>
+                                    ))}
                                 </div>
-                            </div>
+                            ) : (
+                                <div className="flex flex-col gap-2">
+                                    {categories.map((category: Category) => (
+                                        <button
+                                            key={category.id}
+                                            onClick={() => handleCategoryChange(category.id)}
+                                            className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-all ${activeCategory === category.id
+                                                ? "bg-primary text-primary-foreground font-bold shadow-md"
+                                                : "hover:bg-primary-50 text-muted-foreground"
+                                                }`}
+                                        >
+                                            {category.nombre}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     </aside>
 
                     {/* Listado de Productos */}
+                    {/* Listado de Productos */}
                     <div className="flex-grow">
-                        <div className="mb-6 flex items-center justify-between">
-                            <div>
-                                <h2 className="text-2xl font-bold text-foreground">
-                                    {activeCategory
-                                        ? categories.find(c => c.id === activeCategory)?.nombre || "Productos"
-                                        : "Todos los Productos"}
-                                </h2>
-                                <p className="text-muted-foreground text-sm">
-                                    Mostrando {filteredProducts.length} productos encontrados
-                                </p>
+                        {productsError ? (
+                            <div className="p-8 text-center text-red-600">
+                                Ocurrió un error al cargar los productos.
                             </div>
-                        </div>
-
-                        {productsLoading ? (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {Array.from({ length: 6 }).map((_, i) => (
-                                    <div key={i} className="animate-pulse bg-white border border-border rounded-xl h-80 shadow-sm" />
-                                ))}
+                        ) : productsLoading ? (
+                            <div className="col-span-full flex flex-col items-center py-12 gap-4">
+                                <Loader2 className="w-8 h-8 text-primary animate-spin" />
+                                <p className="text-muted-foreground">Cargando productos...</p>
                             </div>
-                        ) : productsError ? (
-                            <div className="bg-error/5 border border-error/20 rounded-xl p-8 text-center">
-                                <p className="text-error font-medium">Error al cargar el catálogo: {productsError}</p>
-                                <button
-                                    onClick={() => window.location.reload()}
-                                    className="mt-4 text-sm font-bold text-error border-b border-error hover:border-b-2"
-                                >
-                                    Reintentar conexión
-                                </button>
-                            </div>
-                        ) : filteredProducts.length > 0 ? (
+                        ) : (
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {filteredProducts.map((product: Product) => (
                                     <div
                                         key={product.id}
-                                        className="bg-white rounded-xl border border-border overflow-hidden hover:shadow-xl transition-all hover:-translate-y-1 flex flex-col h-full group"
+                                        className="bg-background rounded-xl border border-border overflow-hidden hover:shadow-xl transition-all hover:-translate-y-1 flex flex-col h-full group"
                                     >
-                                        <div className="bg-gradient-to-br from-primary-100/50 to-white h-48 flex items-center justify-center text-6xl relative">
+                                        <div className="bg-gradient-to-br from-primary-100/50 to-background h-48 flex items-center justify-center text-6xl relative">
                                             {product.requiereReceta ? "💊" : "🌿"}
                                             {product.requiereReceta && (
                                                 <span className="absolute top-4 right-4 bg-error text-error-foreground text-[10px] font-bold px-2 py-1 rounded-full shadow-sm">
@@ -156,10 +120,10 @@ export default function ProductsPage() {
                                             <h3 className="font-bold text-foreground text-lg mb-2 line-clamp-2 min-h-[3.5rem]">
                                                 {product.nombre}
                                             </h3>
-                                            <p className="text-sm text-muted-foreground mb-6 line-clamp-3">
+                                            <p className="text-muted-foreground text-sm mb-6 line-clamp-3">
                                                 {product.descripcion || "Sin descripción disponible."}
                                             </p>
-                                            <div className="mt-auto flex justify-between items-center bg-neutral-50 -mx-5 -mb-5 p-5 border-t border-border">
+                                            <div className="mt-auto flex justify-between items-center bg-muted-background -mx-5 -mb-5 p-5 border-t border-border">
                                                 <div className="flex flex-col">
                                                     <span className="text-xs text-muted-foreground">Precio</span>
                                                     <span className="text-primary font-bold text-xl">
@@ -174,26 +138,14 @@ export default function ProductsPage() {
                                     </div>
                                 ))}
                             </div>
-                        ) : (
-                            <div className="bg-white border border-border rounded-xl p-12 text-center shadow-sm">
-                                <div className="bg-neutral-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                                    <Pill className="w-8 h-8 text-muted-foreground" />
-                                </div>
-                                <h3 className="text-xl font-bold text-foreground mb-2">No se encontraron productos</h3>
-                                <p className="text-muted-foreground">Prueba seleccionando otra categoría o limpiando los filtros.</p>
-                                <button
-                                    onClick={() => handleCategoryChange(null)}
-                                    className="mt-6 bg-primary text-primary-foreground px-6 py-2 rounded-lg font-bold hover:bg-primary-700 transition-all"
-                                >
-                                    Ver todo el catálogo
-                                </button>
-                            </div>
                         )}
                     </div>
+
                 </div>
             </main>
 
             <Footer />
         </div>
+
     );
 }
