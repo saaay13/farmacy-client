@@ -22,6 +22,13 @@ interface ApiResponse<T> {
     data: T;
     message?: string;
 }
+export interface Banch {
+    idSucursal: string;
+    nombre: string;
+    direccion: string;
+    detalles?: string;
+}
+
 
 export async function fetchProducts(): Promise<Product[]> {
     const response = await fetch(`${API_BASE_URL}/products`);
@@ -38,5 +45,15 @@ export async function fetchCategories(): Promise<Category[]> {
         throw new Error('Error al obtener categorías');
     }
     const result: ApiResponse<Category[]> = await response.json();
+    return result.data;
+}
+
+export async function fetchBanch(): Promise<Banch[]> {
+    const response = await fetch(`${API_BASE_URL}/banch`);
+    if (!response.ok) {
+        throw new Error('Error al obtener sucursales');
+    }
+
+    const result: ApiResponse<Banch[]> = await response.json();
     return result.data;
 }

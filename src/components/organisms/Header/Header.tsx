@@ -37,6 +37,12 @@ export default function Header({ categoryCount = 0 }: HeaderProps) {
                             Categorias
                         </Link>
                         <Link
+                            to="/sucursales"
+                            className="text-foreground hover:text-primary font-medium transition-colors"
+                        >
+                            Sucursales
+                        </Link>
+                        <Link
                             to="/iniciarsesion"
                             className="relative flex items-center gap-2 bg-primary text-primary-foreground hover:bg-primary-700 px-4 py-2 rounded-lg font-medium transition-colors"
                         >

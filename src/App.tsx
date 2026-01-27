@@ -4,6 +4,7 @@ import { LoginPage } from './pages/Login/LoginPage';
 import ProductsPage from './pages/Products/ProductsPage';
 import './App.css';
 import CategoriesPage from './pages/Categories/CategoriesPage';
+import BanchPage from './pages/Banch/BanchPage';
 
 function App() {
   return (
@@ -20,6 +21,9 @@ function App() {
 
         {/* Ruta de Categorías (Redirige al catálogo filtrado) */}
         <Route path="/categorias" element={<CategoriesPage />} />
+
+        {/* Ruta de Sucursales */}
+        <Route path="/sucursales" element={<BanchPage />} />
       </Routes>
     </Router>
   );
