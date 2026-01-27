@@ -28,8 +28,36 @@ export interface Banch {
     direccion: string;
     detalles?: string;
 }
+//
+export interface User {
+    id: string
+    nombre: string
+    rol: 'admin' | 'farmaceutico' | 'vendedor' | 'cliente' | 'guest'
+    email: string
+}
 
+interface LoginResponse {
+    token: string
+    user: User
+}
 
+export async function loginUser(email: string, password: string): Promise<LoginResponse> {
+    const response = await fetch(`${API_BASE_URL}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+    })
+
+    if (!response.ok) {
+        const errData = await response.json()
+        throw new Error(errData.message || 'Error al iniciar sesión')
+    }
+
+    const data: LoginResponse = await response.json()
+    return data
+}
+
+//
 export async function fetchProducts(): Promise<Product[]> {
     const response = await fetch(`${API_BASE_URL}/products`);
     if (!response.ok) {

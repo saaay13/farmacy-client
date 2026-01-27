@@ -1,108 +1,179 @@
-# React + TypeScript + Vite
+# Store Farmacy - Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Sistema de gestión integral para farmacias multisucursales - Cliente Web desarrollado con React, TypeScript y Vite.
 
-Currently, two official plugins are available:
+## 🛠️ Tecnologías y Versiones
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Núcleo
+- **Framework**: React ^19.2.0
+- **Lenguaje**: TypeScript ~5.9.3
+- **Herramienta de Desarrollo**: Vite ^7.2.4
+- **Estilos**: TailwindCSS ^4.1.18 (vía @tailwindcss/vite)
+- **Iconos**: Lucide React ^0.563.0
+- **Enrutamiento**: React Router DOM ^7.13.0
 
-## React Compiler
+### Desarrollo
+- **Linter**: ESLint ^9.39.1 con plugins para React
+- **Tipos**: @types/react ^19.2.5, @types/react-dom ^19.2.3, @types/node ^24.10.1
+- **Plugins Vite**: @vitejs/plugin-react ^5.1.1
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 📁 Estructura del Proyecto
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```
+client/
+├── public/
+│   └── vite.svg
+├── src/
+│   ├── assets/
+│   │   └── react.svg
+│   ├── components/
+│   │   ├── atoms/          # Componentes básicos indivisibles
+│   │   │   └── Button/
+│   │   │       └── Button.tsx
+│   │   ├── molecules/      # Combinaciones simples de átomos
+│   │   ├── organisms/      # Secciones complejas
+│   │   │   ├── Footer/
+│   │   │   │   └── Footer.tsx
+│   │   │   ├── Header/
+│   │   │   │   └── Header.tsx
+│   │   │   └── Sidebar/
+│   │   │       └── Sidebar.tsx
+│   │   └── templates/      # Vistas completas
+│   │       └── MainLayout/
+│   │           └── MainLayout.tsx
+│   ├── context/
+│   │   └── AuthContext.tsx
+│   ├── hooks/
+│   │   ├── useBanch.ts
+│   │   ├── useCategories.ts
+│   │   └── useProducts.ts
+│   ├── pages/
+│   │   ├── Banch/
+│   │   │   └── BanchPage.tsx
+│   │   ├── Categories/
+│   │   │   └── CategoriesPage.tsx
+│   │   ├── Home/
+│   │   │   └── HomePage.tsx
+│   │   ├── Login/
+│   │   │   └── LoginPage.tsx
+│   │   └── Products/
+│   │       └── ProductsPage.tsx
+│   ├── services/
+│   │   └── api.ts
+│   ├── App.css
+│   ├── App.tsx
+│   ├── index.css
+│   └── main.tsx
+├── .gitignore
+├── eslint.config.js
+├── index.html
+├── package.json
+├── README.md
+├── tsconfig.app.json
+├── tsconfig.json
+├── tsconfig.node.json
+└── vite.config.ts
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🚀 Cómo Crear y Configurar el Proyecto
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### 1. Crear el Proyecto
+```bash
+# Crear proyecto con Vite + React + TypeScript
+npm create vite@latest client -- --template react-ts
+cd client
 ```
-Estructura del Proyecto: Store Farmacy
-Se ha creado la estructura base del proyecto siguiendo la arquitectura cliente-servidor solicitada.
 
-Estructura de Directorios
-d:/store-farmacy
-├── client/                 # Frontend (Vite + React + TypeScript)
-│   ├── src/
-│   │   ├── components/     # Atomic Design
-│   │   │   ├── atoms/
-│   │   │   ├── molecules/
-│   │   │   ├── organisms/
-│   │   │   └── templates/
-│   │   ├── pages/
-│   │   └── index.css       # Configurado con TailwindCSS v4.1
-│   └── vite.config.ts      # Plugin de Tailwind integrado
-│
-└── server/                 # Backend (Node.js + Express + TypeScript)
-    ├── src/
-    │   └── index.ts        # Punto de entrada básico
-    ├── package.json
-    └── tsconfig.json
-Cómo Ejecutar
-Cliente (Frontend)
-Navega a la carpeta del cliente: cd client
-Instala dependencias (ya realizado): npm install
-Inicia el servidor de desarrollo: npm run dev
-Servidor (Backend)
-Navega a la carpeta del servidor: cd server
-Instala dependencias (ya realizado): npm install
-Compila y ejecuta (puedes usar ts-node o compilar): npx ts-node src/index.ts
-Detalles Técnicos
-Frontend: React 18, TypeScript, TailwindCSS v4.1 (vía @tailwindcss/vite).
-Backend: Express 4, TypeScript, CORS habilitado.
-Diseño: Estructura de carpetas lista para Atomic Design (Atomos, Moléculas, Organismos).
+### 2. Instalar Dependencias
+```bash
+npm install
+```
+
+### 3. Instalar Librerías Adicionales
+```bash
+# TailwindCSS v4.1.18
+npm install @tailwindcss/vite tailwindcss
+
+# React Router DOM v7.13.0
+npm install react-router-dom
+
+# Lucide React para iconos v0.563.0
+npm install lucide-react
+
+# Dependencias de desarrollo
+npm install -D @types/node typescript-eslint eslint-plugin-react-hooks eslint-plugin-react-refresh
+```
+
+### 4. Configurar TailwindCSS
+En `vite.config.ts`, agregar el plugin:
+```typescript
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
+
+export default defineConfig({
+  plugins: [react(), tailwindcss()],
+})
+```
+
+En `index.css`:
+```css
+@import "tailwindcss";
+```
+
+### 5. Configurar ESLint
+El `eslint.config.js` ya está configurado con reglas para React y TypeScript.
+
+## ▶️ Cómo Ejecutar el Proyecto
+
+### Desarrollo
+```bash
+npm run dev
+```
+El servidor de desarrollo estará disponible en `http://localhost:5173`
+
+### Construcción para Producción
+```bash
+npm run build
+```
+
+### Vista Previa de Producción
+```bash
+npm run preview
+```
+
+### Linting
+```bash
+npm run lint
+```
+
+## 🎨 Patrón de Diseño
+
+### Atomic Design
+Organizamos los componentes siguiendo el patrón de Atomic Design:
+
+- **Átomos**: Componentes básicos (Button, Input)
+- **Moléculas**: Combinaciones simples (FormField)
+- **Organismos**: Secciones complejas (ProductGrid, Header)
+- **Páginas**: Vistas completas (Products, Home)
+
+### Convenciones de Código
+- **Lenguaje**: TypeScript obligatorio
+- **Componentes**: Funcionales con hooks
+- **Estilos**: TailwindCSS para utilidades
+- **Nombres**: En inglés para archivos y variables
+- **Imports**: Usar `import type` para tipos
+
+## 🔗 Conexión con el Backend
+
+El frontend se conecta al backend en `http://localhost:3001` (configurable en `src/services/api.ts`).
+
+Asegúrate de que el servidor backend esté ejecutándose antes de usar la aplicación.
+
+## 📋 Próximos Pasos
+
+- Implementar autenticación completa
+- Desarrollar páginas de productos y categorías
+- Agregar gestión de inventario
+- Integrar alertas y promociones
 

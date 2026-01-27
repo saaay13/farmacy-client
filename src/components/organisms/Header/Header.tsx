@@ -1,17 +1,23 @@
-import { Link } from "react-router-dom";
-import { Pill, LayoutGrid } from "lucide-react";
+import { Link } from "react-router-dom"
+import { Pill, LayoutGrid } from "lucide-react"
+import { useAuth } from "../../../context/AuthContext"
 
 interface HeaderProps {
-    categoryCount?: number;
+    categoryCount?: number
 }
 
 export default function Header({ categoryCount = 0 }: HeaderProps) {
+    const { user, isAuthenticated, logout } = useAuth()
+
     return (
         <header className="bg-white border-b border-border sticky top-0 z-50 shadow-sm">
             <div className="container mx-auto px-4">
                 <div className="flex items-center justify-between h-16">
                     {/* Logo */}
-                    <Link to="/" className="flex items-center gap-2 font-bold text-xl text-foreground hover:text-primary transition-colors">
+                    <Link
+                        to="/"
+                        className="flex items-center gap-2 font-bold text-xl text-foreground hover:text-primary transition-colors"
+                    >
                         <Pill className="w-6 h-6 text-primary" />
                         <span>Farmacy Siempre Vivo</span>
                     </Link>
@@ -42,18 +48,37 @@ export default function Header({ categoryCount = 0 }: HeaderProps) {
                         >
                             Sucursales
                         </Link>
-                        <Link
-                            to="/iniciarsesion"
-                            className="relative flex items-center gap-2 bg-primary text-primary-foreground hover:bg-primary-700 px-4 py-2 rounded-lg font-medium transition-colors"
-                        >
-                            <LayoutGrid className="w-5 h-5" />
-                            <span>Iniciar Sesion</span>
-                            {categoryCount > 0 && (
-                                <span className="absolute -top-2 -right-2 bg-error text-error-foreground w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold">
-                                    {categoryCount}
-                                </span>
-                            )}
-                        </Link>
+
+                        {/* Botón de Login / Usuario */}
+                        {isAuthenticated ? (
+                            <div className="relative flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg font-medium transition-colors">
+                                <span>{user?.nombre}</span>
+                                <button
+                                    onClick={logout}
+                                    className="ml-2 px-2 py-1 bg-error text-error-foreground rounded-lg hover:bg-error-700 transition-colors"
+                                >
+                                    Logout
+                                </button>
+                                {categoryCount > 0 && (
+                                    <span className="absolute -top-2 -right-2 bg-error text-error-foreground w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold">
+                                        {categoryCount}
+                                    </span>
+                                )}
+                            </div>
+                        ) : (
+                            <Link
+                                to="/iniciarsesion"
+                                className="relative flex items-center gap-2 bg-primary text-primary-foreground hover:bg-primary-700 px-4 py-2 rounded-lg font-medium transition-colors"
+                            >
+                                <LayoutGrid className="w-5 h-5" />
+                                <span>Iniciar Sesión</span>
+                                {categoryCount > 0 && (
+                                    <span className="absolute -top-2 -right-2 bg-error text-error-foreground w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold">
+                                        {categoryCount}
+                                    </span>
+                                )}
+                            </Link>
+                        )}
                     </nav>
 
                     {/* Mobile Menu Button */}
@@ -75,5 +100,5 @@ export default function Header({ categoryCount = 0 }: HeaderProps) {
                 </div>
             </div>
         </header>
-    );
+    )
 }
