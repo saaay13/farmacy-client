@@ -70,6 +70,20 @@ export async function loginUser(email: string, password: string): Promise<LoginR
     return data
 }
 
+export async function registerUser(nombre: string, email: string, password: string, avatarUrl?: string): Promise<any> {
+    const response = await fetch(`${API_BASE_URL}/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nombre, email, password, avatarUrl }),
+    })
+
+    const result = await response.json()
+    if (!response.ok) {
+        throw new Error(result.message || 'Error al registrar usuario')
+    }
+    return result
+}
+
 //
 export async function fetchProducts(token?: string): Promise<Product[]> {
     const headers: HeadersInit = {};

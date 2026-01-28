@@ -7,6 +7,7 @@ import './App.css';
 // Pages
 import HomePage from './pages/Home/HomePage';
 import { LoginPage } from './pages/Login/LoginPage';
+import { RegisterPage } from './pages/Login/RegisterPage';
 import ProductsPage from './pages/cliente/ProductsPage';
 import CategoriesPage from './pages/cliente/CategoriesPage';
 import BanchPage from './pages/cliente/BanchPage';
@@ -36,6 +37,7 @@ function App() {
               }
             />
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
 
             <Route
               path="/productos"

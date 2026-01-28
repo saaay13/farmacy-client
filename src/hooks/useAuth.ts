@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useAuth as useAuthContext } from '../context/AuthContext'
-import { loginUser } from '../services/api'
+import { loginUser, registerUser } from '../services/api'
 import type { User } from '../services/api'
 
 
@@ -29,9 +29,25 @@ export function useAuth() {
         }
     }
 
+    async function doRegister(nombre: string, email: string, password: string, avatarUrl?: string): Promise<void> {
+        setLoading(true)
+        setError(null)
+        try {
+            await registerUser(nombre, email, password, avatarUrl)
+            // Login automático tras registro
+            const data = await loginUser(email, password)
+            login(data.token, data.user)
+        } catch (err: any) {
+            setError(err.message)
+            throw err
+        } finally {
+            setLoading(false)
+        }
+    }
+
     function doLogout() {
         logout()
     }
 
-    return { user, token, isAuthenticated, role, loading, error, doLogin, doLogout }
+    return { user, token, isAuthenticated, role, loading, error, doLogin, doRegister, doLogout }
 }

@@ -4,11 +4,12 @@ import { Link } from "react-router-dom"
 
 interface UserMenuProps {
     userName: string
+    avatarUrl?: string
     logout: () => void
     categoryCount?: number
 }
 
-export const UserMenu = ({ userName, logout, categoryCount = 0 }: UserMenuProps) => {
+export const UserMenu = ({ userName, avatarUrl, logout, categoryCount = 0 }: UserMenuProps) => {
 
     const [open, setOpen] = useState(false)
     const menuRef = useRef<HTMLDivElement>(null)
@@ -28,12 +29,18 @@ export const UserMenu = ({ userName, logout, categoryCount = 0 }: UserMenuProps)
         <div className="relative" ref={menuRef}>
             <button
                 onClick={() => setOpen(!open)}
-                className="flex items-center gap-2 bg-primary text-primary-foreground px-3 py-2 rounded-lg hover:bg-primary/90 transition-colors"
+                className="flex items-center gap-2 bg-primary text-primary-foreground p-1 pr-3 rounded-full hover:bg-primary/90 transition-all shadow-md group"
             >
-                <UserIcon size={5} />
-                <span>{userName}</span>
+                <div className="w-9 h-9 rounded-full overflow-hidden border-2 border-primary-foreground/20 bg-primary-foreground/10 flex items-center justify-center shrink-0">
+                    {avatarUrl ? (
+                        <img src={avatarUrl} alt={userName} className="w-full h-full object-cover" />
+                    ) : (
+                        <UserIcon size={5} />
+                    )}
+                </div>
+                <span className="font-semibold text-sm max-w-[100px] truncate">{userName}</span>
                 {categoryCount > 0 && (
-                    <span className="absolute -top-2 -right-2 bg-error text-error-foreground w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold">
+                    <span className="absolute -top-1 -right-1 bg-error text-white w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-black border-2 border-background">
                         {categoryCount}
                     </span>
                 )}

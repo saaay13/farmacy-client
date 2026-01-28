@@ -6,4 +6,5 @@ export { CartDrawer } from './Cart/CartDrawer';
 export { AdminSidebar } from './Admin/AdminSidebar';
 export { default as Footer } from './Footer/Footer';
 export { LoginCard } from './Login/LoginCard';
+export { RegisterCard } from './Login/RegisterCard';
 export { CheckoutForm } from './Cart/CheckoutForm';

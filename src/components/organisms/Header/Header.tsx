@@ -105,6 +105,7 @@ export function Header() {
                     {user ? (
                         <UserMenu
                             userName={user.nombre}
+                            avatarUrl={user.avatarUrl}
                             logout={handleLogout}
                         />
                     ) : (

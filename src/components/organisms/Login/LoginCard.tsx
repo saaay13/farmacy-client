@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { LoginForm } from '../../molecules';
 import type { User } from '../../../services/api';
 
@@ -29,14 +29,16 @@ export const LoginCard = () => {
             />
 
             {/* Footer */}
-            <div className="mt-6 text-center text-xs text-muted-foreground">
-                <p>© 2024 Store Farmacy. Todos los derechos reservados.</p>
-                <p className="mt-1">
-                    ¿Necesita ayuda?{' '}
-                    <a href="#" className="text-primary hover:text-primary-700 font-medium hover:underline">
-                        Contactar Soporte
-                    </a>
+            <div className="mt-8 pt-6 border-t border-border/50 text-center">
+                <p className="text-sm text-muted-foreground font-medium">
+                    ¿No tienes una cuenta?{' '}
+                    <Link to="/register" className="text-primary hover:text-primary-700 font-black transition-colors">
+                        Regístrate aquí
+                    </Link>
                 </p>
+                <div className="mt-6 text-[10px] text-muted-foreground uppercase font-bold tracking-widest">
+                    <p>© 2024 Store Farmacy</p>
+                </div>
             </div>
         </div>
     );
