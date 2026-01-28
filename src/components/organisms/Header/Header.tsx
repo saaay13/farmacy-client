@@ -44,8 +44,6 @@ export function Header() {
 
     const isStaff = ['admin', 'farmaceutico', 'vendedor'].includes(role);
 
-    // Si es staff y está en una ruta que NO empieza por /admin, mandarlo al dashboard
-    // Pero solo si el componente se monta en una de esas páginas (extra safety)
     useEffect(() => {
         if (isStaff && !window.location.pathname.startsWith('/admin')) {
             navigate('/admin/dashboard');

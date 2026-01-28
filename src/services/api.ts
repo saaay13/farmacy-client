@@ -1,14 +1,27 @@
 const API_BASE_URL = 'http://localhost:3001/api';
 
 export interface Product {
-    id: string; // Prisma usa strings para IDs
+    id: string;
     nombre: string;
     descripcion: string;
     precio: number;
-    requiereReceta: boolean; // Camelcase en Prisma
+    requiereReceta: boolean;
     idCategoria: string;
     imageUrl?: string;
     estado: string;
+    categoria?: {
+        nombre: string;
+    };
+    inventario?: {
+        stockTotal: number;
+        fechaRevision: string;
+    };
+    lotes?: Array<{
+        id: string;
+        numeroLote: string;
+        fechaVencimiento: string;
+        cantidad: number;
+    }>;
 }
 
 export interface Category {
@@ -58,8 +71,13 @@ export async function loginUser(email: string, password: string): Promise<LoginR
 }
 
 //
-export async function fetchProducts(): Promise<Product[]> {
-    const response = await fetch(`${API_BASE_URL}/products`);
+export async function fetchProducts(token?: string): Promise<Product[]> {
+    const headers: HeadersInit = {};
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    const response = await fetch(`${API_BASE_URL}/products`, { headers });
     if (!response.ok) {
         throw new Error('Error al obtener productos');
     }
