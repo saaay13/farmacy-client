@@ -22,9 +22,11 @@ Sistema de gestión integral para farmacias multisucursales - Cliente Web desarr
 ```
 client/
 ├── public/
-│   ├── img/
-│   │   ├── home.png
-│   │   └── vite.svg
+│   ├── vite.svg
+│   └── img/
+│       ├── home.png
+│       └── avatar/
+│           
 ├── src/
 │   ├── assets/
 │   │   └── react.svg
@@ -32,6 +34,8 @@ client/
 │   │   ├── atoms/          # Componentes básicos indivisibles
 │   │   │   ├── Button/
 │   │   │   │   └── Button.tsx
+│   │   │   ├── Icon/
+│   │   │   │   └── UserIcon.tsx
 │   │   │   ├── Input/
 │   │   │   │   └── Input.tsx
 │   │   │   ├── Toggle/
@@ -40,6 +44,8 @@ client/
 │   │   ├── molecules/      # Combinaciones simples de átomos
 │   │   │   ├── Login/
 │   │   │   │   └── LoginForm.tsx
+│   │   │   ├── Menu/
+│   │   │   │   └── UserMenu.tsx
 │   │   │   └── index.ts
 │   │   ├── organisms/      # Secciones complejas
 │   │   │   ├── Footer/
@@ -83,6 +89,7 @@ client/
 ├── eslint.config.js
 ├── index.html
 ├── package.json
+├── package-lock.json
 ├── README.md
 ├── sugerencia.txt
 ├── tsconfig.app.json

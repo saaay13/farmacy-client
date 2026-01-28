@@ -3,17 +3,17 @@ import { useProducts } from "../../hooks/useProducts";
 import { useCategories } from "../../hooks/useCategories";
 import { Header, Footer } from "../../components/organisms/"
 import { ChevronRight, Loader2 } from "lucide-react";
-
 import type { Product, Category } from "../../services/api";
+import { useAuth } from "../../context/AuthContext"; // <--- importa el hook
 
 export default function ProductsPage() {
     const [searchParams, setSearchParams] = useSearchParams();
     const { products, loading: productsLoading, error: productsError } = useProducts();
     const { categories, loading: categoriesLoading } = useCategories();
+    const { user } = useAuth(); // <--- obtenemos el usuario actual
 
     const activeCategory = searchParams.get("categoria");
 
-    // Filtrar productos por categoría
     const filteredProducts = activeCategory
         ? products.filter((p) => p.idCategoria === activeCategory)
         : products;
@@ -25,6 +25,8 @@ export default function ProductsPage() {
             setSearchParams({});
         }
     };
+
+    const isCliente = user?.rol === "cliente"; // <--- verificamos si es cliente
 
     return (
         <div className="min-h-screen bg-background flex flex-col">
@@ -47,7 +49,6 @@ export default function ProductsPage() {
                     {/* Sidebar Filtros */}
                     <aside className="w-full md:w-64 flex-shrink-0">
                         <div className="bg-background rounded-xl border border-border p-6 sticky top-24 shadow-sm">
-                            {/* Botón Todas las Categorías */}
                             <button
                                 onClick={() => handleCategoryChange(null)}
                                 className={`w-full text-left px-3 py-2 rounded-lg text-sm mb-2 transition-all ${!activeCategory
@@ -58,7 +59,6 @@ export default function ProductsPage() {
                                 Todas las Categorías
                             </button>
 
-                            {/* Listado de Categorías */}
                             {categoriesLoading ? (
                                 <div className="flex flex-col gap-2">
                                     {Array.from({ length: 6 }).map((_, i) => (
@@ -84,7 +84,6 @@ export default function ProductsPage() {
                         </div>
                     </aside>
 
-                    {/* Listado de Productos */}
                     {/* Listado de Productos */}
                     <div className="flex-grow">
                         {productsError ? (
@@ -130,9 +129,19 @@ export default function ProductsPage() {
                                                         ${Number(product.precio).toFixed(2)}
                                                     </span>
                                                 </div>
-                                                <button className="bg-primary text-primary-foreground p-3 rounded-lg hover:bg-primary-700 transition-all shadow-md hover:shadow-lg transform active:scale-95">
-                                                    <ChevronRight className="w-5 h-5" />
-                                                </button>
+
+                                                <div className="flex gap-2">
+                                                    {/* Botón visible solo para clientes */}
+                                                    {isCliente && (
+                                                        <button className="bg-secondary text-secondary-foreground p-3 rounded-lg hover:bg-secondary-700 transition-all shadow-md hover:shadow-lg transform active:scale-95">
+                                                            Agregar al carrito
+                                                        </button>
+                                                    )}
+                                                    <button className="bg-primary text-primary-foreground p-3 rounded-lg hover:bg-primary-700 transition-all shadow-md hover:shadow-lg transform active:scale-95">
+                                                        <ChevronRight className="w-5 h-5" />
+                                                    </button>
+                                                </div>
+
                                             </div>
                                         </div>
                                     </div>
@@ -146,6 +155,5 @@ export default function ProductsPage() {
 
             <Footer />
         </div>
-
     );
 }

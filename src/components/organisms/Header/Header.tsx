@@ -1,8 +1,9 @@
 import { Link } from "react-router-dom"
-import { Pill, LayoutGrid } from "lucide-react"
+import { Pill, LayoutGrid, ShoppingCart } from "lucide-react"
 import { useAuth } from "../../../context/AuthContext"
 import { ThemeToggle } from "../../../components/atoms"
 import type { User } from "../../../services/api"
+import { UserMenu } from "../../molecules"
 
 interface HeaderProps {
     categoryCount?: number
@@ -38,9 +39,9 @@ const navLinks: Record<User['rol'], { to: string; label: string }[]> = {
 }
 
 export default function Header({ categoryCount = 0 }: HeaderProps) {
-    const { user, isAuthenticated, logout } = useAuth()
-
-    const linksToRender = isAuthenticated ? navLinks[user?.rol || 'guest'] : navLinks['guest']
+    const { user, isAuthenticated, logout, role } = useAuth()
+    const linksToRender = navLinks[isAuthenticated ? role : 'guest']
+    const isCliente = user?.rol === "cliente"; // <-- Solo clientes pueden ver carrito
 
     return (
         <header className="bg-background border-b border-border sticky top-0 z-50 shadow-sm">
@@ -58,6 +59,7 @@ export default function Header({ categoryCount = 0 }: HeaderProps) {
                     {/* Navigation */}
                     <nav className="hidden md:flex items-center gap-6">
                         <ThemeToggle />
+
                         {linksToRender.map((link) => (
                             <Link
                                 key={link.to}
@@ -68,22 +70,15 @@ export default function Header({ categoryCount = 0 }: HeaderProps) {
                             </Link>
                         ))}
 
-                        {isAuthenticated ? (
-                            <div className="relative flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg font-medium transition-colors">
-                                <span>{user?.nombre}</span>
-                                <button
-                                    onClick={logout}
-                                    className="ml-2 px-2 py-1 bg-error text-error-foreground rounded-lg hover:bg-error transition-colors"
-                                >
-                                    Cerrar Sesión
-                                </button>
-                                {categoryCount > 0 && (
-                                    <span className="absolute -top-2 -right-2 bg-error text-error-foreground w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold">
-                                        {categoryCount}
-                                    </span>
-                                )}
-                            </div>
-                        ) : (
+                        {isAuthenticated && user && (
+                            <UserMenu
+                                userName={user.nombre}
+                                logout={logout}
+                                categoryCount={categoryCount}
+                            />
+                        )}
+
+                        {!isAuthenticated && (
                             <Link
                                 to="/login"
                                 className="relative flex items-center gap-2 bg-primary text-primary-foreground hover:bg-primary px-4 py-2 rounded-lg font-medium transition-colors"
@@ -96,6 +91,20 @@ export default function Header({ categoryCount = 0 }: HeaderProps) {
                                     </span>
                                 )}
                             </Link>
+                        )}
+
+                        {/* Carrito solo para cliente */}
+                        {isCliente && (
+                            <button
+                                className="relative p-2 rounded-full bg-primary text-primary-foreground hover:bg-primary-500 transition-all"
+                                title="Ver carrito"
+                            >
+                                <ShoppingCart className="w-6 h-6 text-primary-foreground" />
+
+                                <span className="absolute -top-1 -right-1 bg-error text-error-foreground rounded-full text-xs w-5 h-5 flex items-center justify-center">
+                                    1
+                                </span>
+                            </button>
                         )}
                     </nav>
 
