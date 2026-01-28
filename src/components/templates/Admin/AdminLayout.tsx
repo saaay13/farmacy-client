@@ -1,11 +1,19 @@
+import { useEffect } from "react";
 import type { ReactNode } from "react";
 import { AdminSidebar } from "../../organisms/Admin/AdminSidebar";
 
 interface AdminLayoutProps {
     children: ReactNode;
+    title?: string;
 }
 
-export function AdminLayout({ children }: AdminLayoutProps) {
+export function AdminLayout({ children, title }: AdminLayoutProps) {
+    useEffect(() => {
+        if (title) {
+            document.title = `${title} | Farmacy Admin`;
+        }
+    }, [title]);
+
     return (
         <div className="min-h-screen bg-muted/30">
             <AdminSidebar />

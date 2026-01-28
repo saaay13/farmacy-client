@@ -1,6 +1,7 @@
 import {
     LayoutDashboard,
     Box,
+    ShoppingCart,
     ClipboardList,
     AlertCircle,
     Users,
@@ -10,6 +11,7 @@ import {
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
+import { ThemeToggle } from "../../atoms";
 
 export function AdminSidebar() {
     const { logout, user } = useAuth();
@@ -19,6 +21,11 @@ export function AdminSidebar() {
             title: "Dashboard",
             icon: LayoutDashboard,
             path: "/admin/dashboard"
+        },
+        {
+            title: "Punto de Venta",
+            icon: ShoppingCart,
+            path: "/admin/pos"
         },
         {
             title: "Inventario",
@@ -52,7 +59,7 @@ export function AdminSidebar() {
                         <Box className="w-6 h-6" />
                     </div>
                     <div>
-                        <h2 className="font-black text-foreground tracking-tight leading-none">FARMACY</h2>
+                        <h2 className="font-black text-foreground tracking-tight leading-none">FARMACY SIEMPRE VIVO</h2>
                         <span className="text-[10px] font-bold text-primary uppercase tracking-widest">Panel Control</span>
                     </div>
                 </div>
@@ -99,7 +106,9 @@ export function AdminSidebar() {
                     <button className="p-2 text-muted-foreground hover:text-primary transition-colors">
                         <Settings className="w-4 h-4" />
                     </button>
+                    <ThemeToggle />
                 </div>
+
 
                 <button
                     onClick={logout}

@@ -1,40 +1,24 @@
-import { useEffect, useState } from "react";
 import { AdminLayout } from "../../components/templates/Admin/AdminLayout";
 import { Package, Search, Plus, Filter, Loader2, Download } from "lucide-react";
 import { ProductTable } from "../../components/organisms/Product/ProductTable";
-import { fetchProducts, type Product } from "../../services/api";
-import { useAuth } from "../../context/AuthContext";
 import { Card, Badge, Button } from "../../components/atoms";
+import { AddBatchModal, BatchHistoryModal } from "../../components/molecules";
+import { useInventory } from "../../hooks/admin/useInventory";
 
 export default function InventoryPage() {
-    const [products, setProducts] = useState<Product[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [searchTerm, setSearchTerm] = useState("");
-    const { token } = useAuth();
-
-    useEffect(() => {
-        const loadProducts = async () => {
-            try {
-                const data = await fetchProducts(token || undefined);
-                setProducts(data);
-            } catch (error) {
-                console.error("Error loading products:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        loadProducts();
-    }, [token]);
-
-    const filteredProducts = products.filter(p =>
-        p.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        p.descripcion.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        p.categoria?.nombre.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const {
+        products,
+        filteredProducts,
+        loading,
+        searchTerm,
+        setSearchTerm,
+        selectedProduct,
+        modalStates,
+        handlers
+    } = useInventory();
 
     return (
-        <AdminLayout>
+        <AdminLayout title="Inventario">
             <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
                 <div>
                     <h1 className="text-3xl font-black text-foreground mb-1 tracking-tight">Gestión de Inventario</h1>
@@ -81,7 +65,11 @@ export default function InventoryPage() {
                         <p className="text-muted-foreground font-bold">Cargando catálogo maestro...</p>
                     </div>
                 ) : filteredProducts.length > 0 ? (
-                    <ProductTable products={filteredProducts} />
+                    <ProductTable
+                        products={filteredProducts}
+                        onRestock={handlers.openRestock}
+                        onViewHistory={handlers.openHistory}
+                    />
                 ) : (
                     <div className="p-20 text-center">
                         <div className="bg-muted w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 opacity-40">
@@ -102,6 +90,24 @@ export default function InventoryPage() {
                     <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest">Base de datos en tiempo real</p>
                 </div>
             </div>
+
+            {selectedProduct && (
+                <AddBatchModal
+                    product={selectedProduct}
+                    isOpen={modalStates.isRestockOpen}
+                    onClose={() => modalStates.setIsRestockOpen(false)}
+                    onSuccess={handlers.refresh}
+                />
+            )}
+
+            {selectedProduct && (
+                <BatchHistoryModal
+                    product={selectedProduct}
+                    isOpen={modalStates.isHistoryOpen}
+                    onClose={() => modalStates.setIsHistoryOpen(false)}
+                    onBatchChange={handlers.refresh}
+                />
+            )}
         </AdminLayout>
     );
 }

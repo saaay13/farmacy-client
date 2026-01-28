@@ -6,174 +6,181 @@ import {
     AlertCircle,
     ThumbsUp,
     ThumbsDown,
-    Eye
+    Eye,
+    Loader2,
+    RefreshCw
 } from "lucide-react";
 import { StatCard } from "../../components/molecules";
 import { Card, Badge, Alert, Button } from "../../components/atoms";
+import { useAdminStats } from "../../hooks/admin/useAdminStats";
+import { useAdminAlerts } from "../../hooks/admin/useAdminAlerts";
 
 export default function DashboardPage() {
-    // Datos estáticos para simular (luego vendrán del backend)
-    const alerts = [
-        {
-            id: "1",
-            title: "Stock crítico",
-            description: "Insulina Humana 100 UI está por debajo del mínimo requerido",
-            severity: "error" as const,
-            timestamp: "Hace 2 horas",
-        },
-        {
-            id: "2",
-            title: "Vencimiento próximo",
-            description: "Paracetamol 500mg vence en 7 días (Lote: 2024-001)",
-            severity: "warning" as const,
-            timestamp: "Hace 1 hora",
-        },
-    ];
+    const {
+        salesReport,
+        stockIssues,
+        expiringCount,
+        expiredCount,
+        loading: statsLoading,
+        refresh: refreshStats
+    } = useAdminStats();
 
-    const promotions = [
-        {
-            id: "1",
-            product: "Vitamina C 1000mg",
-            currentPrice: 45.99,
-            suggestedPrice: 34.99,
-            discount: 24,
-            reason: "Próximo a vencer (15 días)",
-            status: "pending",
-            daysUntilExpiry: 15,
-        },
-        {
-            id: "2",
-            product: "Ibuprofeno 400mg",
-            currentPrice: 28.99,
-            suggestedPrice: 19.99,
-            discount: 31,
-            reason: "Stock alto (650 unidades)",
-            status: "pending",
-            daysUntilExpiry: 45,
-        },
-    ];
+    const {
+        alerts,
+        loading: alertsLoading,
+        runCheck
+    } = useAdminAlerts();
+
+    const loading = statsLoading || alertsLoading;
+
+    // Solo tomamos las primeras 5 alertas para el dashboard
+    const displayAlerts = alerts.slice(0, 5);
 
     return (
-        <AdminLayout>
-            <div className="mb-8">
-                <h1 className="text-3xl font-black text-foreground mb-1">Panel de Control</h1>
-                <p className="text-muted-foreground font-medium flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-success animate-pulse"></span>
-                    Sistema operativo • Resumen de hoy
-                </p>
+        <AdminLayout title="Dashboard">
+            <div className="flex items-center justify-between mb-8">
+                <div>
+                    <h1 className="text-3xl font-black text-foreground mb-1">Panel de Control</h1>
+                    <p className="text-muted-foreground font-medium flex items-center gap-2">
+                        <span className={`w-2 h-2 rounded-full ${loading ? 'bg-warning animate-pulse' : 'bg-success'}`}></span>
+                        {loading ? 'Actualizando datos...' : 'Sistema operativo • Resumen de hoy'}
+                    </p>
+                </div>
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => { refreshStats(); runCheck(); }}
+                    disabled={loading}
+                    className="rounded-xl border border-border bg-card shadow-sm"
+                >
+                    <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+                    Actualizar
+                </Button>
             </div>
 
             {/* Métrica Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
                 <StatCard
                     title="Próximos a Vencer"
-                    value={12}
-                    trend="+2 esta semana"
+                    value={expiringCount}
+                    trend="Vista 60 días"
                     icon={Clock}
                     variant="warning"
                 />
                 <StatCard
                     title="Productos Vencidos"
-                    value={3}
-                    trend="-1 esta semana"
+                    value={expiredCount}
+                    trend="Stock bloqueado"
                     icon={AlertTriangle}
                     variant="error"
                 />
                 <StatCard
                     title="Stock Bajo"
-                    value={24}
-                    trend="+5 esta semana"
+                    value={stockIssues.length}
+                    trend="< 10 unidades"
                     icon={AlertCircle}
                     variant="info"
                 />
                 <StatCard
-                    title="Ventas del Día"
-                    value="$4,250"
-                    trend="+12% vs ayer"
+                    title="Ventas del Mes"
+                    value={`$${salesReport?.summary.totalVendido.toLocaleString() || '0'}`}
+                    trend={`${salesReport?.summary.cantidadTransacciones || 0} ventas`}
                     icon={TrendingUp}
                     variant="success"
                 />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Panel de Alertas Críticas */}
+                {/* Panel de Alertas Recientes */}
                 <div className="lg:col-span-1 space-y-6">
                     <Card className="p-6">
-                        <div className="flex items-center gap-2 mb-6">
-                            <AlertTriangle className="w-5 h-5 text-error" />
-                            <h3 className="font-bold text-lg">Alertas Críticas</h3>
+                        <div className="flex items-center justify-between mb-6">
+                            <div className="flex items-center gap-2">
+                                <AlertTriangle className="w-5 h-5 text-error" />
+                                <h3 className="font-bold text-lg">Alertas Críticas</h3>
+                            </div>
+                            <Badge variant="error" className="animate-pulse">{alerts.length}</Badge>
                         </div>
-                        <div className="space-y-4">
-                            {alerts.map((alert) => (
-                                <Alert
-                                    key={alert.id}
-                                    variant={alert.severity}
-                                    title={alert.title}
-                                    className="border-none shadow-sm"
-                                >
-                                    {alert.description}
-                                    <p className="mt-2 text-[10px] uppercase font-bold tracking-wider opacity-70">
-                                        {alert.timestamp}
-                                    </p>
-                                </Alert>
-                            ))}
-                        </div>
+
+                        {alertsLoading ? (
+                            <div className="py-12 flex justify-center">
+                                <Loader2 className="w-8 h-8 text-primary animate-spin" />
+                            </div>
+                        ) : alerts.length > 0 ? (
+                            <div className="space-y-4">
+                                {displayAlerts.map((alert) => (
+                                    <Alert
+                                        key={alert.id}
+                                        variant={alert.tipo === 'expirado' ? 'error' : 'warning'}
+                                        title={alert.tipo === 'expirado' ? 'Vencimiento' : 'Stock Bajo'}
+                                        className="border-none shadow-sm bg-muted/30"
+                                    >
+                                        <p className="text-sm font-medium leading-relaxed">{alert.mensaje}</p>
+                                        <p className="mt-2 text-[10px] uppercase font-bold tracking-wider opacity-60">
+                                            {new Date(alert.fecha).toLocaleString()}
+                                        </p>
+                                    </Alert>
+                                ))}
+                                {alerts.length > 5 && (
+                                    <Button variant="ghost" size="sm" className="w-full text-primary font-bold">
+                                        Ver todas las alertas ({alerts.length})
+                                    </Button>
+                                )}
+                            </div>
+                        ) : (
+                            <div className="py-12 text-center text-muted-foreground">
+                                <p className="text-4xl mb-4">✅</p>
+                                <p className="font-bold">Todo en orden</p>
+                                <p className="text-xs">No hay alertas activas</p>
+                            </div>
+                        )}
                     </Card>
                 </div>
 
-                {/* Listado de Promociones Sugeridas */}
+                {/* Listado de Productos más vendidos (Top Products) */}
                 <div className="lg:col-span-2">
-                    <Card className="p-6">
+                    <Card className="p-6 h-full">
                         <div className="flex items-center justify-between mb-8">
                             <div>
-                                <h3 className="font-bold text-lg">Promociones Sugeridas</h3>
-                                <p className="text-sm text-muted-foreground">Estrategias recomendadas para stock estancado</p>
+                                <h3 className="font-bold text-lg">Productos con Mayor Demanda</h3>
+                                <p className="text-sm text-muted-foreground">Top 5 productos más vendidos del mes</p>
                             </div>
-                            <Badge variant="warning">{promotions.length} Pendientes</Badge>
                         </div>
 
-                        <div className="space-y-4">
-                            {promotions.map((promo) => (
-                                <div
-                                    key={promo.id}
-                                    className="p-4 rounded-2xl border border-border bg-muted/20 hover:bg-muted/40 transition-colors"
-                                >
-                                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                                        <div className="flex-1">
-                                            <div className="flex items-center gap-2 mb-1">
-                                                <h4 className="font-bold text-base">{promo.product}</h4>
-                                                <Badge variant="warning">Pendiente</Badge>
+                        {statsLoading ? (
+                            <div className="py-20 flex justify-center">
+                                <Loader2 className="w-12 h-12 text-primary animate-spin" />
+                            </div>
+                        ) : salesReport?.topProducts && salesReport.topProducts.length > 0 ? (
+                            <div className="space-y-4">
+                                {salesReport.topProducts.map((item, index) => (
+                                    <div
+                                        key={index}
+                                        className="p-4 rounded-2xl border border-border bg-muted/20 hover:bg-muted/40 transition-colors flex items-center justify-between"
+                                    >
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center font-black text-primary">
+                                                #{index + 1}
                                             </div>
-                                            <p className="text-sm text-muted-foreground">
-                                                {promo.reason} • <span className="font-medium text-error">{promo.daysUntilExpiry} días</span> restantes
-                                            </p>
+                                            <div>
+                                                <h4 className="font-bold text-base">{item.nombre}</h4>
+                                                <p className="text-sm text-muted-foreground">Catálogo Maestro</p>
+                                            </div>
                                         </div>
-
-                                        <div className="flex items-center gap-4 bg-background/50 p-2 rounded-xl">
-                                            <div className="text-right">
-                                                <span className="block text-xs line-through text-muted-foreground">${promo.currentPrice}</span>
-                                                <span className="block text-lg font-black text-success">${promo.suggestedPrice}</span>
-                                            </div>
-                                            <Badge variant="success" className="h-fit">-{promo.discount}%</Badge>
+                                        <div className="text-right">
+                                            <span className="block text-lg font-black text-foreground">{item.cantidadVendida}</span>
+                                            <span className="block text-[10px] uppercase font-bold text-muted-foreground tracking-widest">Unidades</span>
                                         </div>
                                     </div>
-
-                                    <div className="flex gap-2 mt-4 pt-4 border-t border-border/50">
-                                        <Button size="sm" className="flex-1 bg-success hover:bg-success/90">
-                                            <ThumbsUp className="w-4 h-4 mr-2" />
-                                            Aprobar
-                                        </Button>
-                                        <Button size="sm" variant="ghost" className="flex-1 text-error hover:bg-error/10 border-error/20">
-                                            <ThumbsDown className="w-4 h-4 mr-2" />
-                                            Rechazar
-                                        </Button>
-                                        <Button size="sm" variant="secondary" className="px-3">
-                                            <Eye className="w-4 h-4" />
-                                        </Button>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="py-20 text-center text-muted-foreground">
+                                <p className="text-4xl mb-4">📈</p>
+                                <p className="font-bold">Sin datos de ventas</p>
+                                <p className="text-xs">Las estadísticas aparecerán cuando se procesen ventas</p>
+                            </div>
+                        )}
                     </Card>
                 </div>
             </div>

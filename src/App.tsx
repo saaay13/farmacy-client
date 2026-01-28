@@ -17,6 +17,9 @@ import { ProtectedRoute } from './components/auth/ProtectedRoute';
 // Admin Pages
 import DashboardPage from './pages/admin/DashboardPage';
 import InventoryPage from './pages/admin/InventoryPage';
+import PointOfSalePage from './pages/admin/PointOfSalePage';
+import AlertsPage from './pages/admin/AlertsPage';
+import UsersPage from './pages/admin/UsersPage';
 
 function App() {
   return (
@@ -91,6 +94,30 @@ function App() {
               element={
                 <ProtectedRoute allowedRoles={['admin', 'farmaceutico']}>
                   <InventoryPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/pos"
+              element={
+                <ProtectedRoute allowedRoles={['admin', 'farmaceutico', 'vendedor']}>
+                  <PointOfSalePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/alertas"
+              element={
+                <ProtectedRoute allowedRoles={['admin', 'farmaceutico', 'vendedor']}>
+                  <AlertsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/usuarios"
+              element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                  <UsersPage />
                 </ProtectedRoute>
               }
             />

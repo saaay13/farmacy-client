@@ -13,14 +13,12 @@ export default function CategoriesPage() {
 
     return (
         <div className="min-h-screen bg-muted/30 flex flex-col relative overflow-hidden">
-            {/* Background Decor - The "Green Box" */}
             <div className="absolute top-0 left-0 w-full h-[35vh] bg-primary shadow-lg shadow-primary/20 transform -skew-y-2 origin-top-right scale-110 z-0" />
 
             <div className="relative z-10 flex flex-col min-h-screen">
                 <Header />
 
                 <main className="flex-grow">
-                    {/* Hero Section */}
                     <section className="text-primary-foreground py-12 md:py-16">
                         <div className="container mx-auto px-4 text-left">
                             <div className="max-w-4xl">

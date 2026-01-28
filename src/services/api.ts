@@ -132,3 +132,188 @@ export async function createSale(saleData: SaleRequest, token: string): Promise<
 
     return result;
 }
+
+export interface BatchRequest {
+    idProducto: string;
+    fechaVencimiento: string;
+    cantidad: number;
+    numeroLote: string;
+    idSucursal: string;
+}
+
+export async function createBatch(batchData: BatchRequest, token: string): Promise<any> {
+    const response = await fetch(`${API_BASE_URL}/batches`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(batchData),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+        throw new Error(result.message || 'Error al registrar el lote');
+    }
+
+    return result;
+}
+export async function fetchBatches(productId?: string, token?: string): Promise<any[]> {
+    const url = productId ? `${API_BASE_URL}/batches?idProducto=${productId}` : `${API_BASE_URL}/batches`;
+    const headers: HeadersInit = {};
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
+    const response = await fetch(url, { headers });
+    if (!response.ok) {
+        throw new Error('Error al obtener lotes');
+    }
+    const result = await response.json();
+    return result.data;
+}
+
+export async function deleteBatch(batchId: string, token: string): Promise<any> {
+    const response = await fetch(`${API_BASE_URL}/batches/${batchId}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+        throw new Error(result.message || 'Error al eliminar el lote');
+    }
+
+    return result;
+}
+// --- Reports & Stats ---
+
+export interface SalesReport {
+    summary: {
+        totalVendido: number;
+        cantidadTransacciones: number;
+        promedioVenta: number;
+    };
+    topProducts: Array<{
+        nombre: string;
+        cantidadVendida: number;
+    }>;
+}
+
+export interface Alert {
+    id: string;
+    tipo: 'expirado' | 'stock_bajo' | 'otro';
+    mensaje: string;
+    fecha: string;
+    idProducto: string;
+    producto?: Product;
+}
+
+export async function fetchSalesReport(token: string, days: number = 30): Promise<SalesReport> {
+    const response = await fetch(`${API_BASE_URL}/reports/sales-summary?days=${days}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+    });
+    const result = await response.json();
+    return result;
+}
+
+export async function fetchStockReport(token: string): Promise<any[]> {
+    const response = await fetch(`${API_BASE_URL}/reports/stock`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+    });
+    const result = await response.json();
+    return result.data;
+}
+
+export async function fetchExpiringReport(token: string): Promise<any[]> {
+    const response = await fetch(`${API_BASE_URL}/reports/expiring`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+    });
+    const result = await response.json();
+    return result.data;
+}
+
+export async function fetchExpiredReport(token: string): Promise<any[]> {
+    const response = await fetch(`${API_BASE_URL}/reports/expired`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+    });
+    const result = await response.json();
+    return result.data;
+}
+
+export async function fetchAlerts(token: string): Promise<Alert[]> {
+    const response = await fetch(`${API_BASE_URL}/alerts`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+    });
+    const result = await response.json();
+    return result.data;
+}
+
+export async function triggerAlertCheck(token: string): Promise<any> {
+    const response = await fetch(`${API_BASE_URL}/alerts/check`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` }
+    });
+    return response.json();
+}
+
+export async function fetchUsers(token: string): Promise<User[]> {
+    const response = await fetch(`${API_BASE_URL}/users`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (!response.ok) {
+        throw new Error('Error al obtener usuarios');
+    }
+    const result: ApiResponse<User[]> = await response.json();
+    return result.data;
+}
+
+export async function deleteUserAPI(userId: string, token: string): Promise<{ success: boolean; message: string }> {
+    const response = await fetch(`${API_BASE_URL}/users/${userId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+    });
+
+    const result = await response.json();
+    if (!response.ok) {
+        return { success: false, message: result.message || 'Error al eliminar usuario' };
+    }
+    return { success: true, message: result.message || 'Usuario eliminado correctamente' };
+}
+
+export async function createUserAPI(userData: Partial<User> & { password?: string }, token: string): Promise<ApiResponse<User>> {
+    const response = await fetch(`${API_BASE_URL}/users`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(userData)
+    });
+
+    const result = await response.json();
+    if (!response.ok) {
+        throw new Error(result.message || 'Error al crear usuario');
+    }
+    return result;
+}
+
+export async function updateUserAPI(userId: string, userData: Partial<User>, token: string): Promise<ApiResponse<User>> {
+    const response = await fetch(`${API_BASE_URL}/users/${userId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(userData)
+    });
+
+    const result = await response.json();
+    if (!response.ok) {
+        throw new Error(result.message || 'Error al actualizar usuario');
+    }
+    return result;
+}

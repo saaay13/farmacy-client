@@ -84,7 +84,7 @@ export function Header() {
                 <div className="flex items-center gap-3">
                     <ThemeToggle />
 
-                    {/* Botón Carrito - Solo para Clientes o Invitados */}
+                    {/* Botón Carrito - Solo para Clientes */}
                     {(role === 'cliente') && (
                         <button
                             onClick={toggleCart}

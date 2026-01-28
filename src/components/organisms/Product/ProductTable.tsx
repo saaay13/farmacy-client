@@ -1,15 +1,17 @@
-import { Edit, Trash2, MoreVertical, Eye, FileText } from "lucide-react";
+import { Edit, Trash2, Eye, PlusCircle, ClipboardList } from "lucide-react";
 import type { Product } from "../../../services/api";
-import { Badge, Card } from "../../atoms";
+import { Badge } from "../../atoms";
 
 interface ProductTableProps {
     products: Product[];
     onEdit?: (product: Product) => void;
     onDelete?: (product: Product) => void;
     onViewDetail?: (product: Product) => void;
+    onRestock?: (product: Product) => void;
+    onViewHistory?: (product: Product) => void;
 }
 
-export const ProductTable = ({ products, onEdit, onDelete, onViewDetail }: ProductTableProps) => {
+export const ProductTable = ({ products, onEdit, onDelete, onViewDetail, onRestock, onViewHistory }: ProductTableProps) => {
     return (
         <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
@@ -75,6 +77,20 @@ export const ProductTable = ({ products, onEdit, onDelete, onViewDetail }: Produ
                             </td>
                             <td className="p-4 text-right">
                                 <div className="flex items-center justify-end gap-1">
+                                    <button
+                                        onClick={() => onRestock?.(product)}
+                                        className="p-2 hover:bg-muted rounded-lg text-muted-foreground hover:text-success transition-colors"
+                                        title="Recargar Stock / Lote"
+                                    >
+                                        <PlusCircle className="w-4 h-4" />
+                                    </button>
+                                    <button
+                                        onClick={() => onViewHistory?.(product)}
+                                        className="p-2 hover:bg-muted rounded-lg text-muted-foreground hover:text-info transition-colors"
+                                        title="Ver Historial de Lotes"
+                                    >
+                                        <ClipboardList className="w-4 h-4" />
+                                    </button>
                                     <button
                                         onClick={() => onViewDetail?.(product)}
                                         className="p-2 hover:bg-muted rounded-lg text-muted-foreground hover:text-primary transition-colors"
