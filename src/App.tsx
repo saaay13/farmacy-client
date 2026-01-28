@@ -12,6 +12,7 @@ import CategoriesPage from './pages/cliente/CategoriesPage';
 import BanchPage from './pages/cliente/BanchPage';
 import CheckoutPage from './pages/cliente/CheckoutPage';
 import SuccessPage from './pages/cliente/SuccessPage';
+import { ProtectedRoute } from './components/auth/ProtectedRoute';
 
 function App() {
   return (
@@ -24,8 +25,24 @@ function App() {
             <Route path="/productos" element={<ProductsPage />} />
             <Route path="/categorias" element={<CategoriesPage />} />
             <Route path="/sucursales" element={<BanchPage />} />
-            <Route path="/checkout" element={<CheckoutPage />} />
-            <Route path="/success" element={<SuccessPage />} />
+
+            {/* Rutas Protegidas */}
+            <Route
+              path="/checkout"
+              element={
+                <ProtectedRoute allowedRoles={['cliente', 'admin', 'vendedor', 'farmaceutico']}>
+                  <CheckoutPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/success"
+              element={
+                <ProtectedRoute>
+                  <SuccessPage />
+                </ProtectedRoute>
+              }
+            />
           </Routes>
           <CartDrawer />
         </CartProvider>

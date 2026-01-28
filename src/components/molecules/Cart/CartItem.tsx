@@ -21,9 +21,14 @@ export function CartItem({ item, onUpdateQuantity, onRemove }: CartItemProps) {
                     <h4 className="font-bold text-sm line-clamp-1" title={item.nombre}>
                         {item.nombre}
                     </h4>
-                    <p className="text-primary font-bold text-sm mt-1">
-                        ${Number(item.precio).toFixed(2)}
-                    </p>
+                    <div className="flex items-baseline gap-2 mt-1">
+                        <p className="text-foreground font-black text-base">
+                            ${(Number(item.precio) * item.quantity).toFixed(2)}
+                        </p>
+                        <p className="text-muted-foreground text-xs font-medium">
+                            (${Number(item.precio).toFixed(2)} c/u)
+                        </p>
+                    </div>
                 </div>
 
                 <div className="flex items-center justify-between mt-2">

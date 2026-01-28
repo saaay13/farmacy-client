@@ -25,7 +25,7 @@ export default function SuccessPage() {
                                 </div>
                             </div>
 
-                            <h1 className="text-4xl font-extrabold text-foreground mb-4">
+                            <h1 className="text-4xl font-extrabold text-primary mb-4">
                                 ¡Pedido Confirmado!
                             </h1>
                             <p className="text-muted-foreground text-lg mb-10 leading-relaxed font-medium">

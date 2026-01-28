@@ -87,14 +87,14 @@ export function CartDrawer() {
                 {/* Footer Resumen */}
                 {cart.length > 0 && (
                     <div className="p-6 bg-muted/10 border-t border-border space-y-4">
-                        <div className="space-y-2">
+                        <div className="space-y-3">
                             <div className="flex justify-between text-sm">
-                                <span className="text-muted-foreground">Subtotal</span>
-                                <span>${total.toFixed(2)}</span>
+                                <span className="text-muted-foreground font-medium">Productos ({cart.reduce((s, i) => s + i.quantity, 0)})</span>
+                                <span className="font-bold">${total.toFixed(2)}</span>
                             </div>
-                            <div className="flex justify-between text-lg font-bold">
-                                <span>Total</span>
-                                <span className="text-primary">${total.toFixed(2)}</span>
+                            <div className="flex justify-between items-center bg-primary/5 p-3 rounded-xl border border-primary/10">
+                                <span className="text-lg font-extrabold text-foreground">Total a Pagar</span>
+                                <span className="text-2xl font-black text-primary">${total.toFixed(2)}</span>
                             </div>
                         </div>
 
