@@ -85,3 +85,32 @@ export async function fetchBanch(): Promise<Banch[]> {
     const result: ApiResponse<Banch[]> = await response.json();
     return result.data;
 }
+
+export interface SaleDetail {
+    idProducto: string;
+    cantidad: number;
+}
+
+export interface SaleRequest {
+    idCliente?: string | null;
+    detalles: SaleDetail[];
+}
+
+export async function createSale(saleData: SaleRequest, token: string): Promise<any> {
+    const response = await fetch(`${API_BASE_URL}/sales`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(saleData),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+        throw new Error(result.message || 'Error al procesar la venta');
+    }
+
+    return result;
+}

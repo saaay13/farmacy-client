@@ -2,9 +2,15 @@ import { X, ShoppingBag } from "lucide-react";
 import { useCart } from "../../../hooks/useCart";
 import { CartItem } from "../../molecules/Cart/CartItem";
 import { useEffect } from "react";
-
+import { useNavigate } from "react-router-dom"; // Add this import at the top
 export function CartDrawer() {
     const { cart, isOpen, toggleCart, removeFromCart, updateQuantity, total } = useCart();
+    const navigate = useNavigate();
+
+    const handleCheckout = () => {
+        toggleCart();
+        navigate('/checkout');
+    };
 
     // Bloquear scroll cuando el drawer está abierto
     useEffect(() => {
@@ -19,7 +25,7 @@ export function CartDrawer() {
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex justify-end">
+        <div className="fixed inset-0 z-50 flex justify-end text-foreground">
             {/* Overlay */}
             <div
                 className="absolute inset-0 bg-black/40 backdrop-blur-sm animate-in fade-in duration-300"
@@ -33,10 +39,10 @@ export function CartDrawer() {
                 <div className="flex items-center justify-between p-6 border-b border-border bg-muted/10">
                     <div className="flex items-center gap-3">
                         <div className="bg-primary/10 p-2 rounded-full">
-                            <ShoppingBag className="w-5 h-5 text-primary" />
+                            <ShoppingBag className="w-5 h-5 text-foreground" />
                         </div>
                         <h2 className="text-xl font-bold">Tu Carrito</h2>
-                        <span className="bg-primary text-primary-foreground text-xs font-bold px-2 py-0.5 rounded-full">
+                        <span className="bg-primary text-foreground text-xs font-bold px-2 py-0.5 rounded-full">
                             {cart.length}
                         </span>
                     </div>
@@ -49,9 +55,9 @@ export function CartDrawer() {
                 </div>
 
                 {/* Lista de Items */}
-                <div className="flex-grow overflow-y-auto p-6">
+                <div className="flex-grow overflow-y-auto p-6 text-foreground">
                     {cart.length === 0 ? (
-                        <div className="h-full flex flex-col items-center justify-center text-muted-foreground text-center space-y-4">
+                        <div className="h-full flex flex-col items-center justify-center text-foreground text-center space-y-4">
                             <ShoppingBag className="w-16 h-16 opacity-20" />
                             <div>
                                 <p className="font-medium text-lg">Tu carrito está vacío</p>
@@ -91,7 +97,13 @@ export function CartDrawer() {
                                 <span className="text-primary">${total.toFixed(2)}</span>
                             </div>
                         </div>
-                        <button className="w-full bg-primary text-primary-foreground py-4 rounded-xl font-bold text-lg shadow-lg shadow-primary/20 hover:bg-primary-700 transition-all hover:-translate-y-0.5 active:translate-y-0">
+
+
+
+                        <button
+                            onClick={handleCheckout}
+                            className="w-full bg-primary text-primary-foreground py-4 rounded-xl font-bold text-lg shadow-lg shadow-primary/20 hover:bg-primary-700 transition-all hover:-translate-y-0.5 active:translate-y-0"
+                        >
                             Proceder al Pago
                         </button>
                     </div>

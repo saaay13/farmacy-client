@@ -10,6 +10,8 @@ import { LoginPage } from './pages/Login/LoginPage';
 import ProductsPage from './pages/cliente/ProductsPage';
 import CategoriesPage from './pages/cliente/CategoriesPage';
 import BanchPage from './pages/cliente/BanchPage';
+import CheckoutPage from './pages/cliente/CheckoutPage';
+import SuccessPage from './pages/cliente/SuccessPage';
 
 function App() {
   return (
@@ -22,6 +24,8 @@ function App() {
             <Route path="/productos" element={<ProductsPage />} />
             <Route path="/categorias" element={<CategoriesPage />} />
             <Route path="/sucursales" element={<BanchPage />} />
+            <Route path="/checkout" element={<CheckoutPage />} />
+            <Route path="/success" element={<SuccessPage />} />
           </Routes>
           <CartDrawer />
         </CartProvider>
