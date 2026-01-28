@@ -21,81 +21,22 @@ Sistema de gestión integral para farmacias multisucursales - Cliente Web desarr
 
 ```
 client/
-├── public/
-│   ├── vite.svg
-│   └── img/
-│       ├── home.png
-│       └── avatar/
-│           
+├── public/                 # Assets estáticos (imágenes, logos)
 ├── src/
-│   ├── assets/
-│   │   └── react.svg
+│   ├── auth/               # Guardias de seguridad y lógica de acceso
 │   ├── components/
-│   │   ├── atoms/          # Componentes básicos indivisibles
-│   │   │   ├── Button/
-│   │   │   │   └── Button.tsx
-│   │   │   ├── Icon/
-│   │   │   │   └── UserIcon.tsx
-│   │   │   ├── Input/
-│   │   │   │   └── Input.tsx
-│   │   │   ├── Toggle/
-│   │   │   │   └── ThemeToggle.tsx
-│   │   │   └── index.ts
-│   │   ├── molecules/      # Combinaciones simples de átomos
-│   │   │   ├── Login/
-│   │   │   │   └── LoginForm.tsx
-│   │   │   ├── Menu/
-│   │   │   │   └── UserMenu.tsx
-│   │   │   └── index.ts
-│   │   ├── organisms/      # Secciones complejas
-│   │   │   ├── Footer/
-│   │   │   │   └── Footer.tsx
-│   │   │   ├── Header/
-│   │   │   │   └── Header.tsx
-│   │   │   ├── Login/
-│   │   │   │   └── LoginCard.tsx
-│   │   │   ├── Sidebar/
-│   │   │   │   └── Sidebar.tsx
-│   │   │   └── index.ts
-│   │   └── templates/      # Vistas completas
-│   │       └── MainLayout/
-│   │           └── MainLayout.tsx
-│   ├── context/
-│   │   └── AuthContext.tsx
-│   ├── hooks/
-│   │   ├── useAuth.ts
-│   │   ├── useBanch.ts
-│   │   ├── useCategories.ts
-│   │   ├── useProducts.ts
-│   │   └── useTheme.ts
+│   │   ├── atoms/          # Componentes básicos (Botones, Inputs)
+│   │   ├── molecules/      # Componentes combinados (ProductCard, CartItem)
+│   │   ├── organisms/      # Secciones complejas (Header, CartDrawer, CheckoutForm)
+│   │   └── index.ts
+│   ├── context/            # Estado global (Auth, Cart)
+│   ├── hooks/              # Hooks personalizados
 │   ├── pages/
-│   │   ├── Banch/
-│   │   │   └── BanchPage.tsx
-│   │   ├── Categories/
-│   │   │   └── CategoriesPage.tsx
-│   │   ├── Home/
-│   │   │   └── HomePage.tsx
-│   │   ├── Login/
-│   │   │   └── LoginPage.tsx
-│   │   └── Products/
-│   │       └── ProductsPage.tsx
-│   ├── services/
-│   │   └── api.ts
-│   ├── App.css
-│   ├── App.tsx
-│   ├── index.css
-│   └── main.tsx
-├── .gitignore
-├── eslint.config.js
-├── index.html
-├── package.json
-├── package-lock.json
-├── README.md
-├── sugerencia.txt
-├── tsconfig.app.json
-├── tsconfig.json
-├── tsconfig.node.json
-└── vite.config.ts
+│   │   ├── admin/          # Páginas de administración
+│   │   └── cliente/        # Páginas de la vista de cliente
+│   ├── services/           # Conexión con API backend
+│   ├── App.tsx             # Enrutamiento y árbol principal
+│   └── main.tsx            # Punto de entrada
 ```
 
 ## 🚀 Cómo Crear y Configurar el Proyecto
@@ -193,10 +134,21 @@ El frontend se conecta al backend en `http://localhost:3001` (configurable en `s
 
 Asegúrate de que el servidor backend esté ejecutándose antes de usar la aplicación.
 
-## 📋 Próximos Pasos
+## ✨ Características Implementadas
 
-- Implementar autenticación completa
-- Desarrollar páginas de productos y categorías
-- Agregar gestión de inventario
-- Integrar alertas y promociones
+### Vista de Cliente
+- **Catálogo Inteligente**: Filtrado dinámico de productos activos y permitidos sin receta.
+- **Identidad Visual Premium**: Diseño cohesivo con "Hero Sections" inclinados y estética moderna.
+- **Carrito de Compras**: Gestión de cantidades, persistencia local y cálculos de subtotales/totales precisos.
+- **Flujo de Pago (Checkout)**: Interfaz de 3 pasos con validación, diseño envolvente y página de éxito dedicada.
 
+### Seguridad y Estructura
+- **Rutas Protegidas**: Sistema de guardias para restringir acceso a secciones privadas (Checkout, Admin).
+- **Gestión de Sesión**: AuthContext con inicialización síncrona y manejo de roles.
+
+## 📋 Próximos Pasos (Fase Administrador)
+
+- [ ] Desarrollar Dashboard con métricas y alertas de vencimiento (Staff).
+- [ ] Implementar gestión de inventario completa con carga de lotes.
+- [ ] Sistema de aprobación de promociones para productos cercanos a expirar.
+- [ ] Reportes de ventas y stock por sucursal.

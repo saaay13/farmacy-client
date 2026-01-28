@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ShoppingCart, Pill } from "lucide-react";
 import { useAuth } from "../../../context/AuthContext";
@@ -8,20 +9,15 @@ import type { User } from "../../../services/api";
 
 const navLinks: Record<User['rol'], { to: string; label: string }[]> = {
     admin: [
-        { to: "/", label: "Inicio" },
-        { to: "/productos", label: "Productos" },
-        { to: "/categorias", label: "Categorias" },
-        { to: "/sucursales", label: "Sucursales" },
-        { to: "/usuarios", label: "Usuarios" },
+        { to: "/admin/dashboard", label: "Panel de Control" },
+        { to: "/admin/inventario", label: "Inventario" },
     ],
     farmaceutico: [
-        { to: "/", label: "Inicio" },
-        { to: "/productos", label: "Productos" },
-        { to: "/categorias", label: "Categorias" },
+        { to: "/admin/dashboard", label: "Panel de Control" },
+        { to: "/admin/inventario", label: "Inventario" },
     ],
     vendedor: [
-        { to: "/", label: "Inicio" },
-        { to: "/productos", label: "Productos" },
+        { to: "/admin/dashboard", label: "Panel de Control" },
     ],
     cliente: [
         { to: "/", label: "Inicio" },
@@ -45,6 +41,16 @@ export function Header() {
     const role = user?.rol || 'guest';
     // Access links safely
     const links = navLinks[role] || navLinks['guest'];
+
+    const isStaff = ['admin', 'farmaceutico', 'vendedor'].includes(role);
+
+    // Si es staff y está en una ruta que NO empieza por /admin, mandarlo al dashboard
+    // Pero solo si el componente se monta en una de esas páginas (extra safety)
+    useEffect(() => {
+        if (isStaff && !window.location.pathname.startsWith('/admin')) {
+            navigate('/admin/dashboard');
+        }
+    }, [isStaff, navigate]);
 
     const handleLogout = () => {
         logout();

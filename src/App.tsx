@@ -14,23 +14,56 @@ import CheckoutPage from './pages/cliente/CheckoutPage';
 import SuccessPage from './pages/cliente/SuccessPage';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
 
+// Admin Pages
+import DashboardPage from './pages/admin/DashboardPage';
+import InventoryPage from './pages/admin/InventoryPage';
+
 function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
         <CartProvider>
           <Routes>
-            <Route path="/" element={<HomePage />} />
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute clientOnly requireAuth={false}>
+                  <HomePage />
+                </ProtectedRoute>
+              }
+            />
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/productos" element={<ProductsPage />} />
-            <Route path="/categorias" element={<CategoriesPage />} />
-            <Route path="/sucursales" element={<BanchPage />} />
 
-            {/* Rutas Protegidas */}
+            <Route
+              path="/productos"
+              element={
+                <ProtectedRoute clientOnly requireAuth={false}>
+                  <ProductsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/categorias"
+              element={
+                <ProtectedRoute clientOnly requireAuth={false}>
+                  <CategoriesPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/sucursales"
+              element={
+                <ProtectedRoute clientOnly requireAuth={false}>
+                  <BanchPage />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Rutas Protegidas de Pago (Solo Cliente) */}
             <Route
               path="/checkout"
               element={
-                <ProtectedRoute allowedRoles={['cliente', 'admin', 'vendedor', 'farmaceutico']}>
+                <ProtectedRoute allowedRoles={['cliente']} clientOnly>
                   <CheckoutPage />
                 </ProtectedRoute>
               }
@@ -40,6 +73,24 @@ function App() {
               element={
                 <ProtectedRoute>
                   <SuccessPage />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* RUTAS ADMINISTRATIVAS */}
+            <Route
+              path="/admin/dashboard"
+              element={
+                <ProtectedRoute allowedRoles={['admin', 'farmaceutico', 'vendedor']}>
+                  <DashboardPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/inventario"
+              element={
+                <ProtectedRoute allowedRoles={['admin', 'farmaceutico']}>
+                  <InventoryPage />
                 </ProtectedRoute>
               }
             />

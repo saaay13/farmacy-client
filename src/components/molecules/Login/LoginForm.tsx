@@ -3,7 +3,7 @@ import { Input, Button } from '../../atoms';
 import { useAuth } from '../../../hooks/useAuth';
 
 interface LoginFormProps {
-    onSuccess?: () => void; // callback opcional para redirección
+    onSuccess?: (user: any) => void; // callback opcional para redirección
 }
 
 export const LoginForm = ({ onSuccess }: LoginFormProps) => {
@@ -19,8 +19,8 @@ export const LoginForm = ({ onSuccess }: LoginFormProps) => {
         setIsLoading(true);
 
         try {
-            await doLogin({ email, password });
-            if (onSuccess) onSuccess(); // Llama al callback si existe
+            const user = await doLogin({ email, password });
+            if (onSuccess) onSuccess(user); // Llama al callback si existe
         } catch (err: any) {
             setError(err.message || 'Credenciales inválidas');
         } finally {

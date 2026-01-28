@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { LoginForm } from '../../molecules';
+import type { User } from '../../../services/api';
 
 export const LoginCard = () => {
     const navigate = useNavigate();
@@ -16,7 +17,16 @@ export const LoginCard = () => {
             </div>
 
             {/* Molecule: LoginForm */}
-            <LoginForm onSuccess={() => navigate('/')} />
+            <LoginForm
+                onSuccess={(user: User) => {
+                    const staffRoles = ['admin', 'farmaceutico', 'vendedor'];
+                    if (staffRoles.includes(user.rol)) {
+                        navigate('/admin/dashboard');
+                    } else {
+                        navigate('/');
+                    }
+                }}
+            />
 
             {/* Footer */}
             <div className="mt-6 text-center text-xs text-muted-foreground">
