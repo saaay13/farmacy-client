@@ -1,0 +1,102 @@
+import { X, ShoppingBag } from "lucide-react";
+import { useCart } from "../../../hooks/useCart";
+import { CartItem } from "../../molecules/Cart/CartItem";
+import { useEffect } from "react";
+
+export function CartDrawer() {
+    const { cart, isOpen, toggleCart, removeFromCart, updateQuantity, total } = useCart();
+
+    // Bloquear scroll cuando el drawer está abierto
+    useEffect(() => {
+        if (isOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+        return () => { document.body.style.overflow = 'unset'; };
+    }, [isOpen]);
+
+    if (!isOpen) return null;
+
+    return (
+        <div className="fixed inset-0 z-50 flex justify-end">
+            {/* Overlay */}
+            <div
+                className="absolute inset-0 bg-black/40 backdrop-blur-sm animate-in fade-in duration-300"
+                onClick={toggleCart}
+            />
+
+            {/* Panel Lateral */}
+            <div className="relative w-full max-w-md bg-background h-full shadow-2xl flex flex-col animate-in slide-in-from-right duration-300 border-l border-border">
+
+                {/* Header del Cart */}
+                <div className="flex items-center justify-between p-6 border-b border-border bg-muted/10">
+                    <div className="flex items-center gap-3">
+                        <div className="bg-primary/10 p-2 rounded-full">
+                            <ShoppingBag className="w-5 h-5 text-primary" />
+                        </div>
+                        <h2 className="text-xl font-bold">Tu Carrito</h2>
+                        <span className="bg-primary text-primary-foreground text-xs font-bold px-2 py-0.5 rounded-full">
+                            {cart.length}
+                        </span>
+                    </div>
+                    <button
+                        onClick={toggleCart}
+                        className="p-2 hover:bg-muted rounded-full transition-colors"
+                    >
+                        <X className="w-5 h-5" />
+                    </button>
+                </div>
+
+                {/* Lista de Items */}
+                <div className="flex-grow overflow-y-auto p-6">
+                    {cart.length === 0 ? (
+                        <div className="h-full flex flex-col items-center justify-center text-muted-foreground text-center space-y-4">
+                            <ShoppingBag className="w-16 h-16 opacity-20" />
+                            <div>
+                                <p className="font-medium text-lg">Tu carrito está vacío</p>
+                                <p className="text-sm mt-1">¡Agrega algunos productos para comenzar!</p>
+                            </div>
+                            <button
+                                onClick={toggleCart}
+                                className="text-primary font-bold hover:underline"
+                            >
+                                Volver al catálogo
+                            </button>
+                        </div>
+                    ) : (
+                        <div className="flex flex-col">
+                            {cart.map(item => (
+                                <CartItem
+                                    key={item.id}
+                                    item={item}
+                                    onUpdateQuantity={updateQuantity}
+                                    onRemove={removeFromCart}
+                                />
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+                {/* Footer Resumen */}
+                {cart.length > 0 && (
+                    <div className="p-6 bg-muted/10 border-t border-border space-y-4">
+                        <div className="space-y-2">
+                            <div className="flex justify-between text-sm">
+                                <span className="text-muted-foreground">Subtotal</span>
+                                <span>${total.toFixed(2)}</span>
+                            </div>
+                            <div className="flex justify-between text-lg font-bold">
+                                <span>Total</span>
+                                <span className="text-primary">${total.toFixed(2)}</span>
+                            </div>
+                        </div>
+                        <button className="w-full bg-primary text-primary-foreground py-4 rounded-xl font-bold text-lg shadow-lg shadow-primary/20 hover:bg-primary-700 transition-all hover:-translate-y-0.5 active:translate-y-0">
+                            Proceder al Pago
+                        </button>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+}

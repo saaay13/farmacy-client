@@ -1,13 +1,10 @@
-import { Link } from "react-router-dom"
-import { Pill, LayoutGrid, ShoppingCart } from "lucide-react"
-import { useAuth } from "../../../context/AuthContext"
-import { ThemeToggle } from "../../../components/atoms"
-import type { User } from "../../../services/api"
-import { UserMenu } from "../../molecules"
-
-interface HeaderProps {
-    categoryCount?: number
-}
+import { Link, useNavigate } from "react-router-dom";
+import { ShoppingCart, Pill } from "lucide-react";
+import { useAuth } from "../../../context/AuthContext";
+import { useCart } from "../../../hooks/useCart";
+import { ThemeToggle } from "../../atoms/Toggle/ThemeToggle";
+import { UserMenu } from "../../molecules/Menu/UserMenu";
+import type { User } from "../../../services/api";
 
 const navLinks: Record<User['rol'], { to: string; label: string }[]> = {
     admin: [
@@ -29,103 +26,93 @@ const navLinks: Record<User['rol'], { to: string; label: string }[]> = {
     cliente: [
         { to: "/", label: "Inicio" },
         { to: "/productos", label: "Productos" },
+        { to: "/categorias", label: "Categorias" },
+        { to: "/sucursales", label: "Sucursales" },
     ],
     guest: [
         { to: "/", label: "Inicio" },
-        { to: "/categorias", label: "Categorias" },
         { to: "/productos", label: "Productos" },
+        { to: "/categorias", label: "Categorias" },
         { to: "/sucursales", label: "Sucursales" },
     ],
-}
+};
 
-export default function Header({ categoryCount = 0 }: HeaderProps) {
-    const { user, isAuthenticated, logout, role } = useAuth()
-    const linksToRender = navLinks[isAuthenticated ? role : 'guest']
-    const isCliente = user?.rol === "cliente"; // <-- Solo clientes pueden ver carrito
+export function Header() {
+    const { user, logout } = useAuth();
+    const { toggleCart, cart } = useCart();
+    const navigate = useNavigate();
+
+    const role = user?.rol || 'guest';
+    // Access links safely
+    const links = navLinks[role] || navLinks['guest'];
+
+    const handleLogout = () => {
+        logout();
+        navigate("/login");
+    };
 
     return (
-        <header className="bg-background border-b border-border sticky top-0 z-50 shadow-sm">
-            <div className="container mx-auto px-4">
-                <div className="flex items-center justify-between h-16">
-                    {/* Logo */}
-                    <Link
-                        to="/"
-                        className="flex items-center gap-2 font-bold text-xl text-foreground hover:text-primary transition-colors"
-                    >
-                        <Pill className="w-6 h-6 text-primary" />
-                        <span>Farmacy Siempre Vivo</span>
-                    </Link>
+        <header className="sticky top-0 w-full z-40 bg-background/80 backdrop-blur-md border-b border-border">
+            <div className="container mx-auto px-4 h-20 flex items-center justify-between">
 
-                    {/* Navigation */}
-                    <nav className="hidden md:flex items-center gap-6">
-                        <ThemeToggle />
+                {/* Logo */}
+                <div onClick={() => navigate("/")} className="cursor-pointer flex items-center gap-2">
+                    <div className="bg-primary text-primary-foreground p-1.5 rounded-lg">
+                        <Pill className="w-6 h-6" />
+                    </div>
+                    <span className="font-bold text-xl tracking-tight hidden sm:block">Farmacy Siempre Vivo</span>
+                </div>
 
-                        {linksToRender.map((link) => (
-                            <Link
-                                key={link.to}
-                                to={link.to}
-                                className="text-foreground hover:text-primary font-medium transition-colors"
-                            >
-                                {link.label}
-                            </Link>
-                        ))}
-
-                        {isAuthenticated && user && (
-                            <UserMenu
-                                userName={user.nombre}
-                                logout={logout}
-                                categoryCount={categoryCount}
-                            />
-                        )}
-
-                        {!isAuthenticated && (
-                            <Link
-                                to="/login"
-                                className="relative flex items-center gap-2 bg-primary text-primary-foreground hover:bg-primary px-4 py-2 rounded-lg font-medium transition-colors"
-                            >
-                                <LayoutGrid className="w-5 h-5" />
-                                <span>Iniciar Sesión</span>
-                                {categoryCount > 0 && (
-                                    <span className="absolute -top-2 -right-2 bg-error text-error-foreground w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold">
-                                        {categoryCount}
-                                    </span>
-                                )}
-                            </Link>
-                        )}
-
-                        {/* Carrito solo para cliente */}
-                        {isCliente && (
-                            <button
-                                className="relative p-2 rounded-full bg-primary text-primary-foreground hover:bg-primary-500 transition-all"
-                                title="Ver carrito"
-                            >
-                                <ShoppingCart className="w-6 h-6 text-primary-foreground" />
-
-                                <span className="absolute -top-1 -right-1 bg-error text-error-foreground rounded-full text-xs w-5 h-5 flex items-center justify-center">
-                                    1
-                                </span>
-                            </button>
-                        )}
-                    </nav>
-
-                    {/* Mobile Menu Button */}
-                    <button className="md:hidden p-2 text-foreground hover:text-primary">
-                        <svg
-                            className="w-6 h-6"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
+                {/* Navigation Links - Centered */}
+                <nav className="hidden md:flex items-center gap-8 absolute left-1/2 transform -translate-x-1/2">
+                    {links.map((link) => (
+                        <Link
+                            key={link.to}
+                            to={link.to}
+                            className="text-muted-foreground hover:text-primary font-medium transition-colors text-base hover:underline underline-offset-4"
                         >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M4 6h16M4 12h16M4 18h16"
-                            />
-                        </svg>
-                    </button>
+                            {link.label}
+                        </Link>
+                    ))}
+                </nav>
+
+                {/* Acciones */}
+                <div className="flex items-center gap-3">
+                    <ThemeToggle />
+
+                    {/* Botón Carrito - Solo para Clientes o Invitados */}
+                    {(role === 'cliente') && (
+                        <button
+                            onClick={toggleCart}
+                            className="relative p-2.5 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
+                            aria-label="Abrir carrito"
+                        >
+                            <ShoppingCart className="w-5 h-5" />
+                            {cart.length > 0 && (
+                                <span className="absolute top-1 right-1 w-4 h-4 bg-primary text-primary-foreground text-[10px] font-bold flex items-center justify-center rounded-full animate-in zoom-in">
+                                    {cart.length}
+                                </span>
+                            )}
+                        </button>
+                    )}
+
+                    <div className="h-6 w-px bg-border mx-1" />
+
+                    {user ? (
+                        <UserMenu
+                            userName={user.nombre}
+                            logout={handleLogout}
+                        />
+                    ) : (
+                        <button
+                            onClick={() => navigate("/login")}
+                            className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors font-medium text-sm"
+                        >
+                            <span>Iniciar Sesión</span>
+                        </button>
+                    )}
                 </div>
             </div>
         </header>
-    )
+    );
 }

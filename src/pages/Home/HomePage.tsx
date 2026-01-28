@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Heart, Shield, Users, ArrowRight, ShoppingBag, Loader2, LayoutGrid } from "lucide-react";
+import { Heart, Shield, Users, ArrowRight, ShoppingBag, Loader2, LayoutGrid, Pill } from "lucide-react";
 import { Header, Footer } from "../../components/organisms";
 import { useProducts } from "../../hooks/useProducts";
 import { useCategories } from "../../hooks/useCategories";
@@ -20,7 +20,7 @@ export default function HomePage() {
 
     return (
         <>
-            <Header categoryCount={0} />
+            <Header />
 
             {/* Hero Section */}
             <section className="bg-gradient-to-br from-primary via-primary/95 to-primary text-primary-foreground py-16 md:py-24">
@@ -100,6 +100,24 @@ export default function HomePage() {
                                 </Link>
                             ))
                         )}
+                    </div>
+                </div>
+            </section>
+            <section className="bg-accent/100 border-t border-b border-primary/10 py-8">
+                <div className="container mx-auto px-4">
+                    <div className="flex items-start gap-4">
+                        <div className="bg-background p-2 rounded-full shadow-sm">
+                            <Pill className="w-6 h-6 text-primary flex-shrink-0" />
+                        </div>
+                        <div>
+                            <h3 className="font-bold text-lg text-foreground mb-1">
+                                Medicamentos con Receta
+                            </h3>
+                            <p className="text-foreground text-sm mb-3 leading-relaxed">
+                                Contamos con una amplia variedad de medicamentos que requieren receta médica. Pueden ver los disponibles en nuestro catálogo, pero el retiro debe realizarse en farmacia presentando una receta válida.
+                            </p>
+
+                        </div>
                     </div>
                 </div>
             </section>

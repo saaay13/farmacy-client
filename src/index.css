@@ -26,6 +26,7 @@
     /* texto blanco en modo claro */
 
     /*
+
  
 
 
@@ -240,6 +241,7 @@
     /* fondo verde en modo oscuro */
     --footer-text: var(--primary-950);
     /* texto blanco en modo oscuro */
+
 }
 
 /* ============================================

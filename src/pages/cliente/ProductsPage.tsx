@@ -1,22 +1,34 @@
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { useProducts } from "../../hooks/useProducts";
 import { useCategories } from "../../hooks/useCategories";
-import { Header, Footer } from "../../components/organisms/"
-import { ChevronRight, Loader2 } from "lucide-react";
-import type { Product, Category } from "../../services/api";
-import { useAuth } from "../../context/AuthContext"; // <--- importa el hook
+import { Header, Footer } from "../../components/organisms/";
+import { ProductCard } from "../../components/molecules/Product/ProductCard";
+import { Loader2, PackageX } from "lucide-react";
+import type { Category } from "../../services/api";
+import { useAuth } from "../../context/AuthContext";
+import { useCart } from "../../hooks/useCart";
 
 export default function ProductsPage() {
     const [searchParams, setSearchParams] = useSearchParams();
+    const navigate = useNavigate();
     const { products, loading: productsLoading, error: productsError } = useProducts();
     const { categories, loading: categoriesLoading } = useCategories();
-    const { user } = useAuth(); // <--- obtenemos el usuario actual
+    const { user } = useAuth();
+    const { addToCart } = useCart();
 
     const activeCategory = searchParams.get("categoria");
 
-    const filteredProducts = activeCategory
-        ? products.filter((p) => p.idCategoria === activeCategory)
-        : products;
+    // Lógica de filtrado STRICTO para clientes y guests
+    // 1. Filtrar por categoría activa (si existe)
+    // 2. EXCLUIR productos vencidos (estado === 'vencido')
+    // 3. EXCLUIR productos con receta (requiereReceta === true)
+    const filteredProducts = products.filter((p) => {
+        const matchesCategory = activeCategory ? p.idCategoria === activeCategory : true;
+        const isNotExpired = p.estado !== 'vencido';
+        const isNotPrescription = !p.requiereReceta;
+
+        return matchesCategory && isNotExpired && isNotPrescription;
+    });
 
     const handleCategoryChange = (id: string | null) => {
         if (id) {
@@ -26,7 +38,15 @@ export default function ProductsPage() {
         }
     };
 
-    const isCliente = user?.rol === "cliente"; // <--- verificamos si es cliente
+    const handleAddToCart = (product: any) => {
+        addToCart(product);
+    };
+
+    const handleLoginRedirect = () => {
+        navigate('/login');
+    };
+
+    const role = user?.rol || 'guest';
 
     return (
         <div className="min-h-screen bg-background flex flex-col">
@@ -38,7 +58,7 @@ export default function ProductsPage() {
                         Nuestros Productos
                     </h1>
                     <p className="text-lg text-primary-foreground/90 max-w-2xl mx-auto">
-                        Descubre nuestra amplia gama de productos farmacéuticos organizados por categoría
+                        Descubre nuestra selección de productos de venta libre para tu bienestar
                     </p>
                 </div>
             </section>
@@ -48,15 +68,16 @@ export default function ProductsPage() {
 
                     {/* Sidebar Filtros */}
                     <aside className="w-full md:w-64 flex-shrink-0">
-                        <div className="bg-background rounded-xl border border-border p-6 sticky top-24 shadow-sm">
+                        <div className="bg-card rounded-xl border border-border p-6 sticky top-24 shadow-sm">
+                            <h3 className="font-bold text-lg mb-4 text-foreground">Categorías</h3>
                             <button
                                 onClick={() => handleCategoryChange(null)}
-                                className={`w-full text-left px-3 py-2 rounded-lg text-sm mb-2 transition-all ${!activeCategory
+                                className={`w-full text-left px-3 py-2 rounded-lg text-sm mb-2 transition-all flex items-center justify-between ${!activeCategory
                                     ? "bg-primary text-primary-foreground font-bold shadow-md"
-                                    : "hover:bg-primary-50 text-muted-foreground"
+                                    : "hover:bg-accent text-muted-foreground"
                                     }`}
                             >
-                                Todas las Categorías
+                                Todas
                             </button>
 
                             {categoriesLoading ? (
@@ -66,14 +87,14 @@ export default function ProductsPage() {
                                     ))}
                                 </div>
                             ) : (
-                                <div className="flex flex-col gap-2">
+                                <div className="flex flex-col gap-1">
                                     {categories.map((category: Category) => (
                                         <button
                                             key={category.id}
                                             onClick={() => handleCategoryChange(category.id)}
                                             className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-all ${activeCategory === category.id
                                                 ? "bg-primary text-primary-foreground font-bold shadow-md"
-                                                : "hover:bg-primary-50 text-muted-foreground"
+                                                : "hover:bg-accent text-muted-foreground"
                                                 }`}
                                         >
                                             {category.nombre}
@@ -87,64 +108,32 @@ export default function ProductsPage() {
                     {/* Listado de Productos */}
                     <div className="flex-grow">
                         {productsError ? (
-                            <div className="p-8 text-center text-red-600">
-                                Ocurrió un error al cargar los productos.
+                            <div className="rounded-xl border border-red-200 bg-red-50 p-8 text-center text-red-600">
+                                <p className="font-bold">Error al cargar productos</p>
+                                <p className="text-sm mt-2">{productsError}</p>
                             </div>
                         ) : productsLoading ? (
-                            <div className="col-span-full flex flex-col items-center py-12 gap-4">
-                                <Loader2 className="w-8 h-8 text-primary animate-spin" />
-                                <p className="text-muted-foreground">Cargando productos...</p>
+                            <div className="flex flex-col items-center justify-center py-20 gap-4 text-muted-foreground">
+                                <Loader2 className="w-10 h-10 text-primary animate-spin" />
+                                <p>Cargando catálogo...</p>
+                            </div>
+                        ) : filteredProducts.length === 0 ? (
+                            <div className="flex flex-col items-center justify-center py-20 text-muted-foreground bg-muted/30 rounded-xl border border-dashed border-border">
+                                <PackageX className="w-16 h-16 mb-4 opacity-50" />
+                                <h3 className="text-xl font-bold mb-2">No se encontraron productos</h3>
+                                <p>Intenta seleccionar otra categoría o revisa más tarde.</p>
                             </div>
                         ) : (
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {filteredProducts.map((product: Product) => (
-                                    <div
+                                {filteredProducts.map((product) => (
+                                    <ProductCard
                                         key={product.id}
-                                        className="bg-background rounded-xl border border-border overflow-hidden hover:shadow-xl transition-all hover:-translate-y-1 flex flex-col h-full group"
-                                    >
-                                        <div className="bg-gradient-to-br from-primary-100/50 to-background h-48 flex items-center justify-center text-6xl relative">
-                                            {product.requiereReceta ? "💊" : "🌿"}
-                                            {product.requiereReceta && (
-                                                <span className="absolute top-4 right-4 bg-error text-error-foreground text-[10px] font-bold px-2 py-1 rounded-full shadow-sm">
-                                                    RECETA MÉDICA
-                                                </span>
-                                            )}
-                                        </div>
-                                        <div className="p-5 flex-grow flex flex-col">
-                                            <div className="mb-1">
-                                                <span className="text-[10px] font-bold text-primary px-2 py-0.5 bg-primary-50 rounded-full uppercase tracking-tighter">
-                                                    {categories.find(c => c.id === product.idCategoria)?.nombre || "Medicamento"}
-                                                </span>
-                                            </div>
-                                            <h3 className="font-bold text-foreground text-lg mb-2 line-clamp-2 min-h-[3.5rem]">
-                                                {product.nombre}
-                                            </h3>
-                                            <p className="text-muted-foreground text-sm mb-6 line-clamp-3">
-                                                {product.descripcion || "Sin descripción disponible."}
-                                            </p>
-                                            <div className="mt-auto flex justify-between items-center bg-muted-background -mx-5 -mb-5 p-5 border-t border-border">
-                                                <div className="flex flex-col">
-                                                    <span className="text-xs text-muted-foreground">Precio</span>
-                                                    <span className="text-primary font-bold text-xl">
-                                                        ${Number(product.precio).toFixed(2)}
-                                                    </span>
-                                                </div>
-
-                                                <div className="flex gap-2">
-                                                    {/* Botón visible solo para clientes */}
-                                                    {isCliente && (
-                                                        <button className="bg-secondary text-secondary-foreground p-3 rounded-lg hover:bg-secondary-700 transition-all shadow-md hover:shadow-lg transform active:scale-95">
-                                                            Agregar al carrito
-                                                        </button>
-                                                    )}
-                                                    <button className="bg-primary text-primary-foreground p-3 rounded-lg hover:bg-primary-700 transition-all shadow-md hover:shadow-lg transform active:scale-95">
-                                                        <ChevronRight className="w-5 h-5" />
-                                                    </button>
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                    </div>
+                                        product={product}
+                                        categoryName={categories.find(c => c.id === product.idCategoria)?.nombre || "General"}
+                                        role={role}
+                                        onAddToCart={handleAddToCart}
+                                        onLogin={handleLoginRedirect}
+                                    />
                                 ))}
                             </div>
                         )}
@@ -157,3 +146,4 @@ export default function ProductsPage() {
         </div>
     );
 }
+
