@@ -164,7 +164,7 @@ export async function fetchCategories(): Promise<Category[]> {
 }
 
 export async function createCategoryAPI(name: string, token: string): Promise<Category> {
-    const response = await fetch(`${API_BASE_URL}/category`, {
+    const response = await fetch(`${API_BASE_URL}/categories`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -179,7 +179,7 @@ export async function createCategoryAPI(name: string, token: string): Promise<Ca
 }
 
 export async function updateCategoryAPI(id: string, name: string, token: string): Promise<Category> {
-    const response = await fetch(`${API_BASE_URL}/category/${id}`, {
+    const response = await fetch(`${API_BASE_URL}/categories/${id}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
@@ -194,7 +194,7 @@ export async function updateCategoryAPI(id: string, name: string, token: string)
 }
 
 export async function deleteCategoryAPI(id: string, token: string): Promise<void> {
-    const response = await fetch(`${API_BASE_URL}/category/${id}`, {
+    const response = await fetch(`${API_BASE_URL}/categories/${id}`, {
         method: 'DELETE',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -314,6 +314,15 @@ export interface SalesReport {
     }>;
 }
 
+export interface ProductSalesData {
+    idProducto: string;
+    nombre: string;
+    categoria: string;
+    precioActual: number;
+    cantidadTotal: number;
+    ingresosTotales: number;
+}
+
 export interface Alert {
     id: string;
     tipo: 'expirado' | 'stock_bajo' | 'otro';
@@ -349,6 +358,14 @@ export async function fetchExpiringReport(token: string): Promise<any[]> {
 
 export async function fetchExpiredReport(token: string): Promise<any[]> {
     const response = await fetch(`${API_BASE_URL}/reports/expired`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+    });
+    const result = await response.json();
+    return result.data;
+}
+
+export async function fetchSalesByProductReport(token: string): Promise<ProductSalesData[]> {
+    const response = await fetch(`${API_BASE_URL}/reports/sales-by-product`, {
         headers: { 'Authorization': `Bearer ${token}` }
     });
     const result = await response.json();

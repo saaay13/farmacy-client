@@ -26,6 +26,7 @@ import CustomersPage from './pages/admin/CustomersPage';
 import PromotionsPage from './pages/admin/PromotionsPage';
 import BatchesPage from './pages/admin/BatchesPage';
 import AdminCategoriesPage from './pages/admin/CategoriesPage';
+import SalesByProductPage from './pages/admin/SalesByProductPage';
 import ProfilePage from './pages/admin/ProfilePage';
 
 function App() {
@@ -158,6 +159,14 @@ function App() {
               element={
                 <ProtectedRoute allowedRoles={['admin', 'farmaceutico']}>
                   <AdminCategoriesPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/ventas-producto"
+              element={
+                <ProtectedRoute allowedRoles={['admin', 'farmaceutico', 'vendedor']}>
+                  <SalesByProductPage />
                 </ProtectedRoute>
               }
             />

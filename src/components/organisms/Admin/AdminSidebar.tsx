@@ -9,7 +9,8 @@ import {
     Users,
     LogOut,
     ChevronRight,
-    Settings
+    Settings,
+    TrendingUp
 } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
@@ -57,6 +58,12 @@ export function AdminSidebar() {
             icon: Tag,
             path: "/admin/promociones",
             roles: ["admin", "farmaceutico", "vendedor"]
+        },
+        {
+            title: "Ventas por Producto",
+            icon: TrendingUp,
+            path: "/admin/ventas-producto",
+            roles: ["admin", "farmaceutico"]
         },
         {
             title: "Lotes",
