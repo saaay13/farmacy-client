@@ -147,7 +147,7 @@ export const ProductModal = ({ isOpen, onClose, onSave, product }: ProductModalP
                             />
                         </div>
 
-                        {/* URL Imagen */}
+                        {/* Imagen */}
                         <div className="space-y-2 col-span-2">
                             <label className="text-xs font-black uppercase tracking-widest text-muted-foreground ml-1">URL de Imagen (opcional)</label>
                             <div className="relative">
@@ -162,7 +162,7 @@ export const ProductModal = ({ isOpen, onClose, onSave, product }: ProductModalP
                             </div>
                         </div>
 
-                        {/* Toggles y Estado */}
+                        {/* Estado */}
                         <div className="flex items-center gap-6 col-span-2 p-4 bg-muted/30 rounded-2xl border border-border/50">
                             <label className="flex items-center gap-3 cursor-pointer group">
                                 <div className="relative">
@@ -200,7 +200,7 @@ export const ProductModal = ({ isOpen, onClose, onSave, product }: ProductModalP
                         </div>
                     </div>
 
-                    {/* Footer Actions */}
+                    {/* Acciones */}
                     <div className="flex justify-end gap-3 pt-4 border-t border-border">
                         <Button
                             type="button"

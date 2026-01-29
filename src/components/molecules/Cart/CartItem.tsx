@@ -10,7 +10,7 @@ interface CartItemProps {
 export function CartItem({ item, onUpdateQuantity, onRemove }: CartItemProps) {
     return (
         <div className="flex gap-4 py-4 border-b border-border last:border-0 group animate-in fade-in duration-300">
-            {/* Imagen pequeña */}
+            {/* Imagen */}
             <div className="w-20 h-20 bg-muted/50 rounded-lg flex items-center justify-center text-2xl flex-shrink-0">
                 {item.requiereReceta ? "💊" : "🌿"}
             </div>
@@ -32,7 +32,7 @@ export function CartItem({ item, onUpdateQuantity, onRemove }: CartItemProps) {
                 </div>
 
                 <div className="flex items-center justify-between mt-2">
-                    {/* Controles de Cantidad */}
+                    {/* Controles */}
                     <div className="flex items-center gap-3 bg-muted/50 rounded-lg p-1">
                         <button
                             onClick={() => onUpdateQuantity(item.id, item.quantity - 1)}

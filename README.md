@@ -28,15 +28,15 @@ Sistema de gestión integral para farmacias multisucursales - Cliente Web desarr
 ### 📁 public/
 - **img/**: Almacén de activos visuales, productos y el catálogo de 28 avatares.
 
-### 📁 src/components (Atomic Design)
-- **atoms/**: Componentes de interfaz mínima como `Button`, `Input`, `Badge` y `UserIcon`.
-- **molecules/**: Lógica de UI combinada: `LoginForm`, `RegisterForm`, `UserModal`, `StatCard` y `ProductCard`.
-- **organisms/**: Secciones globales: `Header`, `Footer`, `CartDrawer`, `AdminSidebar` y `ProductGrid`.
-- **templates/**: Estructuras de diseño base como `MainLayout` y `AdminLayout`.
+### 📁 componentes/ (Diseño Atómico)
+- **atoms/**: Componentes base (Botón, Input).
+- **molecules/**: Lógica combinada (Formularios, Tablas).
+- **organisms/**: Secciones globales (Navegación, Sidebar).
+- **templates/**: Plantillas de diseño base (Layouts).
 
-### 📁 src/context/ (Estado Global)
-- **AuthContext.tsx**: Gestión centralizada de sesión, roles y persistencia de usuario.
-- **CartContext.tsx**: Motor del carrito de compras y persistencia local.
+### 📁 contexto/
+- **AuthContext.tsx**: Gestión de sesión y roles.
+- **CartContext.tsx**: Gestión del carrito.
 
 ### 📁 src/hooks/
 - **admin/**: Lógica operativa para `useInventory`, `usePOS`, `useAdminUsers` y estadísticas.
@@ -130,13 +130,11 @@ npm run lint
 
 ## 🎨 Patrón de Diseño
 
-### Atomic Design
-Organizamos los componentes siguiendo el patrón de Atomic Design:
-
-- **Átomos**: Componentes básicos (Button, Input)
-- **Moléculas**: Combinaciones simples (FormField)
-- **Organismos**: Secciones complejas (ProductGrid, Header)
-- **Páginas**: Vistas completas (Products, Home)
+### Diseño Atómico
+- **Átomos**: Componentes básicos.
+- **Moléculas**: Combinaciones simples.
+- **Organismos**: Secciones complejas.
+- **Páginas**: Vistas completas.
 
 ### Convenciones de Código
 - **Lenguaje**: TypeScript obligatorio

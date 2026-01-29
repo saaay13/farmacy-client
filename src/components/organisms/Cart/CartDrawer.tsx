@@ -12,7 +12,7 @@ export function CartDrawer() {
         navigate('/checkout');
     };
 
-    // Bloquear scroll cuando el drawer está abierto
+    // Scroll Lock
     useEffect(() => {
         if (isOpen) {
             document.body.style.overflow = 'hidden';
@@ -32,10 +32,10 @@ export function CartDrawer() {
                 onClick={toggleCart}
             />
 
-            {/* Panel Lateral */}
+            {/* Sidebar */}
             <div className="relative w-full max-w-md bg-background h-full shadow-2xl flex flex-col animate-in slide-in-from-right duration-300 border-l border-border">
 
-                {/* Header del Cart */}
+                {/* Header */}
                 <div className="flex items-center justify-between p-6 border-b border-border bg-muted/10">
                     <div className="flex items-center gap-3">
                         <div className="bg-primary/10 p-2 rounded-full">
@@ -54,7 +54,7 @@ export function CartDrawer() {
                     </button>
                 </div>
 
-                {/* Lista de Items */}
+                {/* Items */}
                 <div className="flex-grow overflow-y-auto p-6 text-foreground">
                     {cart.length === 0 ? (
                         <div className="h-full flex flex-col items-center justify-center text-foreground text-center space-y-4">
@@ -84,7 +84,7 @@ export function CartDrawer() {
                     )}
                 </div>
 
-                {/* Footer Resumen */}
+                {/* Resumen */}
                 {cart.length > 0 && (
                     <div className="p-6 bg-muted/10 border-t border-border space-y-4">
                         <div className="space-y-3">
@@ -93,7 +93,7 @@ export function CartDrawer() {
                                 <span className="font-bold">${total.toFixed(2)}</span>
                             </div>
 
-                            {/* Aviso de Promociones */}
+                            {/* Promociones */}
                             <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
                                 <p className="text-xs font-semibold text-amber-700 flex items-center gap-1">
                                     ⚡ Descuentos promocionales

@@ -66,9 +66,7 @@ export default function ProfilePage() {
             if (res.success) {
                 setSuccess("Perfil actualizado correctamente");
                 setFormData(prev => ({ ...prev, password: '', confirmPassword: '' }));
-                // Si cambiamos el nombre, idealmente deberíamos actualizar el contexto de auth, 
-                // pero por ahora requeriría recargar o modificar useAuth.
-                // Podríamos sugerir un relogin si cambió el password.
+                // Actualización de estado pendiente
             } else {
                 setError(res.message || "Error al actualizar perfil");
             }

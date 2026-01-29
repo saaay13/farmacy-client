@@ -99,7 +99,7 @@ export function AdminSidebar() {
 
     return (
         <aside className="w-64 bg-card border-r border-border h-screen flex flex-col fixed left-0 top-0 z-40">
-            {/* Header / Logo */}
+            {/* Logo */}
             <div className="p-6 border-b border-border">
                 <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-primary-foreground shadow-lg shadow-primary/20">
@@ -112,7 +112,7 @@ export function AdminSidebar() {
                 </div>
             </div>
 
-            {/* Menu Navigation */}
+            {/* Navegación */}
             <nav className="flex-grow p-4 mt-4 space-y-1">
                 {filteredItems.map((item) => (
                     <NavLink
@@ -140,7 +140,7 @@ export function AdminSidebar() {
                 ))}
             </nav>
 
-            {/* Footer / User Profile */}
+            {/* Usuario */}
             <div className="p-4 border-t border-border bg-muted/30">
                 <div className="flex items-center gap-3 px-2 mb-4">
                     <div className="w-10 h-10 bg-secondary rounded-full flex items-center justify-center text-secondary-foreground font-bold">

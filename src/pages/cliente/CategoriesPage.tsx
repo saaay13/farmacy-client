@@ -17,7 +17,7 @@ export default function CategoriesPage() {
             <Header />
 
             <main className="flex-grow">
-                {/* Hero Section Premium */}
+                {/* Hero */}
                 <section className="relative py-20 bg-primary/5 overflow-hidden">
                     <div className="absolute top-0 left-0 w-full h-full bg-grid-white/[0.02] -z-10" />
                     <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
@@ -37,7 +37,7 @@ export default function CategoriesPage() {
                     </div>
                 </section>
 
-                {/* Categories Grid Upgrade */}
+                {/* Categorías */}
                 <section className="py-20 lg:py-24">
                     <div className="container mx-auto px-4">
                         {loading && (

@@ -19,7 +19,7 @@ export default function ProductsPage() {
 
     const activeCategory = searchParams.get("categoria");
 
-    // Lógica de filtrado STRICTO mantenida
+    // Filtrado
     const filteredProducts = products.filter((p) => {
         const matchesCategory = activeCategory ? p.idCategoria === activeCategory : true;
         const isNotExpired = p.estado !== 'vencido';
@@ -49,7 +49,7 @@ export default function ProductsPage() {
             <Header />
 
             <main className="flex-grow">
-                {/* Modern Hero Header */}
+                {/* Encabezado */}
                 <section className="bg-primary/5 py-16 border-b border-border/50 relative overflow-hidden">
                     <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2" />
 
@@ -87,7 +87,7 @@ export default function ProductsPage() {
                 <div className="container mx-auto px-4 py-12">
                     <div className="flex flex-col lg:flex-row gap-12">
 
-                        {/* Sidebar Filtros Glassmorphism */}
+                        {/* Filtros */}
                         <aside className="w-full lg:w-72 flex-shrink-0">
                             <div className="bg-card/50 backdrop-blur-md rounded-[2.5rem] border border-border/50 p-8 sticky top-28 shadow-2xl shadow-primary/5">
                                 <div className="flex items-center gap-3 mb-8 pb-4 border-b border-border/50">
@@ -139,7 +139,7 @@ export default function ProductsPage() {
                             </div>
                         </aside>
 
-                        {/* Listado de Productos Refinado */}
+                        {/* Productos */}
                         <div className="flex-grow">
                             <div className="flex items-center justify-between mb-10 px-4">
                                 <p className="text-xs font-black text-muted-foreground uppercase tracking-[0.15em]">

@@ -28,7 +28,7 @@ export default function SalesByProductPage() {
                 </div>
             </div>
 
-            {/* Stats Overview */}
+            {/* Resumen */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <Card className="p-6 bg-gradient-to-br from-primary/10 to-transparent border-primary/20 rounded-3xl">
                     <div className="flex items-center gap-4">
@@ -65,7 +65,7 @@ export default function SalesByProductPage() {
                 </Card>
             </div>
 
-            {/* Filters & Search */}
+            {/* Filtros */}
             <div className="bg-card border border-border rounded-3xl p-4 shadow-sm mb-6 flex flex-col md:flex-row gap-4 items-center">
                 <div className="relative flex-grow w-full">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -79,7 +79,7 @@ export default function SalesByProductPage() {
                 </div>
             </div>
 
-            {/* Table Area */}
+            {/* Tabla */}
             <Card className="rounded-3xl overflow-hidden border-border/50">
                 {loading ? (
                     <div className="p-20 text-center">

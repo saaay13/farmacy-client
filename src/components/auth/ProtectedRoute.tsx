@@ -32,7 +32,7 @@ export const ProtectedRoute = ({
 
     const isStaff = user && ['admin', 'farmaceutico', 'vendedor'].includes(user.rol);
 
-    // 1. Manejo de Usuarios Autenticados
+    // Usuarios Autenticados
     if (token && user) {
         // Si es una ruta "Solo Cliente" y el usuario es Staff -> Redirigir al Dashboard
         if (clientOnly && isStaff) {
@@ -47,7 +47,7 @@ export const ProtectedRoute = ({
         return <>{children}</>;
     }
 
-    // 2. Manejo de Invitados (No Autenticados)
+    // Invitados
     if (requireAuth) {
         // Si la ruta requiere autenticación, mandarlos al login
         return <Navigate to="/login" state={{ from: location }} replace />;

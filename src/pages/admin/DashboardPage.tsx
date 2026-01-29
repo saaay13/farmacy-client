@@ -36,11 +36,11 @@ export default function DashboardPage() {
 
     const loading = statsLoading || alertsLoading;
 
-    // Solo tomamos las primeras 5 alertas para el dashboard
+    // Alertas
     const displayAlerts = alerts.slice(0, 5);
 
     return (
-        <AdminLayout title="Dashboard">
+        <AdminLayout title="Panel de Control">
             <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
                 <div>
                     <h1 className="text-4xl lg:text-5xl font-black text-foreground mb-3 tracking-tight">
@@ -48,8 +48,8 @@ export default function DashboardPage() {
                     </h1>
                     <div className="flex items-center gap-3">
                         <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border transition-all duration-500 ${loading
-                                ? 'bg-warning/10 border-warning/20 text-warning animate-pulse'
-                                : 'bg-success/10 border-success/20 text-success'
+                            ? 'bg-warning/10 border-warning/20 text-warning animate-pulse'
+                            : 'bg-success/10 border-success/20 text-success'
                             }`}>
                             <span className={`w-1.5 h-1.5 rounded-full ${loading ? 'bg-warning' : 'bg-success'}`}></span>
                             {loading ? 'Sincronizando...' : 'Sistema en Línea'}
@@ -71,7 +71,7 @@ export default function DashboardPage() {
                 </Button>
             </div>
 
-            {/* Métrica Cards */}
+            {/* Métricas */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
                 <StatCard
                     title="Próximos a Vencer"
@@ -107,7 +107,7 @@ export default function DashboardPage() {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Panel de Alertas Recientes */}
+                {/* Alertas */}
                 <div className="lg:col-span-1 space-y-6">
                     <Card className="p-6">
                         <div className="flex items-center justify-between mb-6">
@@ -153,7 +153,7 @@ export default function DashboardPage() {
                     </Card>
                 </div>
 
-                {/* Listado de Productos más vendidos (Top Products) */}
+                {/* Top Productos */}
                 <div className="lg:col-span-2">
                     <Card className="p-6 h-full">
                         <div className="flex items-center justify-between mb-8">

@@ -174,7 +174,7 @@ export default function AdminBranchesPage() {
                 )}
             </div>
 
-            {/* Modal de Creación/Edición */}
+            {/* Modal */}
             {isModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm animate-in fade-in duration-200">
                     <Card className="w-full max-w-md shadow-2xl border-border/50 relative overflow-hidden">

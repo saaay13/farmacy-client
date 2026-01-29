@@ -62,6 +62,8 @@ interface LoginResponse {
     user: User
 }
 
+
+// Autenticación
 export async function loginUser(email: string, password: string): Promise<LoginResponse> {
     const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: 'POST',
@@ -92,7 +94,7 @@ export async function registerUser(nombre: string, email: string, password: stri
     return result
 }
 
-//
+// Productos
 export async function fetchProducts(token?: string, includeDeactivated: boolean = false): Promise<Product[]> {
     const headers: HeadersInit = {};
     if (token) {
@@ -172,6 +174,8 @@ export async function restoreProductAPI(productId: string, token: string): Promi
     return result;
 }
 
+
+// Categorías
 export async function fetchCategories(includeDeactivated: boolean = false): Promise<Category[]> {
     const query = includeDeactivated ? '?includeDeactivated=true' : '';
     const response = await fetch(`${API_BASE_URL}/categories${query}`);
@@ -237,6 +241,8 @@ export async function deleteCategoryAPI(id: string, token: string): Promise<void
     if (!response.ok) throw new Error(result.message || 'Error al eliminar categoría');
 }
 
+
+// Sucursales
 export async function fetchBranches(token?: string, includeDeactivated: boolean = false): Promise<Branch[]> {
     const headers: HeadersInit = {};
     if (token) {
@@ -315,6 +321,8 @@ export interface SaleRequest {
     detalles: SaleDetail[];
 }
 
+
+// Ventas
 export async function createSale(saleData: SaleRequest, token: string): Promise<any> {
     const response = await fetch(`${API_BASE_URL}/sales`, {
         method: 'POST',
@@ -342,6 +350,8 @@ export interface BatchRequest {
     idSucursal: string;
 }
 
+
+// Lotes
 export async function createBatch(batchData: BatchRequest, token: string): Promise<any> {
     const response = await fetch(`${API_BASE_URL}/batches`, {
         method: 'POST',
@@ -408,7 +418,7 @@ export async function deleteBatch(batchId: string, token: string): Promise<any> 
 
     return result;
 }
-// --- Reports & Stats ---
+// Reportes y Estadísticas
 
 export interface SalesReport {
     summary: {
@@ -480,6 +490,8 @@ export async function fetchSalesByProductReport(token: string): Promise<ProductS
     return result.data;
 }
 
+
+// Alertas
 export async function fetchAlerts(token: string): Promise<Alert[]> {
     const response = await fetch(`${API_BASE_URL}/alerts`, {
         headers: { 'Authorization': `Bearer ${token}` }
@@ -496,6 +508,8 @@ export async function triggerAlertCheck(token: string): Promise<any> {
     return response.json();
 }
 
+
+// Usuarios
 export async function fetchUsers(token: string, includeDeactivated: boolean = false): Promise<User[]> {
     const query = includeDeactivated ? '?includeDeactivated=true' : '';
     const response = await fetch(`${API_BASE_URL}/users${query}`, {
@@ -583,6 +597,8 @@ export async function deleteAlertAPI(alertId: string, token: string): Promise<an
     return result;
 }
 
+
+// Promociones
 export async function fetchPromotions(token?: string, aprobada?: boolean): Promise<any[]> {
     const query = aprobada !== undefined ? `?aprobada=${aprobada}` : '';
     const headers: HeadersInit = {};

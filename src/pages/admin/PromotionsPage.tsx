@@ -31,7 +31,7 @@ export default function PromotionsPage() {
                         Control de descuentos y campañas vigentes
                     </p>
                 </div>
-                {/* Por ahora solo aprobación y visualización, creación será via sugerencias automáticas o modal futuro */}
+                {/* Gestión */}
                 <div className="flex gap-3">
                     <Button variant="ghost" onClick={refresh} className="rounded-xl border border-border bg-card">
                         Sincronizar

@@ -10,7 +10,7 @@ export default function PointOfSalePage() {
     return (
         <AdminLayout title="Punto de Venta">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 h-[calc(100vh-180px)]">
-                {/* Left: Search and Catalog */}
+                {/* Catálogo */}
                 <div className="lg:col-span-2 flex flex-col gap-6 overflow-hidden">
                     <div className="bg-primary/5 p-6 rounded-3xl border border-primary/10">
                         <h3 className="text-lg font-black text-primary mb-4 uppercase tracking-widest">Búsqueda de Productos</h3>
@@ -45,7 +45,7 @@ export default function PointOfSalePage() {
                     )}
                 </div>
 
-                {/* Right: Cart and Total */}
+                {/* Panel */}
                 <div className="lg:col-span-1 h-full">
                     <POSSalePanel
                         items={cart}

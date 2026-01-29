@@ -12,7 +12,7 @@ interface ProductCardProps {
 export function ProductCard({ product, categoryName, role, onAddToCart, onLogin }: ProductCardProps) {
     const isClient = role === 'cliente';
 
-    // Calcular descuento si hay promociones activas
+    // Descuento
     const activePromo = product.promociones && product.promociones.length > 0 ? product.promociones[0] : null;
     const originalPrice = Number(product.precio);
     const hasDiscount = !!activePromo;
@@ -20,7 +20,7 @@ export function ProductCard({ product, categoryName, role, onAddToCart, onLogin 
         ? originalPrice * (1 - (Number(activePromo.porcentajeDescuento) / 100))
         : originalPrice;
 
-    // Calcular stock en promoción (lotes que vencen en < 60 días)
+    // Stock Promocional
     const promoStock = hasDiscount && product.lotes
         ? product.lotes
             .filter(l => {
@@ -41,7 +41,7 @@ export function ProductCard({ product, categoryName, role, onAddToCart, onLogin 
                 </div>
             )}
 
-            {/* Header / Imagen Placeholder */}
+            {/* Imagen */}
             <div className="bg-gradient-to-br from-primary-100/50 to-background h-48 flex items-center justify-center text-6xl relative overflow-hidden group-hover:scale-105 transition-transform duration-500">
                 <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 {product.requiereReceta ? <Pill className="w-16 h-16 text-amber-500" /> : <Leaf className="w-16 h-16 text-primary" />}
@@ -68,7 +68,7 @@ export function ProductCard({ product, categoryName, role, onAddToCart, onLogin 
                     {product.descripcion || "Sin descripción disponible por el momento."}
                 </p>
 
-                {/* Info de Promoción */}
+                {/* Promoción */}
                 {hasDiscount && promoStock > 0 && (
                     <div className="mb-4 px-3 py-2 bg-amber-50 border border-amber-200 rounded-lg">
                         <p className="text-xs font-bold text-amber-700 flex items-center gap-1">
@@ -80,7 +80,7 @@ export function ProductCard({ product, categoryName, role, onAddToCart, onLogin 
                     </div>
                 )}
 
-                {/* Footer de la tarjeta */}
+                {/* Footer */}
                 <div className="mt-auto pt-4 border-t border-border flex items-center justify-between">
                     <div className="flex flex-col">
                         <span className="text-xs text-muted-foreground font-medium">Precio</span>
@@ -98,7 +98,7 @@ export function ProductCard({ product, categoryName, role, onAddToCart, onLogin 
 
                     <div>
                         <div>
-                            {/* Lógica de botones de acción */}
+                            {/* Acciones */}
                             {product.requiereReceta && isClient ? (
                                 <div className="flex items-center gap-2 text-amber-600 bg-amber-50 px-3 py-2 rounded-lg border border-amber-100">
                                     <ShieldAlert className="w-4 h-4" />

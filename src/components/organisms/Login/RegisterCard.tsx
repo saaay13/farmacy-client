@@ -6,7 +6,7 @@ export const RegisterCard = () => {
 
     return (
         <div className="w-full max-w-md mx-auto bg-card/80 backdrop-blur-sm p-8 rounded-2xl shadow-xl border border-border/50 animate-in fade-in zoom-in duration-300">
-            {/* Header con logo */}
+            {/* Header */}
             <div className="text-center mb-8">
                 <div className="inline-flex items-center justify-center w-20 h-20 bg-secondary rounded-full mb-6 shadow-lg">
                     <span className="text-4xl">🌱</span>
@@ -15,7 +15,7 @@ export const RegisterCard = () => {
                 <p className="text-sm text-muted-foreground font-medium">Crea tu cuenta de cliente en segundos</p>
             </div>
 
-            {/* Molecule: RegisterForm */}
+            {/* Formulario */}
             <RegisterForm
                 onSuccess={() => {
                     navigate('/');

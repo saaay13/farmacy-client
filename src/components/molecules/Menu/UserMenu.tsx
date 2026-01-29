@@ -14,7 +14,7 @@ export const UserMenu = ({ userName, avatarUrl, logout, categoryCount = 0 }: Use
     const [open, setOpen] = useState(false)
     const menuRef = useRef<HTMLDivElement>(null)
 
-    // Cerrar menú al hacer click fuera
+    // Cierre externo
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (menuRef.current && !menuRef.current.contains(event.target as Node)) {

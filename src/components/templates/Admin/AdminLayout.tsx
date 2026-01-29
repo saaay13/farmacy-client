@@ -16,16 +16,13 @@ export function AdminLayout({ children, title }: AdminLayoutProps) {
 
     return (
         <div className="min-h-screen bg-background relative overflow-hidden flex">
-            {/* Premium Background Elements */}
+            {/* Fondo */}
             <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-                {/* Main Gradient Surface */}
                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(var(--primary-rgb),0.05),transparent_50%),radial-gradient(ellipse_at_bottom_right,rgba(var(--secondary-rgb),0.03),transparent_50%)]" />
 
-                {/* Technical Dot Pattern */}
                 <div className="absolute inset-0 opacity-[0.15] dark:opacity-[0.07]"
                     style={{ backgroundImage: 'radial-gradient(circle, currentColor 1px, transparent 1px)', backgroundSize: '32px 32px', color: 'var(--primary)' }} />
 
-                {/* Decorative Blurred Blobs */}
                 <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[120px] animate-pulse" />
                 <div className="absolute bottom-[10%] right-[-5%] w-[30%] h-[30%] bg-secondary/10 rounded-full blur-[100px]" />
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-grid-white/[0.02]" />

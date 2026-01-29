@@ -1,20 +1,20 @@
 # 🚀 Guía de Instalación y Ejecución - Farmacy Client
 
-Esta guía te ayudará a poner en marcha el frontend de la aplicación desde cero tras clonar el repositorio.
+Guía para configurar y ejecutar el frontend.
 
 ## 📋 Requisitos Previos
 
 Antes de comenzar, asegúrate de tener instalado:
-- **Node.js** (Versión 18 o superior recomendada)
-- **NPM** (Viene con Node.js)
-- **Git** (Para clonar el repositorio)
+- **Node.js** (v18+)
+- **NPM**
+- **Git**
 
 ---
 
 ## 🛠️ Pasos para la Instalación
 
 ### 1. Clonar el Repositorio
-Abre tu terminal y ejecuta el siguiente comando:
+Clonar repositorio:
 ```bash
 git clone https://github.com/saaay13/farmacy-client.git
 ```
@@ -25,7 +25,7 @@ cd farmacy-client
 ```
 
 ### 3. Instalar Dependencias
-Instala todas las librerías necesarias para que el proyecto funcione:
+Instalar dependencias:
 ```bash
 npm install
 ```
@@ -35,7 +35,7 @@ npm install
 ## ▶️ Ejecución del Proyecto
 
 ### Modo Desarrollo
-Para iniciar el servidor local con recarga automática (HMR):
+Iniciar servidor local (HMR):
 ```bash
 npm run dev
 ```

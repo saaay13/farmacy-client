@@ -37,7 +37,7 @@ export default function BatchesPage() {
                 </div>
             </div>
 
-            {/* Filters */}
+            {/* Filtros */}
             <div className="bg-card border border-border rounded-3xl p-4 shadow-sm mb-6 flex flex-col md:flex-row gap-4 items-center">
                 <div className="relative flex-grow w-full">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -64,7 +64,7 @@ export default function BatchesPage() {
                 </div>
             </div>
 
-            {/* Table */}
+            {/* Tabla */}
             <Card className="rounded-3xl overflow-hidden border-border/50">
                 {loading ? (
                     <div className="py-20 flex flex-col items-center justify-center">

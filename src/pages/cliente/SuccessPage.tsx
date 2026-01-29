@@ -14,7 +14,7 @@ export default function SuccessPage() {
 
     return (
         <div className="min-h-screen bg-muted/30 flex flex-col relative overflow-hidden">
-            {/* Background Decor */}
+            {/* Fondo */}
             <div className="absolute top-0 left-0 w-full h-[45vh] bg-primary shadow-lg shadow-primary/20 transform -skew-y-2 origin-top-right scale-110 z-0" />
 
             <div className="relative z-10 flex flex-col min-h-screen">
@@ -24,7 +24,7 @@ export default function SuccessPage() {
                     <div className="max-w-xl w-full text-center">
                         <div className="bg-white rounded-3xl shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)] border border-border/50 p-10 md:p-16 animate-in zoom-in duration-700">
 
-                            {/* Success Icon */}
+                            {/* Éxito */}
                             <div className="mb-8 flex justify-center">
                                 <div className="bg-primary/10 p-5 rounded-full relative">
                                     <div className="absolute inset-0 bg-primary/20 rounded-full animate-ping opacity-25" />
@@ -39,7 +39,7 @@ export default function SuccessPage() {
                                 Tu orden ha sido procesada con éxito y el equipo de farmacia ya está preparando tus medicamentos.
                             </p>
 
-                            {/* Total Pagado - Nueva Sección */}
+                            {/* Total Pagado */}
                             {total !== undefined && (
                                 <div className="mb-8 bg-muted/20 p-4 rounded-2xl border border-dashed border-primary/20 flex flex-col items-center justify-center">
                                     <span className="text-sm text-muted-foreground font-medium uppercase tracking-widest mb-1">Total Pagado</span>
@@ -80,7 +80,7 @@ export default function SuccessPage() {
                             </div>
                         </div>
 
-                        {/* Decorative Info */}
+                        {/* Información */}
                         <p className="mt-8 text-primary-foreground/60 text-sm font-medium animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-500">
                             Recibirás un correo electrónico con el resumen de tu compra en breve.
                         </p>

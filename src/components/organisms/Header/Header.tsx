@@ -41,7 +41,6 @@ export function Header() {
     const navigate = useNavigate();
 
     const role = user?.rol || 'guest';
-    // Access links safely
     const links = navLinks[role] || navLinks['guest'];
 
     const isStaff = ['admin', 'farmaceutico', 'vendedor'].includes(role);
@@ -69,7 +68,7 @@ export function Header() {
                     <span className="font-bold text-xl tracking-tight hidden sm:block">Farmacy Siempre Vivo</span>
                 </div>
 
-                {/* Navigation Links - Centered */}
+                {/* Navegación */}
                 <nav className="hidden md:flex items-center gap-8 absolute left-1/2 transform -translate-x-1/2">
                     {links.map((link) => (
                         <Link
@@ -86,7 +85,7 @@ export function Header() {
                 <div className="flex items-center gap-3">
                     <ThemeToggle />
 
-                    {/* Botón Carrito - Solo para Clientes */}
+                    {/* Carrito */}
                     {(role === 'cliente') && (
                         <button
                             onClick={toggleCart}

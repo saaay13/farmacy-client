@@ -4,7 +4,7 @@ import { Header, Footer } from '../../components/organisms';
 import { Store, ArrowRight, Loader2, MapPin, Phone, Mail, Clock } from 'lucide-react';
 import { Button, Badge } from "../../components/atoms";
 
-export default function BanchPage() {
+export default function BranchPage() {
     const { branches, loading, error } = useBranch();
     const navigate = useNavigate();
 
@@ -17,7 +17,7 @@ export default function BanchPage() {
             <Header />
 
             <main className="flex-grow">
-                {/* Hero Section */}
+                {/* Hero */}
                 <section className="relative py-20 bg-primary/5 overflow-hidden">
                     <div className="absolute top-0 right-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
                     <div className="container mx-auto px-4 relative z-10 text-center md:text-left">
@@ -35,7 +35,7 @@ export default function BanchPage() {
                     </div>
                 </section>
 
-                {/* Sucursales List */}
+                {/* Sucursales */}
                 <section className="py-16">
                     <div className="container mx-auto px-4">
                         {loading && (
@@ -61,7 +61,7 @@ export default function BanchPage() {
                                         key={sucursal.idSucursal}
                                         className="group bg-card rounded-3xl border border-border/50 overflow-hidden hover:shadow-2xl hover:shadow-primary/5 transition-all duration-300 flex flex-col md:flex-row"
                                     >
-                                        {/* Image Placeholder / Map */}
+                                        {/* Mapa */}
                                         <div className="bg-muted w-full md:w-1/3 h-48 md:h-auto relative overflow-hidden">
                                             <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary/20 to-secondary/20">
                                                 <Store className="w-16 h-16 text-primary/40" />
@@ -72,7 +72,7 @@ export default function BanchPage() {
                                             </div>
                                         </div>
 
-                                        {/* Info Content */}
+                                        {/* Info */}
                                         <div className="p-8 md:w-2/3 flex flex-col">
                                             <div className="flex justify-between items-start mb-4">
                                                 <div>

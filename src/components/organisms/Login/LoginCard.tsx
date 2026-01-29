@@ -7,7 +7,7 @@ export const LoginCard = () => {
 
     return (
         <div className="w-full max-w-md mx-auto bg-card/80 backdrop-blur-sm p-8 rounded-2xl shadow-xl border border-border/50">
-            {/* Header con logo */}
+            {/* Header */}
             <div className="text-center mb-8">
                 <div className="inline-flex items-center justify-center w-20 h-20 bg-primary rounded-full mb-6 shadow-lg">
                     <span className="text-4xl text-primary-foreground">💊</span>
@@ -16,7 +16,7 @@ export const LoginCard = () => {
                 <p className="text-sm text-muted-foreground">Ingrese sus credenciales para continuar</p>
             </div>
 
-            {/* Molecule: LoginForm */}
+            {/* Formulario */}
             <LoginForm
                 onSuccess={(user: User) => {
                     const staffRoles = ['admin', 'farmaceutico', 'vendedor'];

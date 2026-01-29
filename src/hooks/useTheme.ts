@@ -2,15 +2,15 @@
 import { useEffect, useState } from 'react'
 
 export function useTheme() {
-    // Inicializar estado leyendo directamente de localStorage para evitar flash
+    // Inicialización
     const [isDark, setIsDark] = useState(() => {
         try {
             const saved = localStorage.getItem('theme');
-            // Si hay preferencia guardada, usarla
+            // Cache
             if (saved) {
                 return saved === 'dark';
             }
-            // Si no, verificar preferencia del sistema
+            // Preferencia sistema
             return window.matchMedia('(prefers-color-scheme: dark)').matches;
         } catch (error) {
             return false;

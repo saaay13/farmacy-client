@@ -26,9 +26,9 @@ export const POSSalePanel = ({
     selectedCustomer,
     onSelectCustomer
 }: POSSalePanelProps) => {
-    // Calculamos totales considerando descuentos ya aplicados en items
+    // Cálculo de totales
     const total = items.reduce((sum, item) => sum + (Number(item.precio) * item.cartQuantity), 0);
-    // Calculamos cuánto se ahorró (dif entre precio original y final)
+    // Cálculo de ahorro
     const totalSavings = items.reduce((sum, item) => {
         if (item.originalPrice && item.precio < item.originalPrice) {
             return sum + ((item.originalPrice - item.precio) * item.cartQuantity);
@@ -39,7 +39,7 @@ export const POSSalePanel = ({
     const requiresPrescription = items.filter(i => i.requiereReceta);
     const missingPrescriptions = requiresPrescription.filter(i => !i.validatedPrescription);
 
-    // Estado local para búsqueda de clientes
+    // Estado búsqueda
     const { customers } = useCustomers();
     const [customerSearch, setCustomerSearch] = useState("");
     const [showCustomerResults, setShowCustomerResults] = useState(false);
@@ -61,7 +61,7 @@ export const POSSalePanel = ({
                     </div>
                 </div>
 
-                {/* Selección de Cliente */}
+                {/* Cliente */}
                 <div className="relative z-20">
                     {selectedCustomer ? (
                         <div className="flex items-center justify-between p-3 bg-primary/10 border border-primary/20 rounded-xl">

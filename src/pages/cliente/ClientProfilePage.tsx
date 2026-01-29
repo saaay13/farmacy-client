@@ -86,7 +86,7 @@ export default function ClientProfilePage() {
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    {/* Tarjeta de Resumen / Navegación */}
+                    {/* Resumen */}
                     <div className="space-y-6">
                         <Card className="p-6 bg-gradient-to-br from-primary/10 to-transparent border-primary/20">
                             <div className="flex flex-col items-center text-center">
@@ -131,7 +131,7 @@ export default function ClientProfilePage() {
                         </Button>
                     </div>
 
-                    {/* Formulario de Edición */}
+                    {/* Formulario */}
                     <div className="lg:col-span-2">
                         <Card className="p-8 border-border/50 shadow-xl">
                             <h3 className="text-2xl font-bold mb-6 flex items-center gap-3">

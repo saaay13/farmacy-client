@@ -12,7 +12,7 @@ export default function Footer() {
         >
             <div className="container mx-auto px-4">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-                    {/* Brand Section */}
+                    {/* Marca */}
                     <div>
                         <div className="flex items-center gap-2 font-bold text-lg mb-4">
                             <Pill className="w-6 h-6" />
@@ -23,7 +23,7 @@ export default function Footer() {
                         </p>
                     </div>
 
-                    {/* Navigation Section */}
+                    {/* Navegación */}
                     <div>
                         <h4 className="font-bold mb-4">Navegación</h4>
                         <ul className="space-y-2 text-sm opacity-70">
@@ -45,7 +45,7 @@ export default function Footer() {
                         </ul>
                     </div>
 
-                    {/* Contact Information */}
+                    {/* Contacto */}
                     <div>
                         <h4 className="font-bold mb-4">Información</h4>
                         <ul className="space-y-2 text-sm opacity-70">

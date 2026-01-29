@@ -4,11 +4,11 @@ import { Button, Input, Card } from "../../atoms";
 import type { User as UserType } from "../../../services/api";
 
 interface UserModalProps {
-    user: UserType | null; // Null if creating
+    user: UserType | null;
     isOpen: boolean;
     onClose: () => void;
     onSave: (userData: any) => Promise<{ success: boolean; message?: string }>;
-    label?: string; // "Colaborador" or "Cliente"
+    label?: string;
 }
 
 export const UserModal = ({ user, isOpen, onClose, onSave, label = "Colaborador" }: UserModalProps) => {
@@ -28,7 +28,7 @@ export const UserModal = ({ user, isOpen, onClose, onSave, label = "Colaborador"
                     nombre: user.nombre,
                     email: user.email,
                     rol: user.rol,
-                    password: "" // No mostramos el password actual
+                    password: ""
                 });
             } else {
                 setFormData({

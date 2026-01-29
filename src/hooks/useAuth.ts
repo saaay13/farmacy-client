@@ -34,7 +34,7 @@ export function useAuth() {
         setError(null)
         try {
             await registerUser(nombre, email, password, avatarUrl)
-            // Login automático tras registro
+            // Login automático
             const data = await loginUser(email, password)
             login(data.token, data.user)
         } catch (err: any) {

@@ -1,9 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 
-/**
- * Roles soportados por el sistema
- */
+// Roles
 export type UserRole = 'admin' | 'farmaceutico' | 'vendedor' | 'cliente' | 'guest';
 
 interface User {
@@ -32,7 +30,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         return savedUser ? JSON.parse(savedUser) : null;
     });
     const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
-    const [loading, setLoading] = useState(false); // Podríamos usarlo si hiciéramos un fetch de perfil
+    const [loading, setLoading] = useState(false);
 
     const login = (newToken: string, userData: User) => {
         localStorage.setItem('token', newToken);

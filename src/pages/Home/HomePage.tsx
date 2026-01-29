@@ -22,7 +22,7 @@ export default function HomePage() {
         <>
             <Header />
 
-            {/* Hero Section */}
+            {/* Hero */}
             <section className="bg-gradient-to-br from-primary via-primary/95 to-primary text-primary-foreground py-16 md:py-24">
                 <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                     <div>
@@ -46,7 +46,7 @@ export default function HomePage() {
                 </div>
             </section>
 
-            {/* Why Choose Us / Servicios */}
+            {/* Servicios */}
             <section className="py-16 bg-background">
                 <div className="container mx-auto px-4">
                     <h2 className="text-3xl md:text-4xl font-bold text-foreground text-center mb-12">
@@ -66,7 +66,7 @@ export default function HomePage() {
                 </div>
             </section>
 
-            {/* Categories Section */}
+            {/* Categorías */}
             <section className="py-16 bg-background">
                 <div className="container mx-auto px-4">
                     <div className="flex items-center justify-between mb-8">
@@ -122,7 +122,7 @@ export default function HomePage() {
                 </div>
             </section>
 
-            {/* Featured Products */}
+            {/* Destacados */}
             <section className="py-16 bg-background">
                 <div className="container mx-auto px-4">
                     <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-8 text-center">

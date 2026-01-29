@@ -59,7 +59,7 @@ export default function CheckoutPage() {
 
     return (
         <div className="min-h-screen bg-muted/30 flex flex-col relative overflow-hidden">
-            {/* Background Decor - The "Green Box" */}
+            {/* Fondo */}
             <div className="absolute top-0 left-0 w-full h-[45vh] bg-primary shadow-lg shadow-primary/20 transform -skew-y-2 origin-top-right scale-110 z-0" />
 
             <div className="relative z-10 flex flex-col min-h-screen">
@@ -68,7 +68,7 @@ export default function CheckoutPage() {
                 <main className="flex-grow container mx-auto px-4 py-12">
                     <div className="max-w-4xl mx-auto">
 
-                        {/* Header Content on Green */}
+                        {/* Header */}
                         <div className="text-primary-foreground mb-12 animate-in fade-in slide-in-from-top-4 duration-700">
                             <button
                                 onClick={() => navigate(-1)}
@@ -91,7 +91,7 @@ export default function CheckoutPage() {
                                     </p>
                                 </div>
 
-                                {/* Status Steps - Decorative */}
+                                {/* Pasos */}
                                 <div className="hidden lg:flex items-center gap-8 mb-4">
                                     <div className="flex flex-col items-center gap-2 opacity-50">
                                         <div className="w-10 h-10 rounded-full border-2 border-white/30 flex items-center justify-center font-bold">1</div>
@@ -135,7 +135,7 @@ export default function CheckoutPage() {
                             </div>
                         </div>
 
-                        {/* Security Badge */}
+                        {/* Seguridad */}
                         <div className="mt-8 flex items-center justify-center gap-8 opacity-40 grayscale hover:grayscale-0 transition-all duration-500">
                             <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-muted-foreground">
                                 <span className="p-1 px-2 border-2 border-muted-foreground rounded italic">SSL</span>

@@ -24,8 +24,7 @@ export function useAdminStats() {
             ]);
 
             setSalesReport(sales);
-            // Filtrar stock bajo (< 10) para el resumen si es necesario, 
-            // aunque el reporte de stock ya viene ordenado por stockTotal asc.
+            // Stock bajo
             setStockIssues(stock.filter(item => item.stockTotal < 10));
             setExpiringCount(expiring.length);
             setExpiredCount(expired.length);

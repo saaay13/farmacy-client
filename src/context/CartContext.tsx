@@ -47,7 +47,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
                         : item
                 );
             }
-            // Aseguramos que el drawer se abra al agregar el primer item o siempre si se prefiere
+            // Abrir Drawer
             setIsOpen(true);
             return [...prev, { ...product, quantity: 1 }];
         });
