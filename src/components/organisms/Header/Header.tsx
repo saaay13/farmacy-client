@@ -11,10 +11,12 @@ const navLinks: Record<User['rol'], { to: string; label: string }[]> = {
     admin: [
         { to: "/admin/dashboard", label: "Panel de Control" },
         { to: "/admin/inventario", label: "Inventario" },
+        { to: "/admin/sucursales", label: "Sucursales" },
     ],
     farmaceutico: [
         { to: "/admin/dashboard", label: "Panel de Control" },
         { to: "/admin/inventario", label: "Inventario" },
+        { to: "/admin/sucursales", label: "Sucursales" },
     ],
     vendedor: [
         { to: "/admin/dashboard", label: "Panel de Control" },

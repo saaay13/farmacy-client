@@ -1,5 +1,5 @@
 import { AdminLayout } from "../../components/templates/Admin/AdminLayout";
-import { Tags, Plus, Search, Pencil, Trash2, Loader2 } from "lucide-react";
+import { Tags, Plus, Search, Pencil, Trash2, Loader2, Filter, RotateCcw } from "lucide-react";
 import { Card, Button } from "../../components/atoms";
 import { CategoryModal } from "../../components/molecules/Admin/CategoryModal";
 import { useState } from "react";
@@ -7,7 +7,7 @@ import { useCategories } from "../../hooks/useCategories";
 import type { Category } from "../../services/api";
 
 export default function CategoriesPage() {
-    const { categories, loading, deleteCategory, createCategory, updateCategory, refresh } = useCategories();
+    const { categories, loading, deleteCategory, restoreCategory, createCategory, updateCategory, refresh, showDeactivated, setShowDeactivated } = useCategories();
     const [searchTerm, setSearchTerm] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
@@ -27,8 +27,17 @@ export default function CategoriesPage() {
     };
 
     const handleDelete = async (id: string, nombre: string) => {
-        if (window.confirm(`¿Estás seguro de que deseas eliminar la categoría "${nombre}"?`)) {
+        if (window.confirm(`¿Estás seguro de que deseas desactivar la categoría "${nombre}"?`)) {
             const result = await deleteCategory(id);
+            if (!result.success) {
+                alert(result.message);
+            }
+        }
+    };
+
+    const handleRestore = async (id: string, nombre: string) => {
+        if (window.confirm(`¿Estás seguro de que deseas reactivar la categoría "${nombre}"?`)) {
+            const result = await restoreCategory(id);
             if (!result.success) {
                 alert(result.message);
             }
@@ -56,7 +65,7 @@ export default function CategoriesPage() {
                     <h1 className="text-3xl font-black text-foreground mb-1 tracking-tight">Categorías</h1>
                     <p className="text-muted-foreground font-medium flex items-center gap-2">
                         <Tags className="w-4 h-4 text-primary" />
-                        Organiza tus productos en categorías
+                        Organiza tus productos en categorías. Las categorías desactivadas no se mostrarán en el catálogo.
                     </p>
                 </div>
                 <Button
@@ -79,9 +88,19 @@ export default function CategoriesPage() {
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 </div>
-                <Button variant="ghost" onClick={refresh} className="rounded-xl border-none bg-muted/50 text-muted-foreground font-bold">
-                    Actualizar
-                </Button>
+                <div className="flex gap-2 w-full md:w-auto">
+                    <Button
+                        variant="secondary"
+                        onClick={() => setShowDeactivated(!showDeactivated)}
+                        className={`rounded-2xl px-6 py-4 border-none font-bold transition-all shadow-sm ${showDeactivated ? 'bg-primary text-primary-foreground' : 'bg-muted/50 text-muted-foreground'}`}
+                    >
+                        <Filter className="w-4 h-4 mr-2" />
+                        {showDeactivated ? 'Ocultar Inactivas' : 'Ver Desactivadas'}
+                    </Button>
+                    <Button variant="ghost" onClick={refresh} className="rounded-xl border-none bg-muted/50 text-muted-foreground font-bold">
+                        Actualizar
+                    </Button>
+                </div>
             </div>
 
             <Card className="rounded-3xl overflow-hidden border-border/50">
@@ -101,7 +120,7 @@ export default function CategoriesPage() {
                             </thead>
                             <tbody className="divide-y divide-border">
                                 {filteredCategories.length > 0 ? filteredCategories.map((category: Category) => (
-                                    <tr key={category.id} className="group hover:bg-muted/10 transition-colors">
+                                    <tr key={category.id} className={`group hover:bg-muted/10 transition-colors ${category.activo === false ? 'opacity-60 bg-muted/5' : ''}`}>
                                         <td className="px-6 py-5">
                                             <div className="flex items-center gap-3">
                                                 <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all">
@@ -116,19 +135,33 @@ export default function CategoriesPage() {
                                                     variant="ghost"
                                                     size="sm"
                                                     onClick={() => handleEdit(category)}
-                                                    className="rounded-xl font-bold opacity-0 group-hover:opacity-100 transition-opacity"
+                                                    className="rounded-xl font-bold opacity-0 group-hover:opacity-100 transition-opacity disabled:pointer-events-none"
+                                                    disabled={category.activo === false}
                                                 >
                                                     <Pencil className="w-4 h-4 mr-2" />
                                                     Editar
                                                 </Button>
-                                                <Button
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    onClick={() => handleDelete(category.id, category.nombre)}
-                                                    className="rounded-xl text-muted-foreground hover:text-error hover:bg-error/10 transition-colors opacity-0 group-hover:opacity-100"
-                                                >
-                                                    <Trash2 className="w-4 h-4" />
-                                                </Button>
+                                                {category.activo === false ? (
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        onClick={() => handleRestore(category.id, category.nombre)}
+                                                        className="rounded-xl text-success hover:bg-success/10 transition-colors"
+                                                        title="Reactivar"
+                                                    >
+                                                        <RotateCcw className="w-4 h-4" />
+                                                    </Button>
+                                                ) : (
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        onClick={() => handleDelete(category.id, category.nombre)}
+                                                        className="rounded-xl text-muted-foreground hover:text-error hover:bg-error/10 transition-colors opacity-0 group-hover:opacity-100"
+                                                        title="Desactivar"
+                                                    >
+                                                        <Trash2 className="w-4 h-4" />
+                                                    </Button>
+                                                )}
                                             </div>
                                         </td>
                                     </tr>

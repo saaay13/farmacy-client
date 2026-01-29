@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { fetchUsers, deleteUserAPI, createUserAPI, updateUserAPI } from "../../services/api";
+import { fetchUsers, deleteUserAPI, createUserAPI, updateUserAPI, restoreUserAPI } from "../../services/api";
 import type { User } from "../../services/api";
 import { useAuth } from "../../context/AuthContext";
 
@@ -8,19 +8,20 @@ export function useAdminUsers() {
     const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [showDeactivated, setShowDeactivated] = useState(false);
 
     const loadUsers = useCallback(async () => {
         if (!token) return;
         setLoading(true);
         try {
-            const data = await fetchUsers(token);
+            const data = await fetchUsers(token, showDeactivated);
             setUsers(data);
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Error al cargar usuarios');
         } finally {
             setLoading(false);
         }
-    }, [token]);
+    }, [token, showDeactivated]);
 
     const deleteUser = async (userId: string) => {
         if (!token) return;
@@ -32,7 +33,21 @@ export function useAdminUsers() {
                 setError(result.message);
             }
         } catch (err) {
-            setError(err instanceof Error ? err.message : 'No se pudo eliminar el usuario');
+            setError(err instanceof Error ? err.message : 'No se pudo desactivar el usuario');
+        }
+    };
+
+    const restoreUser = async (userId: string) => {
+        if (!token) return;
+        try {
+            const result = await restoreUserAPI(userId, token);
+            if (result.success) {
+                await loadUsers();
+            } else {
+                setError(result.message);
+            }
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'No se pudo restaurar el usuario');
         }
     };
 
@@ -70,8 +85,11 @@ export function useAdminUsers() {
         users,
         loading,
         error,
+        showDeactivated,
+        setShowDeactivated,
         refresh: loadUsers,
         deleteUser,
+        restoreUser,
         createUser,
         updateUser
     };

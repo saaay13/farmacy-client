@@ -1,21 +1,27 @@
 import { AdminLayout } from "../../components/templates/Admin/AdminLayout";
-import { ClipboardList, Search, Trash2, Calendar, Package, Hash, Loader2 } from "lucide-react";
+import { ClipboardList, Search, Trash2, Calendar, Package, Hash, Loader2, Filter, RotateCcw } from "lucide-react";
 import { Card, Badge, Button } from "../../components/atoms";
 import { useAdminBatches } from "../../hooks/admin/useAdminBatches";
 import { useState } from "react";
 
 export default function BatchesPage() {
-    const { batches, loading, deleteBatch } = useAdminBatches();
+    const { batches, loading, deleteBatch, restoreBatch, showDeactivated, setShowDeactivated, refreshBatches } = useAdminBatches();
     const [searchTerm, setSearchTerm] = useState("");
 
     const filteredBatches = batches.filter(b =>
         b.numeroLote.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        b.producto.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+        (b.producto?.nombre || "").toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     const handleDelete = async (id: string, numero: string) => {
-        if (window.confirm(`¿Estás seguro de eliminar el lote ${numero}?`)) {
+        if (window.confirm(`¿Estás seguro de desactivar el lote ${numero}?`)) {
             await deleteBatch(id);
+        }
+    };
+
+    const handleRestore = async (id: string, numero: string) => {
+        if (window.confirm(`¿Estás seguro de reactivar el lote ${numero}?`)) {
+            await restoreBatch(id);
         }
     };
 
@@ -43,6 +49,19 @@ export default function BatchesPage() {
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 </div>
+                <div className="flex gap-2 w-full md:w-auto">
+                    <Button
+                        variant="secondary"
+                        onClick={() => setShowDeactivated(!showDeactivated)}
+                        className={`rounded-2xl px-6 py-4 border-none font-bold transition-all shadow-sm ${showDeactivated ? 'bg-primary text-primary-foreground' : 'bg-muted/50 text-muted-foreground'}`}
+                    >
+                        <Filter className="w-4 h-4 mr-2" />
+                        {showDeactivated ? 'Ocultar Inactivos' : 'Ver Desactivados'}
+                    </Button>
+                    <Button variant="ghost" onClick={refreshBatches} className="rounded-xl border-none bg-muted/50 text-muted-foreground font-bold">
+                        Actualizar
+                    </Button>
+                </div>
             </div>
 
             {/* Table */}
@@ -66,15 +85,17 @@ export default function BatchesPage() {
                             </thead>
                             <tbody className="divide-y divide-border">
                                 {filteredBatches.length > 0 ? filteredBatches.map((batch) => (
-                                    <tr key={batch.id} className="group hover:bg-muted/10 transition-colors">
+                                    <tr key={batch.id} className={`group hover:bg-muted/10 transition-colors ${batch.activo === false ? 'opacity-60 bg-muted/5' : ''}`}>
                                         <td className="px-6 py-5">
                                             <div className="flex items-center gap-4">
                                                 <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center font-black text-primary">
                                                     <Package className="w-5 h-5" />
                                                 </div>
                                                 <div>
-                                                    <p className="font-bold text-foreground">{batch.producto.nombre}</p>
-                                                    <p className="text-[10px] uppercase font-bold text-muted-foreground">Catálogo Maestro</p>
+                                                    <p className="font-bold text-foreground">{batch.producto?.nombre || 'Producto Desconocido'}</p>
+                                                    <p className="text-[10px] uppercase font-bold text-muted-foreground">
+                                                        {batch.activo === false ? 'LOTE INACTIVO' : 'Catálogo Maestro'}
+                                                    </p>
                                                 </div>
                                             </div>
                                         </td>
@@ -100,15 +121,27 @@ export default function BatchesPage() {
                                         <td className="px-6 py-5 text-center">
                                             <span className="text-lg font-black text-foreground">{batch.cantidad}</span>
                                         </td>
-                                        <td className="px-6 py-5 text-right">
-                                            <Button
-                                                variant="ghost"
-                                                size="sm"
-                                                onClick={() => handleDelete(batch.id, batch.numeroLote)}
-                                                className="rounded-xl text-muted-foreground hover:text-error hover:bg-error/10 transition-colors"
-                                            >
-                                                <Trash2 className="w-4 h-4" />
-                                            </Button>
+                                        <td className="px-6 py-5 text-right flex justify-end gap-2">
+                                            {batch.activo === false ? (
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    onClick={() => handleRestore(batch.id, batch.numeroLote)}
+                                                    className="rounded-xl text-success hover:bg-success/10 transition-colors"
+                                                    title="Reactivar"
+                                                >
+                                                    <RotateCcw className="w-4 h-4" />
+                                                </Button>
+                                            ) : (
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    onClick={() => handleDelete(batch.id, batch.numeroLote)}
+                                                    className="rounded-xl text-muted-foreground hover:text-error hover:bg-error/10 transition-colors"
+                                                >
+                                                    <Trash2 className="w-4 h-4" />
+                                                </Button>
+                                            )}
                                         </td>
                                     </tr>
                                 )) : (

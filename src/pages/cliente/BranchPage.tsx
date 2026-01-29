@@ -1,11 +1,11 @@
 import { useNavigate } from 'react-router-dom';
-import { useBanch } from '../../hooks/useBanch';
+import { useBranch } from '../../hooks/useBranch';
 import { Header, Footer } from '../../components/organisms';
 import { Store, ArrowRight, Loader2, MapPin, Phone, Mail, Clock } from 'lucide-react';
 import { Button, Badge } from "../../components/atoms";
 
 export default function BanchPage() {
-    const { banch, loading, error } = useBanch();
+    const { branches, loading, error } = useBranch();
     const navigate = useNavigate();
 
     const handleSucursalClick = (sucursalId: string) => {
@@ -54,9 +54,9 @@ export default function BanchPage() {
                             </div>
                         )}
 
-                        {!loading && !error && banch.length > 0 && (
+                        {!loading && !error && branches.length > 0 && (
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
-                                {banch.map((sucursal) => (
+                                {branches.map((sucursal) => (
                                     <div
                                         key={sucursal.idSucursal}
                                         className="group bg-card rounded-3xl border border-border/50 overflow-hidden hover:shadow-2xl hover:shadow-primary/5 transition-all duration-300 flex flex-col md:flex-row"

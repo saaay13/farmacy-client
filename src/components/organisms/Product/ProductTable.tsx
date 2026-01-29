@@ -1,4 +1,4 @@
-import { Edit, Trash2, Eye, PlusCircle, ClipboardList } from "lucide-react";
+import { Edit, Trash2, Eye, PlusCircle, ClipboardList, RotateCcw } from "lucide-react";
 import type { Product } from "../../../services/api";
 import { Badge } from "../../atoms";
 import { useAuth } from "../../../context/AuthContext";
@@ -10,9 +10,10 @@ interface ProductTableProps {
     onViewDetail?: (product: Product) => void;
     onRestock?: (product: Product) => void;
     onViewHistory?: (product: Product) => void;
+    onRestore?: (product: Product) => void;
 }
 
-export const ProductTable = ({ products, onEdit, onDelete, onViewDetail, onRestock, onViewHistory }: ProductTableProps) => {
+export const ProductTable = ({ products, onEdit, onDelete, onViewDetail, onRestock, onViewHistory, onRestore }: ProductTableProps) => {
     const { user } = useAuth();
     const isAdmin = user?.rol === 'admin';
 
@@ -104,19 +105,30 @@ export const ProductTable = ({ products, onEdit, onDelete, onViewDetail, onResto
                                     </button>
                                     <button
                                         onClick={() => onEdit?.(product)}
-                                        className="p-2 hover:bg-muted rounded-lg text-muted-foreground hover:text-info transition-colors"
+                                        className="p-2 hover:bg-muted rounded-lg text-muted-foreground hover:text-info transition-colors disabled:opacity-30 disabled:pointer-events-none"
                                         title="Editar"
+                                        disabled={product.activo === false}
                                     >
                                         <Edit className="w-4 h-4" />
                                     </button>
                                     {isAdmin && (
-                                        <button
-                                            onClick={() => onDelete?.(product)}
-                                            className="p-2 hover:bg-muted rounded-lg text-muted-foreground hover:text-error transition-colors"
-                                            title="Eliminar"
-                                        >
-                                            <Trash2 className="w-4 h-4" />
-                                        </button>
+                                        product.activo === false ? (
+                                            <button
+                                                onClick={() => onRestore?.(product)}
+                                                className="p-2 hover:bg-muted rounded-lg text-success transition-colors"
+                                                title="Restaurar"
+                                            >
+                                                <RotateCcw className="w-4 h-4" />
+                                            </button>
+                                        ) : (
+                                            <button
+                                                onClick={() => onDelete?.(product)}
+                                                className="p-2 hover:bg-muted rounded-lg text-muted-foreground hover:text-error transition-colors"
+                                                title="Eliminar"
+                                            >
+                                                <Trash2 className="w-4 h-4" />
+                                            </button>
+                                        )
                                     )}
                                 </div>
                             </td>

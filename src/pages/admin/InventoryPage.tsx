@@ -13,6 +13,8 @@ export default function InventoryPage() {
         searchTerm,
         setSearchTerm,
         selectedProduct,
+        showDeactivated,
+        setShowDeactivated,
         modalStates,
         handlers
     } = useInventory();
@@ -49,9 +51,13 @@ export default function InventoryPage() {
                     />
                 </div>
                 <div className="flex gap-2 w-full md:w-auto">
-                    <Button variant="ghost" className="rounded-2xl px-6 py-6 border-none bg-muted/50 text-muted-foreground font-bold">
+                    <Button
+                        variant="secondary"
+                        onClick={() => setShowDeactivated(!showDeactivated)}
+                        className={`rounded-2xl px-6 py-6 border-none font-bold transition-all shadow-sm ${showDeactivated ? 'bg-primary text-primary-foreground hover:bg-primary/90' : 'bg-muted/50 text-muted-foreground hover:bg-muted'}`}
+                    >
                         <Filter className="w-4 h-4 mr-2" />
-                        Filtros
+                        {showDeactivated ? 'Ocultar Desactivados' : 'Ver Desactivados'}
                     </Button>
                     <Button variant="ghost" className="rounded-2xl px-6 py-6 border-none bg-muted/50 text-muted-foreground font-bold">
                         <Download className="w-4 h-4 mr-2" />
@@ -74,6 +80,7 @@ export default function InventoryPage() {
                         onViewHistory={handlers.openHistory}
                         onEdit={handlers.openEdit}
                         onDelete={handlers.handleDeleteProduct}
+                        onRestore={handlers.handleRestoreProduct}
                     />
                 ) : (
                     <div className="p-20 text-center">

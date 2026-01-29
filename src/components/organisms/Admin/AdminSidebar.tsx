@@ -10,7 +10,8 @@ import {
     LogOut,
     ChevronRight,
     Settings,
-    TrendingUp
+    TrendingUp,
+    Store
 } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
@@ -45,6 +46,12 @@ export function AdminSidebar() {
             title: "Categorías",
             icon: Tag,
             path: "/admin/categorias",
+            roles: ["admin", "farmaceutico"]
+        },
+        {
+            title: "Sucursales",
+            icon: Store,
+            path: "/admin/sucursales",
             roles: ["admin", "farmaceutico"]
         },
         {

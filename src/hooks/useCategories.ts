@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { fetchCategories, createCategoryAPI, updateCategoryAPI, deleteCategoryAPI } from '../services/api';
+import { fetchCategories, createCategoryAPI, updateCategoryAPI, deleteCategoryAPI, restoreCategoryAPI } from '../services/api';
 import type { Category } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
@@ -7,12 +7,13 @@ export function useCategories() {
     const [categories, setCategories] = useState<Category[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [showDeactivated, setShowDeactivated] = useState(false);
     const { token } = useAuth();
 
     const refresh = useCallback(async () => {
         try {
             setLoading(true);
-            const data = await fetchCategories();
+            const data = await fetchCategories(showDeactivated);
             setCategories(data);
             setError(null);
         } catch (err) {
@@ -20,7 +21,7 @@ export function useCategories() {
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [showDeactivated]);
 
     useEffect(() => {
         refresh();
@@ -59,5 +60,27 @@ export function useCategories() {
         }
     };
 
-    return { categories, loading, error, refresh, createCategory, updateCategory, deleteCategory };
+    const restoreCategory = async (id: string) => {
+        if (!token) return { success: false, message: 'No autenticado' };
+        try {
+            await restoreCategoryAPI(id, token);
+            await refresh();
+            return { success: true };
+        } catch (err) {
+            return { success: false, message: err instanceof Error ? err.message : 'Error al restaurar categoría' };
+        }
+    };
+
+    return {
+        categories,
+        loading,
+        error,
+        refresh,
+        createCategory,
+        updateCategory,
+        deleteCategory,
+        restoreCategory,
+        showDeactivated,
+        setShowDeactivated
+    };
 }

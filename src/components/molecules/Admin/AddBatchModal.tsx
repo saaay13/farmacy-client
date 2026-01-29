@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { X, Save, Calendar, Hash, Package, Loader2 } from "lucide-react";
 import { Button, Input, Card, Badge } from "../../atoms";
-import { createBatch, fetchBanch, type Product, type Banch } from "../../../services/api";
+import { createBatch, fetchBranches, type Product, type Branch } from "../../../services/api";
 import { useAuth } from "../../../context/AuthContext";
 
 interface AddBatchModalProps {
@@ -14,7 +14,7 @@ interface AddBatchModalProps {
 export const AddBatchModal = ({ product, isOpen, onClose, onSuccess }: AddBatchModalProps) => {
     const { token } = useAuth();
     const [loading, setLoading] = useState(false);
-    const [branches, setBranches] = useState<Banch[]>([]);
+    const [branches, setBranches] = useState<Branch[]>([]);
     const [formData, setFormData] = useState({
         numeroLote: "",
         fechaVencimiento: "",
@@ -27,7 +27,7 @@ export const AddBatchModal = ({ product, isOpen, onClose, onSuccess }: AddBatchM
         if (isOpen) {
             const loadBranches = async () => {
                 try {
-                    const data = await fetchBanch();
+                    const data = await fetchBranches();
                     setBranches(data);
                     if (data.length > 0) {
                         setFormData(prev => ({ ...prev, idSucursal: data[0].idSucursal }));

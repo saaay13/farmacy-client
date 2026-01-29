@@ -9,6 +9,7 @@ export interface Product {
     idCategoria: string;
     imageUrl?: string;
     estado: string;
+    activo?: boolean;
     categoria?: {
         nombre: string;
     };
@@ -34,6 +35,7 @@ export interface Category {
     id: string;
     nombre: string;
     descripcion: string;
+    activo?: boolean;
 }
 
 interface ApiResponse<T> {
@@ -41,18 +43,18 @@ interface ApiResponse<T> {
     data: T;
     message?: string;
 }
-export interface Banch {
+export interface Branch {
     idSucursal: string;
     nombre: string;
     direccion: string;
     detalles?: string;
 }
-//
 export interface User {
     id: string
     nombre: string
     rol: 'admin' | 'farmaceutico' | 'vendedor' | 'cliente' | 'guest'
     email: string
+    activo?: boolean
 }
 
 interface LoginResponse {
@@ -91,13 +93,14 @@ export async function registerUser(nombre: string, email: string, password: stri
 }
 
 //
-export async function fetchProducts(token?: string): Promise<Product[]> {
+export async function fetchProducts(token?: string, includeDeactivated: boolean = false): Promise<Product[]> {
     const headers: HeadersInit = {};
     if (token) {
         headers['Authorization'] = `Bearer ${token}`;
     }
 
-    const response = await fetch(`${API_BASE_URL}/products`, { headers });
+    const query = includeDeactivated ? '?includeDeactivated=true' : '';
+    const response = await fetch(`${API_BASE_URL}/products${query}`, { headers });
     if (!response.ok) {
         throw new Error('Error al obtener productos');
     }
@@ -154,13 +157,42 @@ export async function deleteProductAPI(productId: string, token: string): Promis
     return result;
 }
 
-export async function fetchCategories(): Promise<Category[]> {
-    const response = await fetch(`${API_BASE_URL}/categories`);
+export async function restoreProductAPI(productId: string, token: string): Promise<any> {
+    const response = await fetch(`${API_BASE_URL}/products/${productId}/restore`, {
+        method: 'PATCH',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    const result = await response.json();
+    if (!response.ok) {
+        throw new Error(result.message || 'Error al restaurar producto');
+    }
+    return result;
+}
+
+export async function fetchCategories(includeDeactivated: boolean = false): Promise<Category[]> {
+    const query = includeDeactivated ? '?includeDeactivated=true' : '';
+    const response = await fetch(`${API_BASE_URL}/categories${query}`);
     if (!response.ok) {
         throw new Error('Error al obtener categorías');
     }
     const result: ApiResponse<Category[]> = await response.json();
     return result.data;
+}
+
+export async function restoreCategoryAPI(id: string, token: string): Promise<any> {
+    const response = await fetch(`${API_BASE_URL}/categories/${id}/restore`, {
+        method: 'PATCH',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.message || 'Error al restaurar categoría');
+    return result;
 }
 
 export async function createCategoryAPI(name: string, token: string): Promise<Category> {
@@ -205,14 +237,72 @@ export async function deleteCategoryAPI(id: string, token: string): Promise<void
     if (!response.ok) throw new Error(result.message || 'Error al eliminar categoría');
 }
 
-export async function fetchBanch(): Promise<Banch[]> {
-    const response = await fetch(`${API_BASE_URL}/banch`);
+export async function fetchBranches(token?: string, includeDeactivated: boolean = false): Promise<Branch[]> {
+    const headers: HeadersInit = {};
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    const query = includeDeactivated ? '?includeDeactivated=true' : '';
+    const response = await fetch(`${API_BASE_URL}/branches${query}`, { headers });
     if (!response.ok) {
         throw new Error('Error al obtener sucursales');
     }
 
-    const result: ApiResponse<Banch[]> = await response.json();
+    const result: ApiResponse<Branch[]> = await response.json();
     return result.data;
+}
+
+export async function createBranchAPI(branchData: Partial<Branch>, token: string): Promise<Branch> {
+    const response = await fetch(`${API_BASE_URL}/branches`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(branchData)
+    });
+
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.message || 'Error al crear sucursal');
+    return result.data;
+}
+
+export async function updateBranchAPI(id: string, branchData: Partial<Branch>, token: string): Promise<Branch> {
+    const response = await fetch(`${API_BASE_URL}/branches/${id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(branchData)
+    });
+
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.message || 'Error al actualizar sucursal');
+    return result.data;
+}
+
+export async function deleteBranchAPI(id: string, token: string): Promise<any> {
+    const response = await fetch(`${API_BASE_URL}/branches/${id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+    });
+
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.message || 'Error al desactivar sucursal');
+    return result;
+}
+
+export async function restoreBranchAPI(id: string, token: string): Promise<any> {
+    const response = await fetch(`${API_BASE_URL}/branches/${id}/restore`, {
+        method: 'PATCH',
+        headers: { 'Authorization': `Bearer ${token}` }
+    });
+
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.message || 'Error al reactivar sucursal');
+    return result;
 }
 
 export interface SaleDetail {
@@ -270,8 +360,11 @@ export async function createBatch(batchData: BatchRequest, token: string): Promi
 
     return result;
 }
-export async function fetchBatches(productId?: string, token?: string): Promise<any[]> {
-    const url = productId ? `${API_BASE_URL}/batches?idProducto=${productId}` : `${API_BASE_URL}/batches`;
+export async function fetchBatches(productId?: string, token?: string, includeDeactivated: boolean = false): Promise<any[]> {
+    let url = productId ? `${API_BASE_URL}/batches?idProducto=${productId}` : `${API_BASE_URL}/batches`;
+    if (includeDeactivated) {
+        url += (url.includes('?') ? '&' : '?') + 'includeDeactivated=true';
+    }
     const headers: HeadersInit = {};
     if (token) {
         headers['Authorization'] = `Bearer ${token}`;
@@ -282,6 +375,21 @@ export async function fetchBatches(productId?: string, token?: string): Promise<
     }
     const result = await response.json();
     return result.data;
+}
+
+export async function restoreBatchAPI(batchId: string, token: string): Promise<any> {
+    const response = await fetch(`${API_BASE_URL}/batches/${batchId}/restore`, {
+        method: 'PATCH',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    const result = await response.json();
+    if (!response.ok) {
+        throw new Error(result.message || 'Error al restaurar el lote');
+    }
+    return result;
 }
 
 export async function deleteBatch(batchId: string, token: string): Promise<any> {
@@ -388,8 +496,9 @@ export async function triggerAlertCheck(token: string): Promise<any> {
     return response.json();
 }
 
-export async function fetchUsers(token: string): Promise<User[]> {
-    const response = await fetch(`${API_BASE_URL}/users`, {
+export async function fetchUsers(token: string, includeDeactivated: boolean = false): Promise<User[]> {
+    const query = includeDeactivated ? '?includeDeactivated=true' : '';
+    const response = await fetch(`${API_BASE_URL}/users${query}`, {
         headers: { 'Authorization': `Bearer ${token}` }
     });
     if (!response.ok) {
@@ -410,6 +519,19 @@ export async function deleteUserAPI(userId: string, token: string): Promise<{ su
         return { success: false, message: result.message || 'Error al eliminar usuario' };
     }
     return { success: true, message: result.message || 'Usuario eliminado correctamente' };
+}
+
+export async function restoreUserAPI(userId: string, token: string): Promise<{ success: boolean; message: string }> {
+    const response = await fetch(`${API_BASE_URL}/users/${userId}/restore`, {
+        method: 'PATCH',
+        headers: { 'Authorization': `Bearer ${token}` }
+    });
+
+    const result = await response.json();
+    if (!response.ok) {
+        return { success: false, message: result.message || 'Error al restaurar usuario' };
+    }
+    return { success: true, message: result.message || 'Usuario restaurado correctamente' };
 }
 
 export async function createUserAPI(userData: Partial<User> & { password?: string }, token: string): Promise<ApiResponse<User>> {

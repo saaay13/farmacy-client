@@ -1,5 +1,5 @@
 import { AdminLayout } from "../../components/templates/Admin/AdminLayout";
-import { Users, UserPlus, Search, Mail, MoreVertical, Loader2, Trash2 } from "lucide-react";
+import { Users, UserPlus, Search, Mail, Loader2, Trash2, Filter, RotateCcw } from "lucide-react";
 import { Card, Badge, Button } from "../../components/atoms";
 import { UserModal } from "../../components/molecules";
 import { useState } from "react";
@@ -7,7 +7,7 @@ import { useAdminUsers } from "../../hooks/admin/useAdminUsers";
 import type { User } from "../../services/api";
 
 export default function UsersPage() {
-    const { users, loading, deleteUser, createUser, updateUser, refresh } = useAdminUsers();
+    const { users, loading, deleteUser, restoreUser, createUser, updateUser, refresh, showDeactivated, setShowDeactivated } = useAdminUsers();
     const [searchTerm, setSearchTerm] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
@@ -29,8 +29,14 @@ export default function UsersPage() {
     };
 
     const handleDelete = async (id: string, nombre: string) => {
-        if (window.confirm(`¿Estás seguro de que deseas eliminar a ${nombre}?`)) {
+        if (window.confirm(`¿Estás seguro de que deseas desactivar a ${nombre}?`)) {
             await deleteUser(id);
+        }
+    };
+
+    const handleRestore = async (id: string, nombre: string) => {
+        if (window.confirm(`¿Estás seguro de que deseas reactivar a ${nombre}?`)) {
+            await restoreUser(id);
         }
     };
 
@@ -78,9 +84,19 @@ export default function UsersPage() {
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 </div>
-                <Button variant="ghost" onClick={refresh} className="rounded-xl border-none bg-muted/50 text-muted-foreground font-bold">
-                    Actualizar
-                </Button>
+                <div className="flex gap-2 w-full md:w-auto">
+                    <Button
+                        variant="ghost"
+                        onClick={() => setShowDeactivated(!showDeactivated)}
+                        className={`rounded-2xl px-6 py-4 border-none font-bold transition-all ${showDeactivated ? 'bg-primary/10 text-primary' : 'bg-muted/50 text-muted-foreground'}`}
+                    >
+                        <Filter className="w-4 h-4 mr-2" />
+                        {showDeactivated ? 'Viendo Todos' : 'Ver Desactivados'}
+                    </Button>
+                    <Button variant="ghost" onClick={refresh} className="rounded-xl border-none bg-muted/50 text-muted-foreground font-bold">
+                        Actualizar
+                    </Button>
+                </div>
             </div>
 
             <Card className="rounded-3xl overflow-hidden border-border/50">
@@ -101,7 +117,7 @@ export default function UsersPage() {
                             </thead>
                             <tbody className="divide-y divide-border">
                                 {filteredUsers.length > 0 ? filteredUsers.map((user: User) => (
-                                    <tr key={user.id} className="group hover:bg-muted/10 transition-colors">
+                                    <tr key={user.id} className={`group hover:bg-muted/10 transition-colors ${user.activo === false ? 'opacity-60 bg-muted/5' : ''}`}>
                                         <td className="px-6 py-5">
                                             <div className="flex items-center gap-4">
                                                 <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center font-black text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300">
@@ -112,6 +128,7 @@ export default function UsersPage() {
                                                     <p className="text-xs text-muted-foreground flex items-center gap-1 font-medium">
                                                         <Mail className="w-3 h-3" />
                                                         {user.email}
+                                                        {user.activo === false && <Badge variant="secondary" className="ml-2 text-[8px]">Inactivo</Badge>}
                                                     </p>
                                                 </div>
                                             </div>
@@ -131,18 +148,32 @@ export default function UsersPage() {
                                                     variant="ghost"
                                                     size="sm"
                                                     onClick={() => handleEdit(user)}
-                                                    className="rounded-xl font-bold opacity-0 group-hover:opacity-100 transition-opacity"
+                                                    className="rounded-xl font-bold opacity-0 group-hover:opacity-100 transition-opacity disabled:pointer-events-none"
+                                                    disabled={user.activo === false}
                                                 >
                                                     Editar
                                                 </Button>
-                                                <Button
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    onClick={() => handleDelete(user.id, user.nombre)}
-                                                    className="rounded-xl text-muted-foreground hover:text-error hover:bg-error/10 transition-colors"
-                                                >
-                                                    <Trash2 className="w-4 h-4" />
-                                                </Button>
+                                                {user.activo === false ? (
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        onClick={() => handleRestore(user.id, user.nombre)}
+                                                        className="rounded-xl text-success hover:bg-success/10 transition-colors"
+                                                        title="Reactivar"
+                                                    >
+                                                        <RotateCcw className="w-4 h-4" />
+                                                    </Button>
+                                                ) : (
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        onClick={() => handleDelete(user.id, user.nombre)}
+                                                        className="rounded-xl text-muted-foreground hover:text-error hover:bg-error/10 transition-colors"
+                                                        title="Desactivar"
+                                                    >
+                                                        <Trash2 className="w-4 h-4" />
+                                                    </Button>
+                                                )}
                                             </div>
                                         </td>
                                     </tr>

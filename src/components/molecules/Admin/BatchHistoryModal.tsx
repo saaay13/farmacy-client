@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { X, Calendar, Hash, Package, Trash2, AlertTriangle, Loader2 } from "lucide-react";
+import { X, Calendar, Hash, Package, Trash2, AlertTriangle, Loader2, RotateCcw, Filter } from "lucide-react";
 import { Button, Card, Badge } from "../../atoms";
 import type { Product } from "../../../services/api";
 import { useAdminBatches } from "../../../hooks/admin/useAdminBatches";
@@ -12,20 +12,34 @@ interface BatchHistoryModalProps {
 }
 
 export const BatchHistoryModal = ({ product, isOpen, onClose, onBatchChange }: BatchHistoryModalProps) => {
-    const { batches, loading, deleteBatch, refreshBatches } = useAdminBatches(isOpen ? product.id : undefined);
+    const { batches, loading, deleteBatch, restoreBatch, showDeactivated, setShowDeactivated } = useAdminBatches(isOpen ? product.id : undefined);
     const [deletingId, setDeletingId] = useState<string | null>(null);
+    const [restoringId, setRestoringId] = useState<string | null>(null);
 
     const handleDelete = async (batchId: string) => {
-        if (!window.confirm("¿Estás seguro de eliminar este lote? Esto descontará el stock automáticamente.")) return;
+        if (!window.confirm("¿Estás seguro de desactivar este lote? Esto descontará el stock automáticamente.")) return;
 
         setDeletingId(batchId);
         const success = await deleteBatch(batchId);
         if (success) {
             onBatchChange(); // Update parent inventory
         } else {
-            alert("Error al eliminar el lote");
+            alert("Error al desactivar el lote");
         }
         setDeletingId(null);
+    };
+
+    const handleRestore = async (batchId: string) => {
+        if (!window.confirm("¿Estás seguro de reactivar este lote? El stock se incrementará automáticamente.")) return;
+
+        setRestoringId(batchId);
+        const success = await restoreBatch(batchId);
+        if (success) {
+            onBatchChange(); // Update parent inventory
+        } else {
+            alert("Error al reactivar el lote");
+        }
+        setRestoringId(null);
     };
 
     if (!isOpen) return null;
@@ -40,12 +54,23 @@ export const BatchHistoryModal = ({ product, isOpen, onClose, onBatchChange }: B
                             {product.nombre} • {product.id}
                         </p>
                     </div>
-                    <button
-                        onClick={onClose}
-                        className="p-2 hover:bg-muted rounded-full text-muted-foreground transition-colors"
-                    >
-                        <X className="w-5 h-5" />
-                    </button>
+                    <div className="flex items-center gap-3">
+                        <Button
+                            variant="secondary"
+                            size="sm"
+                            onClick={() => setShowDeactivated(!showDeactivated)}
+                            className={`rounded-xl px-4 py-2 text-xs border-none font-bold transition-all shadow-sm ${showDeactivated ? 'bg-primary text-primary-foreground' : 'bg-muted/80 text-muted-foreground'}`}
+                        >
+                            <Filter className="w-3.5 h-3.5 mr-1.5" />
+                            {showDeactivated ? 'Ver Todos' : 'Ver Inactivos'}
+                        </Button>
+                        <button
+                            onClick={onClose}
+                            className="p-2 hover:bg-muted rounded-full text-muted-foreground transition-all hover:rotate-90 duration-300"
+                        >
+                            <X className="w-5 h-5" />
+                        </button>
+                    </div>
                 </div>
 
                 <div className="flex-grow overflow-y-auto p-6">
@@ -63,9 +88,10 @@ export const BatchHistoryModal = ({ product, isOpen, onClose, onBatchChange }: B
                                 return (
                                     <div
                                         key={batch.id}
-                                        className={`flex items-center justify-between p-4 rounded-2xl border transition-all ${isExpired ? 'bg-error/5 border-error/20' :
-                                            isExpiring ? 'bg-warning/5 border-warning/20' :
-                                                'bg-muted/30 border-border/50'
+                                        className={`flex items-center justify-between p-4 rounded-2xl border transition-all ${batch.activo === false ? 'opacity-60 bg-muted/10 grayscale-[0.5]' :
+                                            isExpired ? 'bg-error/5 border-error/20' :
+                                                isExpiring ? 'bg-warning/5 border-warning/20' :
+                                                    'bg-muted/30 border-border/50'
                                             }`}
                                     >
                                         <div className="flex items-center gap-4">
@@ -99,18 +125,35 @@ export const BatchHistoryModal = ({ product, isOpen, onClose, onBatchChange }: B
                                             </div>
                                         </div>
 
-                                        <button
-                                            onClick={() => handleDelete(batch.id)}
-                                            disabled={deletingId === batch.id}
-                                            className="p-2 hover:bg-error/10 text-muted-foreground hover:text-error rounded-xl transition-all"
-                                            title="Eliminar lote (Mermas)"
-                                        >
-                                            {deletingId === batch.id ? (
-                                                <Loader2 className="w-4 h-4 animate-spin" />
+                                        <div className="flex items-center gap-1">
+                                            {batch.activo === false ? (
+                                                <button
+                                                    onClick={() => handleRestore(batch.id)}
+                                                    disabled={restoringId === batch.id}
+                                                    className="p-2 hover:bg-success/10 text-success rounded-xl transition-all"
+                                                    title="Reactivar lote"
+                                                >
+                                                    {restoringId === batch.id ? (
+                                                        <Loader2 className="w-4 h-4 animate-spin" />
+                                                    ) : (
+                                                        <RotateCcw className="w-4 h-4" />
+                                                    )}
+                                                </button>
                                             ) : (
-                                                <Trash2 className="w-4 h-4" />
+                                                <button
+                                                    onClick={() => handleDelete(batch.id)}
+                                                    disabled={deletingId === batch.id}
+                                                    className="p-2 hover:bg-error/10 text-muted-foreground hover:text-error rounded-xl transition-all"
+                                                    title="Desactivar lote (Mermas)"
+                                                >
+                                                    {deletingId === batch.id ? (
+                                                        <Loader2 className="w-4 h-4 animate-spin" />
+                                                    ) : (
+                                                        <Trash2 className="w-4 h-4" />
+                                                    )}
+                                                </button>
                                             )}
-                                        </button>
+                                        </div>
                                     </div>
                                 );
                             })}

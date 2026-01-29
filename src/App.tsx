@@ -10,7 +10,7 @@ import { LoginPage } from './pages/Login/LoginPage';
 import { RegisterPage } from './pages/Login/RegisterPage';
 import ProductsPage from './pages/cliente/ProductsPage';
 import CategoriesPage from './pages/cliente/CategoriesPage';
-import BanchPage from './pages/cliente/BanchPage';
+import BranchPage from './pages/cliente/BranchPage';
 import CheckoutPage from './pages/cliente/CheckoutPage';
 import SuccessPage from './pages/cliente/SuccessPage';
 import ClientProfilePage from './pages/cliente/ClientProfilePage';
@@ -28,6 +28,7 @@ import BatchesPage from './pages/admin/BatchesPage';
 import AdminCategoriesPage from './pages/admin/CategoriesPage';
 import SalesByProductPage from './pages/admin/SalesByProductPage';
 import ProfilePage from './pages/admin/ProfilePage';
+import AdminBranchesPage from './pages/admin/BranchesPage';
 
 function App() {
   return (
@@ -66,7 +67,7 @@ function App() {
               path="/sucursales"
               element={
                 <ProtectedRoute clientOnly requireAuth={false}>
-                  <BanchPage />
+                  <BranchPage />
                 </ProtectedRoute>
               }
             />
@@ -167,6 +168,14 @@ function App() {
               element={
                 <ProtectedRoute allowedRoles={['admin', 'farmaceutico', 'vendedor']}>
                   <SalesByProductPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/sucursales"
+              element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                  <AdminBranchesPage />
                 </ProtectedRoute>
               }
             />
