@@ -13,6 +13,7 @@ import CategoriesPage from './pages/cliente/CategoriesPage';
 import BanchPage from './pages/cliente/BanchPage';
 import CheckoutPage from './pages/cliente/CheckoutPage';
 import SuccessPage from './pages/cliente/SuccessPage';
+import ClientProfilePage from './pages/cliente/ClientProfilePage';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
 
 // Admin Pages
@@ -25,6 +26,7 @@ import CustomersPage from './pages/admin/CustomersPage';
 import PromotionsPage from './pages/admin/PromotionsPage';
 import BatchesPage from './pages/admin/BatchesPage';
 import AdminCategoriesPage from './pages/admin/CategoriesPage';
+import ProfilePage from './pages/admin/ProfilePage';
 
 function App() {
   return (
@@ -69,6 +71,14 @@ function App() {
             />
 
             {/* Rutas Protegidas de Pago (Solo Cliente) */}
+            <Route
+              path="/perfil"
+              element={
+                <ProtectedRoute allowedRoles={['cliente']} clientOnly>
+                  <ClientProfilePage />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/checkout"
               element={
@@ -156,6 +166,14 @@ function App() {
               element={
                 <ProtectedRoute allowedRoles={['admin']}>
                   <UsersPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/perfil"
+              element={
+                <ProtectedRoute allowedRoles={['admin', 'farmaceutico', 'vendedor']}>
+                  <ProfilePage />
                 </ProtectedRoute>
               }
             />

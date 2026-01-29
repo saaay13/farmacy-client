@@ -41,25 +41,33 @@ export default function DashboardPage() {
 
     return (
         <AdminLayout title="Dashboard">
-            <div className="flex items-center justify-between mb-8">
+            <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
                 <div>
-                    <h1 className="text-3xl font-black text-foreground mb-1">
+                    <h1 className="text-4xl lg:text-5xl font-black text-foreground mb-3 tracking-tight">
                         {panelTitle}
                     </h1>
-                    <p className="text-muted-foreground font-medium flex items-center gap-2">
-                        <span className={`w-2 h-2 rounded-full ${loading ? 'bg-warning animate-pulse' : 'bg-success'}`}></span>
-                        {loading ? 'Actualizando datos...' : 'Sistema operativo • Resumen de hoy'}
-                    </p>
+                    <div className="flex items-center gap-3">
+                        <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border transition-all duration-500 ${loading
+                                ? 'bg-warning/10 border-warning/20 text-warning animate-pulse'
+                                : 'bg-success/10 border-success/20 text-success'
+                            }`}>
+                            <span className={`w-1.5 h-1.5 rounded-full ${loading ? 'bg-warning' : 'bg-success'}`}></span>
+                            {loading ? 'Sincronizando...' : 'Sistema en Línea'}
+                        </div>
+                        <p className="text-sm text-muted-foreground font-medium italic">
+                            Resumen operativo del día
+                        </p>
+                    </div>
                 </div>
                 <Button
                     variant="ghost"
-                    size="sm"
+                    size="lg"
                     onClick={() => { refreshStats(); runCheck(); }}
                     disabled={loading}
-                    className="rounded-xl border border-border bg-card shadow-sm"
+                    className="rounded-2xl border border-border/50 bg-card/50 backdrop-blur-sm shadow-xl shadow-primary/5 hover:shadow-primary/10 transition-all font-bold px-8"
                 >
-                    <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-                    Actualizar
+                    <RefreshCw className={`w-5 h-5 mr-3 text-primary ${loading ? 'animate-spin' : ''}`} />
+                    Actualizar Datos
                 </Button>
             </div>
 

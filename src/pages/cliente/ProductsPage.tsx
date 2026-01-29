@@ -3,10 +3,11 @@ import { useProducts } from "../../hooks/useProducts";
 import { useCategories } from "../../hooks/useCategories";
 import { Header, Footer } from "../../components/organisms/";
 import { ProductCard } from "../../components/molecules/Product/ProductCard";
-import { Loader2, PackageX } from "lucide-react";
+import { Loader2, PackageX, Filter, LayoutGrid, ListFilter, ArrowLeft, Sparkles } from "lucide-react";
 import type { Category } from "../../services/api";
 import { useAuth } from "../../context/AuthContext";
 import { useCart } from "../../hooks/useCart";
+import { Badge, Button } from "../../components/atoms";
 
 export default function ProductsPage() {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -18,16 +19,10 @@ export default function ProductsPage() {
 
     const activeCategory = searchParams.get("categoria");
 
-    // Lógica de filtrado STRICTO para clientes y guests
-    // 1. Filtrar por categoría activa (si existe)
-    // 2. EXCLUIR productos vencidos (estado === 'vencido')
-    // 3. EXCLUIR productos con receta (requiereReceta === true)
+    // Lógica de filtrado STRICTO mantenida
     const filteredProducts = products.filter((p) => {
         const matchesCategory = activeCategory ? p.idCategoria === activeCategory : true;
-        // El filtrado de vencidos y recetas ya lo hace el backend, pero mantenemos validación visual básica
         const isNotExpired = p.estado !== 'vencido';
-        // const isNotPrescription = !p.requiereReceta; // REMOVIDO para permitir catálogo completo
-
         return matchesCategory && isNotExpired;
     });
 
@@ -50,88 +45,133 @@ export default function ProductsPage() {
     const role = user?.rol || 'guest';
 
     return (
-        <div className="min-h-screen bg-muted/30 flex flex-col relative overflow-hidden">
-            {/* Background Decor - The "Green Box" */}
-            <div className="absolute top-0 left-0 w-full h-[35vh] bg-primary shadow-lg shadow-primary/20 transform -skew-y-2 origin-top-right scale-110 z-0" />
+        <div className="min-h-screen bg-background flex flex-col relative overflow-hidden">
+            <Header />
 
-            <div className="relative z-10 flex flex-col min-h-screen">
-                <Header />
+            <main className="flex-grow">
+                {/* Modern Hero Header */}
+                <section className="bg-primary/5 py-16 border-b border-border/50 relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2" />
 
-                <section className="text-primary-foreground py-12 md:py-16">
-                    <div className="container mx-auto px-4 text-left">
+                    <div className="container mx-auto px-4 relative z-10">
                         <div className="max-w-4xl">
-                            <h1 className="text-4xl md:text-5xl font-extrabold mb-4 leading-tight tracking-tight drop-shadow-sm">
-                                Nuestros Productos
+                            <div className="flex items-center gap-4 mb-6">
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => navigate('/categorias')}
+                                    className="rounded-xl border border-border bg-background/50 backdrop-blur-sm"
+                                >
+                                    <ArrowLeft className="w-4 h-4 mr-2" />
+                                    Categorías
+                                </Button>
+                                <Badge variant="default" className="py-1 px-3">Catálogo Premium</Badge>
+                                {activeCategory && (
+                                    <Badge variant="outline" className="bg-primary/10 border-primary/20 text-primary py-1 px-3">
+                                        {categories.find(c => c.id === activeCategory)?.nombre}
+                                    </Badge>
+                                )}
+                            </div>
+
+                            <h1 className="text-4xl md:text-5xl font-black text-foreground mb-4 tracking-tight">
+                                Nuestros <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary-600">Productos</span>
                             </h1>
-                            <p className="text-lg text-primary-foreground/90 max-w-2xl font-medium opacity-90">
-                                Descubre nuestra selección de productos de venta libre para tu bienestar diario.
+                            <p className="text-lg text-muted-foreground font-medium max-w-2xl leading-relaxed italic">
+                                Explora nuestra selección de productos seleccionados para tu salud.
+                                Calidad y confianza en cada compra.
                             </p>
                         </div>
                     </div>
                 </section>
 
-                <main className="flex-grow container mx-auto px-4 py-8">
-                    <div className="flex flex-col md:flex-row gap-8">
+                <div className="container mx-auto px-4 py-12">
+                    <div className="flex flex-col lg:flex-row gap-12">
 
-                        {/* Sidebar Filtros */}
-                        <aside className="w-full md:w-64 flex-shrink-0">
-                            <div className="bg-card rounded-xl border border-border p-6 sticky top-24 shadow-sm">
-                                <h3 className="font-bold text-lg mb-4 text-foreground">Categorías</h3>
-                                <button
-                                    onClick={() => handleCategoryChange(null)}
-                                    className={`w-full text-left px-3 py-2 rounded-lg text-sm mb-2 transition-all flex items-center justify-between ${!activeCategory
-                                        ? "bg-primary text-primary-foreground font-bold shadow-md"
-                                        : "hover:bg-accent text-muted-foreground"
-                                        }`}
-                                >
-                                    Todas
-                                </button>
+                        {/* Sidebar Filtros Glassmorphism */}
+                        <aside className="w-full lg:w-72 flex-shrink-0">
+                            <div className="bg-card/50 backdrop-blur-md rounded-[2.5rem] border border-border/50 p-8 sticky top-28 shadow-2xl shadow-primary/5">
+                                <div className="flex items-center gap-3 mb-8 pb-4 border-b border-border/50">
+                                    <ListFilter className="w-6 h-6 text-primary" strokeWidth={2.5} />
+                                    <h3 className="font-black text-xl text-foreground tracking-tight">Filtrar</h3>
+                                </div>
 
-                                {categoriesLoading ? (
-                                    <div className="flex flex-col gap-2">
-                                        {Array.from({ length: 6 }).map((_, i) => (
-                                            <div key={i} className="h-8 bg-muted rounded animate-pulse"></div>
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <div className="flex flex-col gap-1">
-                                        {categories.map((category: Category) => (
+                                <div className="space-y-8">
+                                    <div>
+                                        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 mb-6 px-2">Especialidades</p>
+                                        <div className="space-y-2">
                                             <button
-                                                key={category.id}
-                                                onClick={() => handleCategoryChange(category.id)}
-                                                className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-all ${activeCategory === category.id
-                                                    ? "bg-primary text-primary-foreground font-bold shadow-md"
-                                                    : "hover:bg-accent text-muted-foreground"
+                                                onClick={() => handleCategoryChange(null)}
+                                                className={`w-full text-left px-5 py-3.5 rounded-2xl text-sm font-bold transition-all duration-300 flex items-center justify-between group ${!activeCategory
+                                                    ? "bg-primary text-primary-foreground shadow-xl shadow-primary/20"
+                                                    : "hover:bg-primary/10 text-muted-foreground hover:text-primary"
                                                     }`}
                                             >
-                                                {category.nombre}
+                                                <span>Todas</span>
+                                                <LayoutGrid className={`w-4 h-4 transition-transform group-hover:scale-110 ${!activeCategory ? "opacity-100" : "opacity-30"}`} />
                                             </button>
-                                        ))}
+
+                                            {categoriesLoading ? (
+                                                <div className="flex flex-col gap-3 pt-2">
+                                                    {Array.from({ length: 5 }).map((_, i) => (
+                                                        <div key={i} className="h-12 bg-muted/40 rounded-2xl animate-pulse"></div>
+                                                    ))}
+                                                </div>
+                                            ) : (
+                                                <div className="flex flex-col gap-2">
+                                                    {categories.map((category: Category) => (
+                                                        <button
+                                                            key={category.id}
+                                                            onClick={() => handleCategoryChange(category.id)}
+                                                            className={`w-full text-left px-5 py-3.5 rounded-2xl text-sm font-bold transition-all duration-300 group flex items-center justify-between ${activeCategory === category.id
+                                                                ? "bg-primary text-primary-foreground shadow-xl shadow-primary/20"
+                                                                : "hover:bg-primary/10 text-muted-foreground hover:text-primary"
+                                                                }`}
+                                                        >
+                                                            <span className="truncate">{category.nombre}</span>
+                                                            <Filter className={`w-3.5 h-3.5 transition-transform group-hover:scale-110 ${activeCategory === category.id ? "opacity-100" : "opacity-0 group-hover:opacity-40"}`} />
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
-                                )}
+                                </div>
                             </div>
                         </aside>
 
-                        {/* Listado de Productos */}
+                        {/* Listado de Productos Refinado */}
                         <div className="flex-grow">
+                            <div className="flex items-center justify-between mb-10 px-4">
+                                <p className="text-xs font-black text-muted-foreground uppercase tracking-[0.15em]">
+                                    Cátalogo / <span className="text-foreground">{filteredProducts.length} Resultados</span>
+                                </p>
+                            </div>
+
                             {productsError ? (
-                                <div className="rounded-xl border border-red-200 bg-red-50 p-8 text-center text-red-600">
-                                    <p className="font-bold">Error al cargar productos</p>
-                                    <p className="text-sm mt-2">{productsError}</p>
+                                <div className="rounded-[3rem] border border-error/20 bg-error/5 p-16 text-center text-error shadow-2xl">
+                                    <Sparkles className="w-12 h-12 mx-auto mb-6 opacity-40" />
+                                    <p className="font-black text-2xl mb-4 tracking-tight">Ocurrió un inconveniente</p>
+                                    <p className="font-medium opacity-80 mb-8">{productsError}</p>
+                                    <Button variant="error" className="rounded-2xl px-10 py-6 font-bold" onClick={() => window.location.reload()}>Reintentar Carga</Button>
                                 </div>
                             ) : productsLoading ? (
-                                <div className="flex flex-col items-center justify-center py-20 gap-4 text-muted-foreground">
-                                    <Loader2 className="w-10 h-10 text-primary animate-spin" />
-                                    <p>Cargando catálogo...</p>
+                                <div className="flex flex-col items-center justify-center py-32 gap-6 text-muted-foreground">
+                                    <Loader2 className="w-16 h-16 text-primary animate-spin" />
+                                    <p className="font-black tracking-widest text-xs uppercase italic">Actualizando inventario premium...</p>
                                 </div>
                             ) : filteredProducts.length === 0 ? (
-                                <div className="flex flex-col items-center justify-center py-20 text-muted-foreground bg-muted/30 rounded-xl border border-dashed border-border">
-                                    <PackageX className="w-16 h-16 mb-4 opacity-50" />
-                                    <h3 className="text-xl font-bold mb-2">No se encontraron productos</h3>
-                                    <p>Intenta seleccionar otra categoría o revisa más tarde.</p>
+                                <div className="flex flex-col items-center justify-center py-32 text-muted-foreground bg-muted/5 rounded-[4rem] border-2 border-dashed border-border/50 transition-all">
+                                    <div className="bg-muted/50 w-28 h-28 rounded-full flex items-center justify-center mb-8 shadow-inner">
+                                        <PackageX className="w-14 h-14 opacity-30" />
+                                    </div>
+                                    <h3 className="text-3xl font-black text-foreground mb-4 tracking-tight">Sin Stock Disponible</h3>
+                                    <p className="font-medium text-muted-foreground/60 max-w-sm text-center italic">No encontramos productos en esta especialidad en este momento.</p>
+                                    <Button variant="ghost" className="mt-10 rounded-2xl border border-border px-8 py-6 font-bold hover:bg-muted" onClick={() => handleCategoryChange(null)}>
+                                        Explorar Todo el Catálogo
+                                    </Button>
                                 </div>
                             ) : (
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 animate-in fade-in zoom-in-95 duration-700">
                                     {filteredProducts.map((product) => (
                                         <ProductCard
                                             key={product.id}
@@ -147,10 +187,10 @@ export default function ProductsPage() {
                         </div>
 
                     </div>
-                </main>
+                </div>
+            </main>
 
-                <Footer />
-            </div>
+            <Footer />
         </div>
     );
 }

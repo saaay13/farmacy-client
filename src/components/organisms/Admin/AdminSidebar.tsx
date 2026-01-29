@@ -11,13 +11,14 @@ import {
     ChevronRight,
     Settings
 } from "lucide-react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 import { useAdminAlerts } from "../../../hooks/admin/useAdminAlerts";
 import { ThemeToggle } from "../../atoms";
 
 export function AdminSidebar() {
     const { logout, user } = useAuth();
+    const navigate = useNavigate();
     const { alerts } = useAdminAlerts();
 
     const menuItems = [
@@ -135,7 +136,11 @@ export function AdminSidebar() {
                         <p className="text-sm font-bold text-foreground line-clamp-1">{user?.nombre}</p>
                         <p className="text-[10px] font-medium text-muted-foreground uppercase">{user?.rol}</p>
                     </div>
-                    <button className="p-2 text-muted-foreground hover:text-primary transition-colors">
+                    <button
+                        onClick={() => navigate('/admin/perfil')}
+                        className="p-2 text-muted-foreground hover:text-primary transition-colors"
+                        title="Mi Perfil"
+                    >
                         <Settings className="w-4 h-4" />
                     </button>
                     <ThemeToggle />

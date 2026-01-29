@@ -412,7 +412,7 @@ export async function createUserAPI(userData: Partial<User> & { password?: strin
     return result;
 }
 
-export async function updateUserAPI(userId: string, userData: Partial<User>, token: string): Promise<ApiResponse<User>> {
+export async function updateUserAPI(userId: string, userData: Partial<User> & { password?: string }, token: string): Promise<ApiResponse<User>> {
     const response = await fetch(`${API_BASE_URL}/users/${userId}`, {
         method: 'PUT',
         headers: {
