@@ -2,7 +2,7 @@ import { AdminLayout } from "../../components/templates/Admin/AdminLayout";
 import { Package, Search, Plus, Filter, Loader2, Download } from "lucide-react";
 import { ProductTable } from "../../components/organisms/Product/ProductTable";
 import { Card, Badge, Button } from "../../components/atoms";
-import { AddBatchModal, BatchHistoryModal } from "../../components/molecules";
+import { AddBatchModal, BatchHistoryModal, ProductModal } from "../../components/molecules";
 import { useInventory } from "../../hooks/admin/useInventory";
 
 export default function InventoryPage() {
@@ -27,7 +27,10 @@ export default function InventoryPage() {
                         Control total de productos y existencias
                     </p>
                 </div>
-                <Button className="rounded-2xl shadow-lg shadow-primary/20 hover:scale-105 transition-all">
+                <Button
+                    onClick={handlers.openCreate}
+                    className="rounded-2xl shadow-lg shadow-primary/20 hover:scale-105 transition-all"
+                >
                     <Plus className="w-5 h-5 mr-2" />
                     Nuevo Producto
                 </Button>
@@ -69,6 +72,8 @@ export default function InventoryPage() {
                         products={filteredProducts}
                         onRestock={handlers.openRestock}
                         onViewHistory={handlers.openHistory}
+                        onEdit={handlers.openEdit}
+                        onDelete={handlers.handleDeleteProduct}
                     />
                 ) : (
                     <div className="p-20 text-center">
@@ -108,6 +113,13 @@ export default function InventoryPage() {
                     onBatchChange={handlers.refresh}
                 />
             )}
+
+            <ProductModal
+                isOpen={modalStates.isProductModalOpen}
+                onClose={() => modalStates.setIsProductModalOpen(false)}
+                onSave={handlers.handleSaveProduct}
+                product={selectedProduct}
+            />
         </AdminLayout>
     );
 }

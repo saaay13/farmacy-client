@@ -8,14 +8,15 @@ interface UserModalProps {
     isOpen: boolean;
     onClose: () => void;
     onSave: (userData: any) => Promise<{ success: boolean; message?: string }>;
+    label?: string; // "Colaborador" or "Cliente"
 }
 
-export const UserModal = ({ user, isOpen, onClose, onSave }: UserModalProps) => {
+export const UserModal = ({ user, isOpen, onClose, onSave, label = "Colaborador" }: UserModalProps) => {
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         nombre: "",
         email: "",
-        rol: "vendedor",
+        rol: label === "Cliente" ? "cliente" : "vendedor",
         password: ""
     });
     const [error, setError] = useState<string | null>(null);
@@ -33,7 +34,7 @@ export const UserModal = ({ user, isOpen, onClose, onSave }: UserModalProps) => 
                 setFormData({
                     nombre: "",
                     email: "",
-                    rol: "vendedor",
+                    rol: label === "Cliente" ? "cliente" : "vendedor",
                     password: ""
                 });
             }
@@ -72,10 +73,10 @@ export const UserModal = ({ user, isOpen, onClose, onSave }: UserModalProps) => 
                     <div className="flex items-center justify-between mb-6">
                         <div>
                             <h2 className="text-xl font-black text-foreground tracking-tight">
-                                {user ? "Editar Perfil" : "Nuevo Colaborador"}
+                                {user ? `Editar ${label}` : `Nuevo ${label}`}
                             </h2>
                             <p className="text-sm text-muted-foreground font-medium mt-1">
-                                {user ? "Actualiza los datos del usuario" : "Registra un nuevo miembro del equipo"}
+                                {user ? `Actualiza los datos del ${label.toLowerCase()}` : `Registra un nuevo ${label.toLowerCase()}`}
                             </p>
                         </div>
                         <button
@@ -116,23 +117,25 @@ export const UserModal = ({ user, isOpen, onClose, onSave }: UserModalProps) => 
                             />
                         </div>
 
-                        <div className="space-y-2">
-                            <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-                                <Shield className="w-3.5 h-3.5" />
-                                Rol asignado
-                            </label>
-                            <select
-                                className="w-full px-4 py-2 bg-muted/30 border border-border/50 rounded-xl text-sm focus:ring-2 focus:ring-primary outline-none"
-                                value={formData.rol}
-                                onChange={(e) => setFormData({ ...formData, rol: e.target.value as any })}
-                                required
-                            >
-                                <option value="admin">Administrador</option>
-                                <option value="farmaceutico">Farmacéutico</option>
-                                <option value="vendedor">Vendedor</option>
-                                <option value="cliente">Cliente</option>
-                            </select>
-                        </div>
+                        {label !== "Cliente" && (
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+                                    <Shield className="w-3.5 h-3.5" />
+                                    Rol asignado
+                                </label>
+                                <select
+                                    className="w-full px-4 py-2 bg-muted/30 border border-border/50 rounded-xl text-sm focus:ring-2 focus:ring-primary outline-none"
+                                    value={formData.rol}
+                                    onChange={(e) => setFormData({ ...formData, rol: e.target.value as any })}
+                                    required
+                                >
+                                    <option value="admin">Administrador</option>
+                                    <option value="farmaceutico">Farmacéutico</option>
+                                    <option value="vendedor">Vendedor</option>
+                                    <option value="cliente">Cliente</option>
+                                </select>
+                            </div>
+                        )}
 
                         {!user && (
                             <div className="space-y-2">
@@ -172,7 +175,7 @@ export const UserModal = ({ user, isOpen, onClose, onSave }: UserModalProps) => 
                                 isLoading={loading}
                             >
                                 <Save className="w-4 h-4 mr-2" />
-                                {user ? "Guardar Cambios" : "Crear Usuario"}
+                                {user ? "Guardar Cambios" : `Crear ${label}`}
                             </Button>
                         </div>
                     </form>

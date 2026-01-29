@@ -21,6 +21,10 @@ import InventoryPage from './pages/admin/InventoryPage';
 import PointOfSalePage from './pages/admin/PointOfSalePage';
 import AlertsPage from './pages/admin/AlertsPage';
 import UsersPage from './pages/admin/UsersPage';
+import CustomersPage from './pages/admin/CustomersPage';
+import PromotionsPage from './pages/admin/PromotionsPage';
+import BatchesPage from './pages/admin/BatchesPage';
+import AdminCategoriesPage from './pages/admin/CategoriesPage';
 
 function App() {
   return (
@@ -108,10 +112,42 @@ function App() {
               }
             />
             <Route
+              path="/admin/lotes"
+              element={
+                <ProtectedRoute allowedRoles={['admin', 'farmaceutico']}>
+                  <BatchesPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/admin/alertas"
               element={
                 <ProtectedRoute allowedRoles={['admin', 'farmaceutico', 'vendedor']}>
                   <AlertsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/clientes"
+              element={
+                <ProtectedRoute allowedRoles={['admin', 'farmaceutico', 'vendedor']}>
+                  <CustomersPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/promociones"
+              element={
+                <ProtectedRoute allowedRoles={['admin', 'farmaceutico', 'vendedor']}>
+                  <PromotionsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/categorias"
+              element={
+                <ProtectedRoute allowedRoles={['admin', 'farmaceutico']}>
+                  <AdminCategoriesPage />
                 </ProtectedRoute>
               }
             />

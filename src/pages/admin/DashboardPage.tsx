@@ -4,11 +4,9 @@ import {
     AlertTriangle,
     TrendingUp,
     AlertCircle,
-    ThumbsUp,
-    ThumbsDown,
-    Eye,
     Loader2,
-    RefreshCw
+    RefreshCw,
+    Download
 } from "lucide-react";
 import { StatCard } from "../../components/molecules";
 import { Card, Badge, Alert, Button } from "../../components/atoms";
@@ -145,6 +143,25 @@ export default function DashboardPage() {
                                 <h3 className="font-bold text-lg">Productos con Mayor Demanda</h3>
                                 <p className="text-sm text-muted-foreground">Top 5 productos más vendidos del mes</p>
                             </div>
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => {
+                                    if (!salesReport?.topProducts) return;
+                                    const csv = "Producto,Cantidad\n" +
+                                        salesReport.topProducts.map(p => `${p.nombre},${p.cantidadVendida}`).join("\n");
+                                    const blob = new Blob([csv], { type: 'text/csv' });
+                                    const url = window.URL.createObjectURL(blob);
+                                    const a = document.createElement('a');
+                                    a.href = url;
+                                    a.download = `top-productos-${new Date().toISOString().split('T')[0]}.csv`;
+                                    a.click();
+                                }}
+                                className="rounded-xl border border-border"
+                            >
+                                <Download className="w-4 h-4 mr-2" />
+                                Exportar
+                            </Button>
                         </div>
 
                         {statsLoading ? (
@@ -152,27 +169,29 @@ export default function DashboardPage() {
                                 <Loader2 className="w-12 h-12 text-primary animate-spin" />
                             </div>
                         ) : salesReport?.topProducts && salesReport.topProducts.length > 0 ? (
-                            <div className="space-y-4">
-                                {salesReport.topProducts.map((item, index) => (
-                                    <div
-                                        key={index}
-                                        className="p-4 rounded-2xl border border-border bg-muted/20 hover:bg-muted/40 transition-colors flex items-center justify-between"
-                                    >
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center font-black text-primary">
-                                                #{index + 1}
+                            <div className="space-y-6">
+                                {salesReport.topProducts.map((item, index) => {
+                                    const maxQuantity = Math.max(...salesReport.topProducts.map(p => p.cantidadVendida));
+                                    const percentage = (item.cantidadVendida / maxQuantity) * 100;
+
+                                    return (
+                                        <div key={index} className="space-y-2">
+                                            <div className="flex items-center justify-between">
+                                                <div className="flex items-center gap-3">
+                                                    <span className="text-xs font-black text-primary w-5">#{index + 1}</span>
+                                                    <h4 className="font-bold text-base text-foreground">{item.nombre}</h4>
+                                                </div>
+                                                <span className="font-black text-foreground">{item.cantidadVendida} <span className="text-[10px] text-muted-foreground uppercase">u.</span></span>
                                             </div>
-                                            <div>
-                                                <h4 className="font-bold text-base">{item.nombre}</h4>
-                                                <p className="text-sm text-muted-foreground">Catálogo Maestro</p>
+                                            <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
+                                                <div
+                                                    className="h-full bg-primary rounded-full transition-all duration-1000"
+                                                    style={{ width: `${percentage}%` }}
+                                                />
                                             </div>
                                         </div>
-                                        <div className="text-right">
-                                            <span className="block text-lg font-black text-foreground">{item.cantidadVendida}</span>
-                                            <span className="block text-[10px] uppercase font-bold text-muted-foreground tracking-widest">Unidades</span>
-                                        </div>
-                                    </div>
-                                ))}
+                                    );
+                                })}
                             </div>
                         ) : (
                             <div className="py-20 text-center text-muted-foreground">

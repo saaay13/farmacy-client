@@ -9,11 +9,6 @@ export function useAdminBatches(productId?: string) {
     const { token } = useAuth();
 
     const loadBatches = useCallback(async () => {
-        if (!productId) {
-            setBatches([]);
-            return;
-        }
-
         try {
             setLoading(true);
             const data = await fetchBatches(productId, token || undefined);

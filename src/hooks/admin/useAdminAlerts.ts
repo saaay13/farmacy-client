@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { fetchAlerts, triggerAlertCheck, type Alert } from "../../services/api";
+import { fetchAlerts, triggerAlertCheck, deleteAlertAPI, type Alert } from "../../services/api";
 import { useAuth } from "../../context/AuthContext";
 
 export function useAdminAlerts() {
@@ -31,6 +31,16 @@ export function useAdminAlerts() {
         }
     };
 
+    const deleteAlert = async (id: string) => {
+        if (!token) return;
+        try {
+            await deleteAlertAPI(id, token);
+            await loadAlerts();
+        } catch (err) {
+            console.error("Error deleting alert:", err);
+        }
+    };
+
     useEffect(() => {
         loadAlerts();
     }, [loadAlerts]);
@@ -40,6 +50,7 @@ export function useAdminAlerts() {
         loading,
         error,
         refresh: loadAlerts,
-        runCheck
+        runCheck,
+        deleteAlert
     };
 }

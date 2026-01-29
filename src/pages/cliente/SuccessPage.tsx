@@ -1,9 +1,16 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Header, Footer } from "../../components/organisms";
-import { CheckCircle2, ArrowRight, Package, Home } from "lucide-react";
+import { CheckCircle2, ArrowRight, Package, Home, Receipt } from "lucide-react";
 
 export default function SuccessPage() {
     const navigate = useNavigate();
+    const location = useLocation();
+
+    // Obtener datos pasados desde el checkout
+    const { total, orderId } = location.state || {};
+
+    // Fallback por si alguien accede directamente
+    const displayId = orderId ? `#${orderId.slice(-6).toUpperCase()}` : `#ORD-${Math.floor(Math.random() * 90000) + 10000}`;
 
     return (
         <div className="min-h-screen bg-muted/30 flex flex-col relative overflow-hidden">
@@ -28,9 +35,20 @@ export default function SuccessPage() {
                             <h1 className="text-4xl font-extrabold text-primary mb-4">
                                 ¡Pedido Confirmado!
                             </h1>
-                            <p className="text-muted-foreground text-lg mb-10 leading-relaxed font-medium">
+                            <p className="text-muted-foreground text-lg mb-8 leading-relaxed font-medium">
                                 Tu orden ha sido procesada con éxito y el equipo de farmacia ya está preparando tus medicamentos.
                             </p>
+
+                            {/* Total Pagado - Nueva Sección */}
+                            {total !== undefined && (
+                                <div className="mb-8 bg-muted/20 p-4 rounded-2xl border border-dashed border-primary/20 flex flex-col items-center justify-center">
+                                    <span className="text-sm text-muted-foreground font-medium uppercase tracking-widest mb-1">Total Pagado</span>
+                                    <div className="text-4xl font-black text-foreground flex items-center gap-2">
+                                        <Receipt className="w-6 h-6 text-primary opacity-50" />
+                                        ${Number(total).toFixed(2)}
+                                    </div>
+                                </div>
+                            )}
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <button
@@ -57,7 +75,7 @@ export default function SuccessPage() {
                                 </div>
                                 <div className="h-1 w-1 rounded-full bg-border hidden md:block" />
                                 <div className="text-muted-foreground font-medium">
-                                    ID de pedido: <span className="text-foreground">#ORD-{Math.floor(Math.random() * 90000) + 10000}</span>
+                                    ID de pedido: <span className="text-foreground font-mono">{displayId}</span>
                                 </div>
                             </div>
                         </div>

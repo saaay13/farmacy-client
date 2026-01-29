@@ -1,11 +1,9 @@
-import { Trash2, Minus, Plus, ShoppingCart, ShieldAlert } from "lucide-react";
-import type { Product } from "../../../services/api";
-import { Button, Card, Badge } from "../../atoms";
-
-interface POSCartItem extends Product {
-    cartQuantity: number;
-    validatedPrescription: boolean;
-}
+import { Trash2, Minus, Plus, ShoppingCart, ShieldAlert, User, Search, Percent, X } from "lucide-react";
+import type { User as UserType } from "../../../services/api";
+import { type POSCartItem } from "../../../hooks/admin/usePOS";
+import { Button, Card, Badge, Input } from "../../atoms";
+import { useCustomers } from "../../../hooks/admin/useCustomers";
+import { useState } from "react";
 
 interface POSSalePanelProps {
     items: POSCartItem[];
@@ -14,6 +12,8 @@ interface POSSalePanelProps {
     onTogglePrescription: (id: string) => void;
     onCheckout: () => void;
     isProcessing: boolean;
+    selectedCustomer: UserType | null;
+    onSelectCustomer: (customer: UserType | null) => void;
 }
 
 export const POSSalePanel = ({
@@ -22,16 +22,36 @@ export const POSSalePanel = ({
     onRemove,
     onTogglePrescription,
     onCheckout,
-    isProcessing
+    isProcessing,
+    selectedCustomer,
+    onSelectCustomer
 }: POSSalePanelProps) => {
+    // Calculamos totales considerando descuentos ya aplicados en items
     const total = items.reduce((sum, item) => sum + (Number(item.precio) * item.cartQuantity), 0);
+    // Calculamos cuánto se ahorró (dif entre precio original y final)
+    const totalSavings = items.reduce((sum, item) => {
+        if (item.originalPrice && item.precio < item.originalPrice) {
+            return sum + ((item.originalPrice - item.precio) * item.cartQuantity);
+        }
+        return sum;
+    }, 0);
+
     const requiresPrescription = items.filter(i => i.requiereReceta);
     const missingPrescriptions = requiresPrescription.filter(i => !i.validatedPrescription);
+
+    // Estado local para búsqueda de clientes
+    const { customers } = useCustomers();
+    const [customerSearch, setCustomerSearch] = useState("");
+    const [showCustomerResults, setShowCustomerResults] = useState(false);
+
+    const filteredCustomers = customerSearch.length > 1
+        ? customers.filter(c => c.nombre.toLowerCase().includes(customerSearch.toLowerCase()) || c.email.toLowerCase().includes(customerSearch.toLowerCase()))
+        : [];
 
     return (
         <Card className="h-full flex flex-col shadow-xl border-border/50 overflow-hidden bg-card/50 backdrop-blur-md">
             <div className="p-6 border-b border-border bg-primary/5">
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 mb-4">
                     <div className="w-10 h-10 bg-primary/20 rounded-xl flex items-center justify-center text-primary">
                         <ShoppingCart className="w-5 h-5" />
                     </div>
@@ -40,9 +60,66 @@ export const POSSalePanel = ({
                         <p className="text-xs text-muted-foreground font-bold uppercase tracking-wider">Mostrador Actual</p>
                     </div>
                 </div>
+
+                {/* Selección de Cliente */}
+                <div className="relative z-20">
+                    {selectedCustomer ? (
+                        <div className="flex items-center justify-between p-3 bg-primary/10 border border-primary/20 rounded-xl">
+                            <div className="flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold">
+                                    {selectedCustomer.nombre.charAt(0)}
+                                </div>
+                                <div>
+                                    <p className="text-sm font-bold text-foreground">{selectedCustomer.nombre}</p>
+                                    <p className="text-xs text-primary font-medium">Cliente Frecuente</p>
+                                </div>
+                            </div>
+                            <button onClick={() => onSelectCustomer(null)} className="text-muted-foreground hover:text-error">
+                                <X className="w-4 h-4" />
+                            </button>
+                        </div>
+                    ) : (
+                        <div className="relative">
+                            <Input
+                                placeholder="Buscar cliente por nombre..."
+                                value={customerSearch}
+                                onChange={(e) => {
+                                    setCustomerSearch(e.target.value);
+                                    setShowCustomerResults(true);
+                                }}
+                                onFocus={() => setShowCustomerResults(true)}
+                                className="pl-9 h-11 bg-background"
+                            />
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+
+                            {showCustomerResults && customerSearch.length > 1 && (
+                                <div className="absolute top-full left-0 right-0 mt-1 bg-card border border-border rounded-xl shadow-xl max-h-48 overflow-y-auto z-50">
+                                    {filteredCustomers.length > 0 ? (
+                                        filteredCustomers.map(c => (
+                                            <button
+                                                key={c.id}
+                                                className="w-full text-left p-3 hover:bg-muted text-sm flex items-center gap-2"
+                                                onClick={() => {
+                                                    onSelectCustomer(c);
+                                                    setCustomerSearch("");
+                                                    setShowCustomerResults(false);
+                                                }}
+                                            >
+                                                <User className="w-3 h-3 text-muted-foreground" />
+                                                <span className="font-medium text-foreground">{c.nombre}</span>
+                                            </button>
+                                        ))
+                                    ) : (
+                                        <div className="p-3 text-xs text-muted-foreground text-center">No se encontraron clientes</div>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </div>
             </div>
 
-            <div className="flex-grow overflow-y-auto p-4 space-y-3">
+            <div className="flex-grow overflow-y-auto p-4 space-y-3" onClick={() => setShowCustomerResults(false)}>
                 {items.length === 0 ? (
                     <div className="h-full flex flex-col items-center justify-center text-center opacity-40">
                         <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-4">
@@ -53,11 +130,25 @@ export const POSSalePanel = ({
                     </div>
                 ) : (
                     items.map((item) => (
-                        <div key={item.id} className="p-4 bg-card border border-border rounded-2xl hover:border-primary/30 transition-all group">
+                        <div key={item.id} className={`p-4 bg-card border rounded-2xl transition-all group ${item.discountDetails ? 'border-primary/50 shadow-sm shadow-primary/5' : 'border-border hover:border-primary/30'}`}>
+                            {item.discountDetails && (
+                                <div className="flex items-center gap-1 mb-2 text-xs font-bold text-primary animate-pulse">
+                                    <Percent className="w-3 h-3" />
+                                    <span>Oferta Aplicada: -{item.discountDetails.percentage}%</span>
+                                </div>
+                            )}
+
                             <div className="flex justify-between items-start gap-3">
                                 <div className="min-w-0">
                                     <p className="font-bold text-foreground truncate">{item.nombre}</p>
-                                    <p className="text-xs font-black text-primary mt-0.5">${Number(item.precio).toFixed(2)} c/u</p>
+                                    <div className="flex items-center gap-2 mt-0.5">
+                                        <p className="text-xs font-black text-foreground">${Number(item.precio).toFixed(2)}</p>
+                                        {item.originalPrice && item.precio < item.originalPrice && (
+                                            <p className="text-[10px] text-muted-foreground line-through decoration-error/50">
+                                                ${item.originalPrice.toFixed(2)}
+                                            </p>
+                                        )}
+                                    </div>
                                 </div>
                                 <button
                                     onClick={() => onRemove(item.id)}
@@ -110,8 +201,14 @@ export const POSSalePanel = ({
                 )}
             </div>
 
-            <div className="p-6 bg-muted/30 border-t border-border space-y-4">
+            <div className="p-6 bg-muted/30 border-t border-border space-y-4" onClick={() => setShowCustomerResults(false)}>
                 <div className="space-y-2">
+                    {totalSavings > 0 && (
+                        <div className="flex justify-between text-success font-black text-xs uppercase animate-in slide-in-from-left">
+                            <span>Ahorro Promocional</span>
+                            <span>-${totalSavings.toFixed(2)}</span>
+                        </div>
+                    )}
                     <div className="flex justify-between text-muted-foreground font-bold text-xs uppercase">
                         <span>Subtotal</span>
                         <span>${(total / 1.15).toFixed(2)}</span>

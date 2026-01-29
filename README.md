@@ -17,27 +17,44 @@ Sistema de gestión integral para farmacias multisucursales - Cliente Web desarr
 - **Tipos**: @types/react ^19.2.5, @types/react-dom ^19.2.3, @types/node ^24.10.1
 - **Plugins Vite**: @vitejs/plugin-react ^5.1.1
 
-## 📁 Estructura del Proyecto
+## � Arquitectura del Proyecto
 
-```
-client/
-├── public/                 # Assets estáticos (imágenes, logos)
-├── src/
-│   ├── auth/               # Guardias de seguridad y lógica de acceso
-│   ├── components/
-│   │   ├── atoms/          # Componentes básicos (Botones, Inputs)
-│   │   ├── molecules/      # Componentes combinados (ProductCard, CartItem)
-│   │   ├── organisms/      # Secciones complejas (Header, CartDrawer, CheckoutForm)
-│   │   └── index.ts
-│   ├── context/            # Estado global (Auth, Cart)
-│   ├── hooks/              # Hooks personalizados
-│   ├── pages/
-│   │   ├── admin/          # Páginas de administración
-│   │   └── cliente/        # Páginas de la vista de cliente
-│   ├── services/           # Conexión con API backend
-│   ├── App.tsx             # Enrutamiento y árbol principal
-│   └── main.tsx            # Punto de entrada
-```
+### 📁 Raíz
+- **INSTALL.md**: Guía paso a paso para instalación y arranque.
+- **README.md**: Documentación técnica principal (este archivo).
+- **package.json**: Definición de scripts y dependencias del ecosistema.
+- **index.html**: Punto de anclaje de la Single Page Application.
+
+### 📁 public/
+- **img/**: Almacén de activos visuales, productos y el catálogo de 28 avatares.
+
+### 📁 src/components (Atomic Design)
+- **atoms/**: Componentes de interfaz mínima como `Button`, `Input`, `Badge` y `UserIcon`.
+- **molecules/**: Lógica de UI combinada: `LoginForm`, `RegisterForm`, `UserModal`, `StatCard` y `ProductCard`.
+- **organisms/**: Secciones globales: `Header`, `Footer`, `CartDrawer`, `AdminSidebar` y `ProductGrid`.
+- **templates/**: Estructuras de diseño base como `MainLayout` y `AdminLayout`.
+
+### 📁 src/context/ (Estado Global)
+- **AuthContext.tsx**: Gestión centralizada de sesión, roles y persistencia de usuario.
+- **CartContext.tsx**: Motor del carrito de compras y persistencia local.
+
+### 📁 src/hooks/
+- **admin/**: Lógica operativa para `useInventory`, `usePOS`, `useAdminUsers` y estadísticas.
+- **useAuth.ts**: Hook de consumo para autenticación.
+- **useCart.ts**: Hook de consumo para el carrito.
+
+### 📁 src/pages/
+- **admin/**: Cuadros de mando operativos facilitando `Dashboard`, `Inventory`, `Users` y `POS`.
+- **cliente/**: Experiencia de compra pública: `Home`, `Products` y `Checkout`.
+- **Login/**: Vistas de acceso y registro (`LoginPage`, `RegisterPage`).
+
+### 📁 src/services/
+- **api.ts**: Capa de abstracción para todas las peticiones fetch al servidor backend.
+
+### 📁 src/ Core
+- **App.tsx**: Orquestador principal de rutas y guardias de seguridad.
+- **index.css**: Definición de tokens de diseño y utilidades personalizadas (Tailwind v4).
+- **main.tsx**: Punto de entrada de React.
 
 ## 🚀 Cómo Crear y Configurar el Proyecto
 
@@ -142,12 +159,19 @@ Asegúrate de que el servidor backend esté ejecutándose antes de usar la aplic
 - **Carrito de Compras**: Gestión de cantidades, persistencia local y cálculos de subtotales/totales precisos.
 - **Flujo de Pago (Checkout)**: Interfaz de 3 pasos con validación, diseño envolvente y página de éxito dedicada.
 
-### Seguridad y Estructura
-- **Rutas Protegidas**: Sistema de guardias para restringir acceso a secciones privadas (Checkout, Admin).
-- **Gestión de Sesión**: AuthContext con inicialización síncrona y manejo de roles.
+### Gestión de Usuarios y Seguridad
+- **Auto-Registro de Clientes**: Flujo de creación de cuenta público con asignación automática de rol `cliente`.
+- **Selector de Avatares Premium**: Sistema de selección de personajes (28 opciones) con carrusel minimalista y paginación reactiva.
+- **Login Inteligente**: Autenticación persistente con redirección basada en roles y estado de carga.
+- **Header Dinámico**: Integración de perfil de usuario con avatar circular y menú desplegable premium.
 
-## 📋 Próximos Pasos (Fase Administrador)
+### Panel de Administración (Staff)
+- **Gestión de Usuarios (CRUD)**: Interfaz completa para administradores para crear, editar y dar de baja al personal (Farmacéuticos, Vendedores).
+- **Modales Dinámicos**: Experiencia fluida para gestión de datos sin recargas de página utilizando Atomic Design.
 
+## 📋 Próximos Pasos (Fase Operativa)
+
+- [x] Implementar gestión de usuarios y personal.
 - [ ] Desarrollar Dashboard con métricas y alertas de vencimiento (Staff).
 - [ ] Implementar gestión de inventario completa con carga de lotes.
 - [ ] Sistema de aprobación de promociones para productos cercanos a expirar.

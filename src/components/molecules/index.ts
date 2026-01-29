@@ -8,3 +8,4 @@ export { AddBatchModal } from './Admin/AddBatchModal';
 export { BatchHistoryModal } from './Admin/BatchHistoryModal';
 export { POSProductSearch } from './Admin/POSProductSearch';
 export { UserModal } from './Admin/UserModal';
+export { ProductModal } from './Admin/ProductModal';

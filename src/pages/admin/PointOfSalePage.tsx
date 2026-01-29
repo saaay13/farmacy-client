@@ -5,7 +5,7 @@ import { usePOS } from "../../hooks/admin/usePOS";
 import { AlertCircle, CheckCircle2 } from "lucide-react";
 
 export default function PointOfSalePage() {
-    const { cart, error, success, loading, handlers } = usePOS();
+    const { cart, error, success, loading, handlers, selectedCustomer } = usePOS();
 
     return (
         <AdminLayout title="Punto de Venta">
@@ -54,6 +54,8 @@ export default function PointOfSalePage() {
                         onTogglePrescription={handlers.togglePrescription}
                         onCheckout={handlers.checkout}
                         isProcessing={loading}
+                        selectedCustomer={selectedCustomer}
+                        onSelectCustomer={handlers.setCustomer}
                     />
                 </div>
             </div>

@@ -25,14 +25,25 @@
     --footer-text: var(--primary-50);
     /* texto blanco en modo claro */
 
-    /*
+    /* fucsia
 
- 
+  --primary-50: #fee9ed;
+  --primary-100: #fdd2db;
+  --primary-200: #fba2b8;
+  --primary-300: #f96b96;
+  --primary-400: #ea2274;
+  --primary-500: #c31a5f;
+  --primary-600: #9c134b;
+  --primary-700: #7a0c3a;
+  --primary-800: #570627;
+  --primary-900: #390317;
+  --primary-950: #25010d;
 
 
 
-
-        --primary-50: #fbeaea;
+    rojo
+    
+    --primary-50: #fbeaea;
     --primary-100: #f8d5d5;
     --primary-200: #f2a9a9;
     --primary-300: #ed7878;

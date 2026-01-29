@@ -92,8 +92,19 @@ export function CartDrawer() {
                                 <span className="text-muted-foreground font-medium">Productos ({cart.reduce((s, i) => s + i.quantity, 0)})</span>
                                 <span className="font-bold">${total.toFixed(2)}</span>
                             </div>
+
+                            {/* Aviso de Promociones */}
+                            <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+                                <p className="text-xs font-semibold text-amber-700 flex items-center gap-1">
+                                    ⚡ Descuentos promocionales
+                                </p>
+                                <p className="text-[10px] text-amber-600 mt-1 leading-relaxed">
+                                    Los descuentos se aplicarán automáticamente al finalizar la compra según disponibilidad de stock promocional
+                                </p>
+                            </div>
+
                             <div className="flex justify-between items-center bg-primary/5 p-3 rounded-xl border border-primary/10">
-                                <span className="text-lg font-extrabold text-foreground">Total a Pagar</span>
+                                <span className="text-lg font-extrabold text-foreground">Total Estimado</span>
                                 <span className="text-2xl font-black text-primary">${total.toFixed(2)}</span>
                             </div>
                         </div>

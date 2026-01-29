@@ -1,4 +1,4 @@
-import { ShoppingCart, LogIn, Pill, Leaf } from "lucide-react";
+import { ShoppingCart, LogIn, Pill, Leaf, ShieldAlert } from "lucide-react";
 import type { Product } from "../../../services/api";
 
 interface ProductCardProps {
@@ -12,11 +12,35 @@ interface ProductCardProps {
 export function ProductCard({ product, categoryName, role, onAddToCart, onLogin }: ProductCardProps) {
     const isClient = role === 'cliente';
 
-    // Formatear precio
-    const price = Number(product.precio).toFixed(2);
+    // Calcular descuento si hay promociones activas
+    const activePromo = product.promociones && product.promociones.length > 0 ? product.promociones[0] : null;
+    const originalPrice = Number(product.precio);
+    const hasDiscount = !!activePromo;
+    const finalPrice = hasDiscount
+        ? originalPrice * (1 - (Number(activePromo.porcentajeDescuento) / 100))
+        : originalPrice;
+
+    // Calcular stock en promoción (lotes que vencen en < 60 días)
+    const promoStock = hasDiscount && product.lotes
+        ? product.lotes
+            .filter(l => {
+                const diasRestantes = Math.floor(
+                    (new Date(l.fechaVencimiento).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
+                );
+                return diasRestantes <= 60 && diasRestantes >= 0;
+            })
+            .reduce((sum, l) => sum + l.cantidad, 0)
+        : 0;
 
     return (
         <div className="bg-background rounded-xl border border-border overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col h-full group relative">
+            {/* Badge de Oferta */}
+            {hasDiscount && (
+                <div className="absolute top-4 right-4 z-20 bg-error text-error-foreground text-xs font-black px-3 py-1 rounded-full shadow-lg animate-pulse">
+                    -{Number(activePromo.porcentajeDescuento)}% OFF
+                </div>
+            )}
+
             {/* Header / Imagen Placeholder */}
             <div className="bg-gradient-to-br from-primary-100/50 to-background h-48 flex items-center justify-center text-6xl relative overflow-hidden group-hover:scale-105 transition-transform duration-500">
                 <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -40,42 +64,70 @@ export function ProductCard({ product, categoryName, role, onAddToCart, onLogin 
                     {product.nombre}
                 </h3>
 
-                <p className="text-muted-foreground text-sm mb-6 line-clamp-3">
+                <p className="text-muted-foreground text-sm mb-4 line-clamp-3">
                     {product.descripcion || "Sin descripción disponible por el momento."}
                 </p>
+
+                {/* Info de Promoción */}
+                {hasDiscount && promoStock > 0 && (
+                    <div className="mb-4 px-3 py-2 bg-amber-50 border border-amber-200 rounded-lg">
+                        <p className="text-xs font-bold text-amber-700 flex items-center gap-1">
+                            ⚡ {promoStock} {promoStock === 1 ? 'unidad' : 'unidades'} con descuento
+                        </p>
+                        <p className="text-[10px] text-amber-600 mt-0.5">
+                            Unidades adicionales a precio regular
+                        </p>
+                    </div>
+                )}
 
                 {/* Footer de la tarjeta */}
                 <div className="mt-auto pt-4 border-t border-border flex items-center justify-between">
                     <div className="flex flex-col">
                         <span className="text-xs text-muted-foreground font-medium">Precio</span>
-                        <span className="text-primary font-bold text-2xl tracking-tight">
-                            ${price}
-                        </span>
+                        <div className="flex flex-col">
+                            {hasDiscount && (
+                                <span className="text-xs text-muted-foreground line-through decoration-error/50">
+                                    ${originalPrice.toFixed(2)}
+                                </span>
+                            )}
+                            <span className="text-primary font-bold text-2xl tracking-tight">
+                                ${finalPrice.toFixed(2)}
+                            </span>
+                        </div>
                     </div>
 
                     <div>
-                        {isClient ? (
-                            <button
-                                onClick={() => onAddToCart?.(product)}
-                                className="bg-primary text-primary-foreground p-3 rounded-lg hover:bg-primary-700 transition-all shadow-md hover:shadow-lg hover:shadow-primary/20 transform active:scale-95 flex items-center gap-2 font-medium"
-                                aria-label="Agregar al carrito"
-                            >
-                                <ShoppingCart className="w-5 h-5" />
-                                <span className="hidden sm:inline">Agregar</span>
-                            </button>
-                        ) : (
-                            <button
-                                onClick={onLogin}
-                                className="bg-secondary text-secondary-foreground p-3 rounded-lg hover:bg-secondary-700 transition-all shadow-md hover:shadow-lg transform active:scale-95 flex items-center gap-2 font-medium"
-                                aria-label="Iniciar sesión para comprar"
-                            >
-                                <LogIn className="w-5 h-5" />
-                                <span className="hidden sm:inline">Acceder</span>
-                            </button>
-                        )}
+                        <div>
+                            {/* Lógica de botones de acción */}
+                            {product.requiereReceta && isClient ? (
+                                <div className="flex items-center gap-2 text-amber-600 bg-amber-50 px-3 py-2 rounded-lg border border-amber-100">
+                                    <ShieldAlert className="w-4 h-4" />
+                                    <span className="text-xs font-bold leading-tight">Venta exclusiva en mostrador</span>
+                                </div>
+                            ) : isClient ? (
+                                <button
+                                    onClick={() => onAddToCart?.(product)}
+                                    className="bg-primary text-primary-foreground p-3 rounded-lg hover:bg-primary-700 transition-all shadow-md hover:shadow-lg hover:shadow-primary/20 transform active:scale-95 flex items-center gap-2 font-medium"
+                                    aria-label="Agregar al carrito"
+                                >
+                                    <ShoppingCart className="w-5 h-5" />
+                                    <span className="hidden sm:inline">Agregar</span>
+                                </button>
+                            ) : (
+                                <button
+                                    onClick={onLogin}
+                                    className="bg-secondary text-secondary-foreground p-3 rounded-lg hover:bg-secondary-700 transition-all shadow-md hover:shadow-lg transform active:scale-95 flex items-center gap-2 font-medium"
+                                    aria-label="Iniciar sesión para comprar"
+                                >
+                                    <LogIn className="w-5 h-5" />
+                                    <span className="hidden sm:inline">Acceder</span>
+                                </button>
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     );
+
 }

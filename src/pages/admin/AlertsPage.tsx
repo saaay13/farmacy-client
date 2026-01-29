@@ -14,7 +14,7 @@ import { useAdminAlerts } from "../../hooks/admin/useAdminAlerts";
 import { useState } from "react";
 
 export default function AlertsPage() {
-    const { alerts, loading, refresh, runCheck } = useAdminAlerts();
+    const { alerts, loading, refresh, runCheck, deleteAlert } = useAdminAlerts();
     const [searchTerm, setSearchTerm] = useState("");
 
     const filteredAlerts = alerts.filter(alert =>
@@ -99,7 +99,12 @@ export default function AlertsPage() {
                                     <Button variant="ghost" size="sm" className="flex-1 md:flex-none h-11 px-6 rounded-xl hover:bg-muted/80">
                                         Ver Producto
                                     </Button>
-                                    <Button variant="ghost" size="sm" className="h-11 w-11 rounded-xl text-muted-foreground hover:text-error hover:bg-error/10">
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => deleteAlert(alert.id)}
+                                        className="h-11 w-11 rounded-xl text-muted-foreground hover:text-error hover:bg-error/10"
+                                    >
                                         <Trash2 className="w-5 h-5" />
                                     </Button>
                                 </div>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../../hooks/useCart";
 import { useAuth } from "../../context/AuthContext";
@@ -37,11 +37,17 @@ export default function CheckoutPage() {
                 }))
             };
 
-            await createSale(saleRequest, token);
+            const saleResult = await createSale(saleRequest, token);
 
             // Éxito
             clearCart();
-            navigate("/success"); // Redirigir a página de éxito premium
+            // Pasar el resultado real de la venta (con descuentos aplicados) a la página de éxito
+            navigate("/success", {
+                state: {
+                    total: saleResult.data.total,
+                    orderId: saleResult.data.id
+                }
+            });
         } catch (err: any) {
             setError(err.message || "Error al procesar la venta");
         } finally {

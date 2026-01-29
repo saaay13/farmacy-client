@@ -22,6 +22,12 @@ export interface Product {
         fechaVencimiento: string;
         cantidad: number;
     }>;
+    promociones?: Array<{
+        id: string;
+        porcentajeDescuento: number;
+        fechaInicio: string;
+        fechaFin: string;
+    }>;
 }
 
 export interface Category {
@@ -99,6 +105,55 @@ export async function fetchProducts(token?: string): Promise<Product[]> {
     return result.data;
 }
 
+export async function createProductAPI(productData: Partial<Product>, token: string): Promise<Product> {
+    const response = await fetch(`${API_BASE_URL}/products`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(productData),
+    });
+
+    const result = await response.json();
+    if (!response.ok) {
+        throw new Error(result.message || 'Error al crear producto');
+    }
+    return result.data;
+}
+
+export async function updateProductAPI(productId: string, productData: Partial<Product>, token: string): Promise<Product> {
+    const response = await fetch(`${API_BASE_URL}/products/${productId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(productData),
+    });
+
+    const result = await response.json();
+    if (!response.ok) {
+        throw new Error(result.message || 'Error al actualizar producto');
+    }
+    return result.data;
+}
+
+export async function deleteProductAPI(productId: string, token: string): Promise<any> {
+    const response = await fetch(`${API_BASE_URL}/products/${productId}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    const result = await response.json();
+    if (!response.ok) {
+        throw new Error(result.message || 'Error al eliminar producto');
+    }
+    return result;
+}
+
 export async function fetchCategories(): Promise<Category[]> {
     const response = await fetch(`${API_BASE_URL}/categories`);
     if (!response.ok) {
@@ -106,6 +161,48 @@ export async function fetchCategories(): Promise<Category[]> {
     }
     const result: ApiResponse<Category[]> = await response.json();
     return result.data;
+}
+
+export async function createCategoryAPI(name: string, token: string): Promise<Category> {
+    const response = await fetch(`${API_BASE_URL}/category`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ nombre: name })
+    });
+
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.message || 'Error al crear categoría');
+    return result.data;
+}
+
+export async function updateCategoryAPI(id: string, name: string, token: string): Promise<Category> {
+    const response = await fetch(`${API_BASE_URL}/category/${id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ nombre: name })
+    });
+
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.message || 'Error al actualizar categoría');
+    return result.data;
+}
+
+export async function deleteCategoryAPI(id: string, token: string): Promise<void> {
+    const response = await fetch(`${API_BASE_URL}/category/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.message || 'Error al eliminar categoría');
 }
 
 export async function fetchBanch(): Promise<Banch[]> {
@@ -330,4 +427,73 @@ export async function updateUserAPI(userId: string, userData: Partial<User>, tok
         throw new Error(result.message || 'Error al actualizar usuario');
     }
     return result;
+}
+
+export async function deleteAlertAPI(alertId: string, token: string): Promise<any> {
+    const response = await fetch(`${API_BASE_URL}/alerts/${alertId}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    const result = await response.json();
+    if (!response.ok) {
+        throw new Error(result.message || 'Error al eliminar alerta');
+    }
+    return result;
+}
+
+export async function fetchPromotions(token?: string, aprobada?: boolean): Promise<any[]> {
+    const query = aprobada !== undefined ? `?aprobada=${aprobada}` : '';
+    const headers: HeadersInit = {};
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
+    const response = await fetch(`${API_BASE_URL}/promotions${query}`, { headers });
+    const result = await response.json();
+    return result.data;
+}
+
+export async function createPromotionAPI(promoData: any, token: string): Promise<any> {
+    const response = await fetch(`${API_BASE_URL}/promotions`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(promoData)
+    });
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.message || 'Error al crear promoción');
+    return result.data;
+}
+
+export async function approvePromotionAPI(promoId: string, token: string): Promise<any> {
+    const response = await fetch(`${API_BASE_URL}/promotions/${promoId}/approve`, {
+        method: 'PATCH',
+        headers: { 'Authorization': `Bearer ${token}` }
+    });
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.message || 'Error al aprobar promoción');
+    return result.data;
+}
+
+export async function deletePromotionAPI(promoId: string, token: string): Promise<any> {
+    const response = await fetch(`${API_BASE_URL}/promotions/${promoId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+    });
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.message || 'Error al eliminar promoción');
+    return result;
+}
+
+export async function fetchCustomers(token: string): Promise<User[]> {
+    const response = await fetch(`${API_BASE_URL}/users?rol=cliente`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (!response.ok) throw new Error('Error al obtener clientes');
+    const result: ApiResponse<User[]> = await response.json();
+    return result.data;
 }

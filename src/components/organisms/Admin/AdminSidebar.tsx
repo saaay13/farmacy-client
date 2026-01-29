@@ -2,6 +2,8 @@ import {
     LayoutDashboard,
     Box,
     ShoppingCart,
+    Database,
+    Tag,
     ClipboardList,
     AlertCircle,
     Users,
@@ -11,44 +13,74 @@ import {
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
+import { useAdminAlerts } from "../../../hooks/admin/useAdminAlerts";
 import { ThemeToggle } from "../../atoms";
 
 export function AdminSidebar() {
     const { logout, user } = useAuth();
+    const { alerts } = useAdminAlerts();
 
     const menuItems = [
         {
             title: "Dashboard",
             icon: LayoutDashboard,
-            path: "/admin/dashboard"
+            path: "/admin/dashboard",
+            roles: ["admin", "farmaceutico", "vendedor"]
         },
         {
             title: "Punto de Venta",
             icon: ShoppingCart,
-            path: "/admin/pos"
+            path: "/admin/pos",
+            roles: ["admin", "farmaceutico", "vendedor"]
         },
         {
             title: "Inventario",
-            icon: Box,
-            path: "/admin/inventario"
+            icon: Database,
+            path: "/admin/inventario",
+            roles: ["admin", "farmaceutico"]
+        },
+        {
+            title: "Categorías",
+            icon: Tag,
+            path: "/admin/categorias",
+            roles: ["admin", "farmaceutico"]
+        },
+        {
+            title: "Clientes",
+            icon: Users,
+            path: "/admin/clientes",
+            roles: ["admin", "farmaceutico", "vendedor"]
+        },
+        {
+            title: "Promociones",
+            icon: Tag,
+            path: "/admin/promociones",
+            roles: ["admin", "farmaceutico", "vendedor"]
         },
         {
             title: "Lotes",
             icon: ClipboardList,
-            path: "/admin/lotes"
+            path: "/admin/lotes",
+            roles: ["admin", "farmaceutico"]
         },
         {
             title: "Alertas",
             icon: AlertCircle,
             path: "/admin/alertas",
-            badge: 3 // Ejemplo de badge para alertas
+            badge: alerts.length > 0 ? alerts.length : undefined,
+            roles: ["admin", "farmaceutico", "vendedor"]
         },
         {
             title: "Usuarios",
             icon: Users,
-            path: "/admin/usuarios"
+            path: "/admin/usuarios",
+            roles: ["admin"]
         }
     ];
+
+    const filteredItems = menuItems.filter(item =>
+        !item.roles || (user && item.roles.includes(user.rol))
+    );
 
     return (
         <aside className="w-64 bg-card border-r border-border h-screen flex flex-col fixed left-0 top-0 z-40">
@@ -67,7 +99,7 @@ export function AdminSidebar() {
 
             {/* Menu Navigation */}
             <nav className="flex-grow p-4 mt-4 space-y-1">
-                {menuItems.map((item) => (
+                {filteredItems.map((item) => (
                     <NavLink
                         key={item.path}
                         to={item.path}

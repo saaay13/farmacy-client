@@ -10,6 +10,7 @@ const NAV_ITEMS: NavItemProps[] = [
     { label: 'Catálogo', icon: '🛍️', roles: ['admin', 'farmaceutico', 'vendedor', 'cliente', 'guest'] },
     { label: 'Vender (POS)', icon: '🛒', roles: ['admin', 'farmaceutico', 'vendedor'] },
     { label: 'Inventario', icon: '📦', roles: ['admin', 'farmaceutico'] },
+    { label: 'Categorías', icon: '🗂️', roles: ['admin', 'farmaceutico'] },
     { label: 'Promociones', icon: '🏷️', roles: ['admin', 'farmaceutico', 'vendedor'] },
     { label: 'Logística', icon: '🚛', roles: ['admin', 'farmaceutico'] },
     { label: 'Reportes', icon: '📊', roles: ['admin'] },

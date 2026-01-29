@@ -24,10 +24,11 @@ export default function ProductsPage() {
     // 3. EXCLUIR productos con receta (requiereReceta === true)
     const filteredProducts = products.filter((p) => {
         const matchesCategory = activeCategory ? p.idCategoria === activeCategory : true;
+        // El filtrado de vencidos y recetas ya lo hace el backend, pero mantenemos validación visual básica
         const isNotExpired = p.estado !== 'vencido';
-        const isNotPrescription = !p.requiereReceta;
+        // const isNotPrescription = !p.requiereReceta; // REMOVIDO para permitir catálogo completo
 
-        return matchesCategory && isNotExpired && isNotPrescription;
+        return matchesCategory && isNotExpired;
     });
 
     const handleCategoryChange = (id: string | null) => {
