@@ -12,8 +12,13 @@ import { StatCard } from "../../components/molecules";
 import { Card, Badge, Alert, Button } from "../../components/atoms";
 import { useAdminStats } from "../../hooks/admin/useAdminStats";
 import { useAdminAlerts } from "../../hooks/admin/useAdminAlerts";
+import { useAuth } from "../../context/AuthContext";
 
 export default function DashboardPage() {
+    const { user } = useAuth();
+    const isRestricted = user?.rol === 'farmaceutico' || user?.rol === 'vendedor';
+    const panelTitle = user?.rol === 'vendedor' ? 'Panel de Ventas' : (user?.rol === 'farmaceutico' ? 'Panel de Farmacia' : 'Panel de Control');
+
     const {
         salesReport,
         stockIssues,
@@ -38,7 +43,9 @@ export default function DashboardPage() {
         <AdminLayout title="Dashboard">
             <div className="flex items-center justify-between mb-8">
                 <div>
-                    <h1 className="text-3xl font-black text-foreground mb-1">Panel de Control</h1>
+                    <h1 className="text-3xl font-black text-foreground mb-1">
+                        {panelTitle}
+                    </h1>
                     <p className="text-muted-foreground font-medium flex items-center gap-2">
                         <span className={`w-2 h-2 rounded-full ${loading ? 'bg-warning animate-pulse' : 'bg-success'}`}></span>
                         {loading ? 'Actualizando datos...' : 'Sistema operativo • Resumen de hoy'}
@@ -80,9 +87,12 @@ export default function DashboardPage() {
                     variant="info"
                 />
                 <StatCard
-                    title="Ventas del Mes"
-                    value={`$${salesReport?.summary.totalVendido.toLocaleString() || '0'}`}
-                    trend={`${salesReport?.summary.cantidadTransacciones || 0} ventas`}
+                    title={isRestricted ? "Transacciones" : "Ventas del Mes"}
+                    value={isRestricted
+                        ? `${salesReport?.summary?.cantidadTransacciones || 0}`
+                        : `$${salesReport?.summary?.totalVendido?.toLocaleString() || '0'}`
+                    }
+                    trend={isRestricted ? "Operaciones hoy" : `${salesReport?.summary?.cantidadTransacciones || 0} ventas`}
                     icon={TrendingUp}
                     variant="success"
                 />

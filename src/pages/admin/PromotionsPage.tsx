@@ -89,14 +89,16 @@ export default function PromotionsPage() {
                                             Aprobar
                                         </Button>
                                     )}
-                                    <Button
-                                        variant="ghost"
-                                        onClick={() => handleDelete(promo.id)}
-                                        className="flex-1 md:flex-none rounded-xl text-muted-foreground hover:text-error hover:bg-error/10 font-bold"
-                                    >
-                                        <XCircle className="w-4 h-4 mr-2" />
-                                        {isAdmin ? 'Eliminar' : 'Cerrar'}
-                                    </Button>
+                                    {isAdmin && (
+                                        <Button
+                                            variant="ghost"
+                                            onClick={() => handleDelete(promo.id)}
+                                            className="flex-1 md:flex-none rounded-xl text-muted-foreground hover:text-error hover:bg-error/10 font-bold"
+                                        >
+                                            <XCircle className="w-4 h-4 mr-2" />
+                                            Eliminar
+                                        </Button>
+                                    )}
                                 </div>
                             </div>
                         </Card>

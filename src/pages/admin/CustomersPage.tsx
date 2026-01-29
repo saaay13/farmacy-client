@@ -5,9 +5,12 @@ import { UserModal } from "../../components/molecules";
 import { useState } from "react";
 import { useCustomers } from "../../hooks/admin/useCustomers";
 import type { User } from "../../services/api";
+import { useAuth } from "../../context/AuthContext";
 
 export default function CustomersPage() {
     const { customers, loading, removeCustomer, addCustomer, editCustomer, refresh } = useCustomers();
+    const { user } = useAuth();
+    const isAdmin = user?.rol === 'admin';
     const [searchTerm, setSearchTerm] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedCustomer, setSelectedCustomer] = useState<User | null>(null);
@@ -130,14 +133,16 @@ export default function CustomersPage() {
                                                 >
                                                     Editar
                                                 </Button>
-                                                <Button
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    onClick={() => handleDelete(customer.id, customer.nombre)}
-                                                    className="rounded-xl text-muted-foreground hover:text-error hover:bg-error/10 transition-colors"
-                                                >
-                                                    <Trash2 className="w-4 h-4" />
-                                                </Button>
+                                                {isAdmin && (
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        onClick={() => handleDelete(customer.id, customer.nombre)}
+                                                        className="rounded-xl text-muted-foreground hover:text-error hover:bg-error/10 transition-colors"
+                                                    >
+                                                        <Trash2 className="w-4 h-4" />
+                                                    </Button>
+                                                )}
                                             </div>
                                         </td>
                                     </tr>

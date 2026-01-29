@@ -1,6 +1,7 @@
 import { Edit, Trash2, Eye, PlusCircle, ClipboardList } from "lucide-react";
 import type { Product } from "../../../services/api";
 import { Badge } from "../../atoms";
+import { useAuth } from "../../../context/AuthContext";
 
 interface ProductTableProps {
     products: Product[];
@@ -12,6 +13,9 @@ interface ProductTableProps {
 }
 
 export const ProductTable = ({ products, onEdit, onDelete, onViewDetail, onRestock, onViewHistory }: ProductTableProps) => {
+    const { user } = useAuth();
+    const isAdmin = user?.rol === 'admin';
+
     return (
         <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
@@ -105,13 +109,15 @@ export const ProductTable = ({ products, onEdit, onDelete, onViewDetail, onResto
                                     >
                                         <Edit className="w-4 h-4" />
                                     </button>
-                                    <button
-                                        onClick={() => onDelete?.(product)}
-                                        className="p-2 hover:bg-muted rounded-lg text-muted-foreground hover:text-error transition-colors"
-                                        title="Eliminar"
-                                    >
-                                        <Trash2 className="w-4 h-4" />
-                                    </button>
+                                    {isAdmin && (
+                                        <button
+                                            onClick={() => onDelete?.(product)}
+                                            className="p-2 hover:bg-muted rounded-lg text-muted-foreground hover:text-error transition-colors"
+                                            title="Eliminar"
+                                        >
+                                            <Trash2 className="w-4 h-4" />
+                                        </button>
+                                    )}
                                 </div>
                             </td>
                         </tr>
