@@ -32,6 +32,7 @@ Listado jerárquico de carpetas y archivos.
     │       ├── useAdminSales.ts
     │       ├── useAdminStats.ts
     │       ├── useAdminUsers.ts
+    │       ├── useBlockedAttempts.ts
     │       ├── useCustomers.ts
     │       ├── useInventory.ts
     │       ├── usePOS.ts
@@ -43,6 +44,7 @@ Listado jerárquico de carpetas y archivos.
     │   ├── admin/              # Administración
     │   │   ├── AlertsPage.tsx
     │   │   ├── BatchesPage.tsx
+    │   │   ├── BlockedAttemptsPage.tsx
     │   │   ├── BranchesPage.tsx
     │   │   ├── CategoriesPage.tsx
     │   │   ├── CustomersPage.tsx

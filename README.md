@@ -170,7 +170,8 @@ Asegúrate de que el servidor backend esté ejecutándose antes de usar la aplic
 ## 📋 Próximos Pasos (Fase Operativa)
 
 - [x] Implementar gestión de usuarios y personal.
-- [ ] Desarrollar Dashboard con métricas y alertas de vencimiento (Staff).
-- [ ] Implementar gestión de inventario completa con carga de lotes.
-- [ ] Sistema de aprobación de promociones para productos cercanos a expirar.
-- [ ] Reportes de ventas y stock por sucursal.
+- [x] Desarrollar Dashboard con métricas y alertas de vencimiento (Staff).
+- [x] Implementar gestión de inventario completa con carga de lotes por sucursal.
+- [x] Sistema de aprobación de promociones para productos cercanos a expirar.
+- [x] Reportes de ventas y stock por sucursal.
+- [x] Auditoría de intentos de venta bloqueados.

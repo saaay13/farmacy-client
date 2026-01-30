@@ -167,7 +167,7 @@ function App() {
             <Route
               path="/admin/ventas-producto"
               element={
-                <ProtectedRoute allowedRoles={['admin', 'farmaceutico', 'vendedor']}>
+                <ProtectedRoute allowedRoles={['admin', 'farmaceutico']}>
                   <SalesByProductPage />
                 </ProtectedRoute>
               }
@@ -191,7 +191,7 @@ function App() {
             <Route
               path="/admin/intentos-bloqueados"
               element={
-                <ProtectedRoute allowedRoles={['admin', 'farmaceutico']}>
+                <ProtectedRoute allowedRoles={['admin']}>
                   <BlockedAttemptsPage />
                 </ProtectedRoute>
               }

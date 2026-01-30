@@ -53,7 +53,7 @@ export function AdminSidebar() {
             title: "Sucursales",
             icon: Store,
             path: "/admin/sucursales",
-            roles: ["admin", "farmaceutico"]
+            roles: ["admin"]
         },
         {
             title: "Clientes",
@@ -90,7 +90,7 @@ export function AdminSidebar() {
             title: "Intentos Bloqueados",
             icon: ShieldAlert,
             path: "/admin/intentos-bloqueados",
-            roles: ["admin", "farmaceutico"]
+            roles: ["admin"]
         },
         {
             title: "Usuarios",
@@ -98,6 +98,7 @@ export function AdminSidebar() {
             path: "/admin/usuarios",
             roles: ["admin"]
         }
+
     ];
 
     const filteredItems = menuItems.filter(item =>
@@ -120,7 +121,7 @@ export function AdminSidebar() {
             </div>
 
             {/* Navegación */}
-            <nav className="flex-grow p-4 mt-4 space-y-1">
+            <nav className="flex-grow p-4 mt-2 space-y-1 overflow-y-auto scrollbar-thin scrollbar-thumb-muted hover:scrollbar-thumb-muted-foreground scrollbar-track-transparent">
                 {filteredItems.map((item) => (
                     <NavLink
                         key={item.path}

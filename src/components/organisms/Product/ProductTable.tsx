@@ -26,6 +26,7 @@ export const ProductTable = ({ products, onEdit, onDelete, onViewDetail, onResto
                         <th className="p-4 font-bold text-xs uppercase tracking-wider text-muted-foreground">Categoría</th>
                         <th className="p-4 font-bold text-xs uppercase tracking-wider text-muted-foreground text-center">Precio</th>
                         <th className="p-4 font-bold text-xs uppercase tracking-wider text-muted-foreground text-center">Stock</th>
+                        <th className="p-4 font-bold text-xs uppercase tracking-wider text-muted-foreground text-center">Revisión</th>
                         <th className="p-4 font-bold text-xs uppercase tracking-wider text-muted-foreground">Estado</th>
                         <th className="p-4 font-bold text-xs uppercase tracking-wider text-muted-foreground text-right">Acciones</th>
                     </tr>
@@ -73,6 +74,44 @@ export const ProductTable = ({ products, onEdit, onDelete, onViewDetail, onResto
                                     </span>
                                     <span className="text-[10px] uppercase font-bold text-muted-foreground mt-0.5">unidades</span>
                                 </div>
+                            </td>
+                            <td className="p-4 text-center">
+                                {(() => {
+                                    const lastRevision = product.inventarios?.[0]?.fechaRevision;
+                                    if (!lastRevision) return <span className="text-muted-foreground text-xs italic">Pendiente</span>;
+
+                                    const revisionDate = new Date(lastRevision);
+                                    const today = new Date();
+
+                                    // Diferencia en milisegundos
+                                    const diffInMs = today.getTime() - revisionDate.getTime();
+                                    // Diferencia en días (aproximada)
+                                    const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
+
+                                    // Si se revisó hace menos de 7 días, se considera "AL DÍA" (Vigente)
+                                    const isVigente = diffInDays < 7;
+
+                                    return isVigente ? (
+                                        <div className="flex flex-col items-center gap-1 group/rev">
+                                            <div className="w-6 h-6 rounded-full bg-success/20 text-success flex items-center justify-center animate-bounce-short">
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                                                </svg>
+                                            </div>
+                                            <div className="flex flex-col items-center leading-tight">
+                                                <span className="text-[10px] font-black text-success uppercase tracking-tighter">VIGENTE</span>
+                                                <span className="text-[9px] font-bold text-success/70 italic">{revisionDate.toLocaleDateString()}</span>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="flex flex-col items-center leading-tight">
+                                            <span className="text-xs font-bold text-error italic">
+                                                {revisionDate.toLocaleDateString()}
+                                            </span>
+                                            <span className="text-[10px] uppercase font-bold text-error/70">expirada</span>
+                                        </div>
+                                    );
+                                })()}
                             </td>
                             <td className="p-4">
                                 <Badge variant={product.estado === 'activo' ? 'success' : 'error'} className="capitalize">
