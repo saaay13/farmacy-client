@@ -42,9 +42,32 @@ export function ProductCard({ product, categoryName, role, onAddToCart, onLogin 
             )}
 
             {/* Imagen */}
-            <div className="bg-gradient-to-br from-primary-100/50 to-background h-48 flex items-center justify-center text-6xl relative overflow-hidden group-hover:scale-105 transition-transform duration-500">
-                <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                {product.requiereReceta ? <Pill className="w-16 h-16 text-amber-500" /> : <Leaf className="w-16 h-16 text-primary" />}
+            <div className="bg-gradient-to-br from-primary-100/50 to-background h-48 flex items-center justify-center text-6xl relative overflow-hidden transition-transform duration-500">
+                <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+
+                {product.imageUrl ? (
+                    <img
+                        src={product.imageUrl}
+                        alt={product.nombre}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                        onError={(e) => {
+                            // Si falla la imagen, ocultamos el img y mostramos el icono
+                            (e.target as HTMLImageElement).style.display = 'none';
+                            const fallback = (e.target as HTMLImageElement).nextElementSibling as HTMLElement;
+                            if (fallback) fallback.style.display = 'flex';
+                        }}
+                    />
+                ) : null}
+
+                <div
+                    className={`flex items-center justify-center w-full h-full group-hover:scale-110 transition-transform duration-500 ${product.imageUrl ? 'hidden' : ''}`}
+                >
+                    {product.requiereReceta ? (
+                        <Pill className="w-16 h-16 text-amber-500" />
+                    ) : (
+                        <Leaf className="w-16 h-16 text-primary" />
+                    )}
+                </div>
             </div>
 
             {/* Contenido */}
