@@ -112,6 +112,7 @@ export default function UsersPage() {
                                 <tr className="bg-muted/30 border-b border-border">
                                     <th className="px-6 py-4 text-[10px] uppercase font-black text-muted-foreground tracking-widest">Usuario</th>
                                     <th className="px-6 py-4 text-[10px] uppercase font-black text-muted-foreground tracking-widest">Rol</th>
+                                    <th className="px-6 py-4 text-[10px] uppercase font-black text-muted-foreground tracking-widest">Sucursal</th>
                                     <th className="px-6 py-4 text-[10px] uppercase font-black text-muted-foreground tracking-widest text-right">Acciones</th>
                                 </tr>
                             </thead>
@@ -141,6 +142,16 @@ export default function UsersPage() {
                                             } className="uppercase text-[9px] font-black tracking-widest">
                                                 {user.rol}
                                             </Badge>
+                                        </td>
+                                        <td className="px-6 py-5">
+                                            {user.sucursal ? (
+                                                <div className="flex flex-col">
+                                                    <span className="text-sm font-bold text-foreground">{user.sucursal.nombre}</span>
+                                                    <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-tight">ID: {user.idSucursal}</span>
+                                                </div>
+                                            ) : (
+                                                <span className="text-xs text-muted-foreground font-medium italic">Acceso Global</span>
+                                            )}
                                         </td>
                                         <td className="px-6 py-5 text-right">
                                             <div className="flex items-center justify-end gap-2">

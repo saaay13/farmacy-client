@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
-import { X, Save, User, Mail, Shield, Key } from "lucide-react";
+import { X, Save, User, Mail, Shield, Key, MapPin } from "lucide-react";
 import { Button, Input, Card } from "../../atoms";
 import type { User as UserType } from "../../../services/api";
+import { useBranch } from "../../../hooks/useBranch";
 
 interface UserModalProps {
     user: UserType | null;
@@ -12,12 +13,14 @@ interface UserModalProps {
 }
 
 export const UserModal = ({ user, isOpen, onClose, onSave, label = "Colaborador" }: UserModalProps) => {
+    const { branches, loading: loadingBranches } = useBranch();
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         nombre: "",
         email: "",
         rol: label === "Cliente" ? "cliente" : "vendedor",
-        password: ""
+        password: "",
+        idSucursal: ""
     });
     const [error, setError] = useState<string | null>(null);
 
@@ -28,19 +31,21 @@ export const UserModal = ({ user, isOpen, onClose, onSave, label = "Colaborador"
                     nombre: user.nombre,
                     email: user.email,
                     rol: user.rol,
-                    password: ""
+                    password: "",
+                    idSucursal: user.idSucursal || ""
                 });
             } else {
                 setFormData({
                     nombre: "",
                     email: "",
                     rol: label === "Cliente" ? "cliente" : "vendedor",
-                    password: ""
+                    password: "",
+                    idSucursal: ""
                 });
             }
             setError(null);
         }
-    }, [isOpen, user]);
+    }, [isOpen, user, label]);
 
     if (!isOpen) return null;
 
@@ -52,6 +57,7 @@ export const UserModal = ({ user, isOpen, onClose, onSave, label = "Colaborador"
         try {
             const dataToSave = { ...formData };
             if (!dataToSave.password) delete (dataToSave as any).password;
+            if (!dataToSave.idSucursal) delete (dataToSave as any).idSucursal;
 
             const result = await onSave(dataToSave);
             if (result.success) {
@@ -118,22 +124,43 @@ export const UserModal = ({ user, isOpen, onClose, onSave, label = "Colaborador"
                         </div>
 
                         {label !== "Cliente" && (
-                            <div className="space-y-2">
-                                <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-                                    <Shield className="w-3.5 h-3.5" />
-                                    Rol asignado
-                                </label>
-                                <select
-                                    className="w-full px-4 py-2 bg-muted/30 border border-border/50 rounded-xl text-sm focus:ring-2 focus:ring-primary outline-none"
-                                    value={formData.rol}
-                                    onChange={(e) => setFormData({ ...formData, rol: e.target.value as any })}
-                                    required
-                                >
-                                    <option value="admin">Administrador</option>
-                                    <option value="farmaceutico">Farmacéutico</option>
-                                    <option value="vendedor">Vendedor</option>
-                                    <option value="cliente">Cliente</option>
-                                </select>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+                                        <Shield className="w-3.5 h-3.5" />
+                                        Rol
+                                    </label>
+                                    <select
+                                        className="w-full px-4 py-2 bg-muted/30 border border-border/50 rounded-xl text-sm focus:ring-2 focus:ring-primary outline-none appearance-none"
+                                        value={formData.rol}
+                                        onChange={(e) => setFormData({ ...formData, rol: e.target.value as any })}
+                                        required
+                                    >
+                                        <option value="admin">Administrador</option>
+                                        <option value="farmaceutico">Farmacéutico</option>
+                                        <option value="vendedor">Vendedor</option>
+                                        <option value="cliente">Cliente</option>
+                                    </select>
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+                                        <MapPin className="w-3.5 h-3.5" />
+                                        Sucursal
+                                    </label>
+                                    <select
+                                        className="w-full px-4 py-2 bg-muted/30 border border-border/50 rounded-xl text-sm focus:ring-2 focus:ring-primary outline-none appearance-none disabled:opacity-50"
+                                        value={formData.idSucursal}
+                                        onChange={(e) => setFormData({ ...formData, idSucursal: e.target.value })}
+                                        disabled={loadingBranches}
+                                    >
+                                        <option value="">Ninguna / Global</option>
+                                        {branches.map(branch => (
+                                            <option key={branch.idSucursal} value={branch.idSucursal}>
+                                                {branch.nombre}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
                             </div>
                         )}
 
