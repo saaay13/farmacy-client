@@ -68,9 +68,8 @@ export const ProductTable = ({ products, onEdit, onDelete, onViewDetail, onResto
                             </td>
                             <td className="p-4 text-center">
                                 <div className="flex flex-col items-center">
-                                    <span className={`text-lg font-black ${(product.inventario?.stockTotal || 0) < 10 ? 'text-error animate-pulse' : 'text-foreground'
-                                        }`}>
-                                        {product.inventario?.stockTotal ?? 0}
+                                    <span className={`text-lg font-black ${(product.inventarios?.reduce((acc, inv) => acc + inv.stockTotal, 0) || 0) < 10 ? 'text-error animate-pulse' : 'text-foreground'}`}>
+                                        {product.inventarios?.reduce((acc, inv) => acc + inv.stockTotal, 0) ?? 0}
                                     </span>
                                     <span className="text-[10px] uppercase font-bold text-muted-foreground mt-0.5">unidades</span>
                                 </div>

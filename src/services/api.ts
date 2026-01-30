@@ -13,16 +13,14 @@ export interface Product {
     categoria?: {
         nombre: string;
     };
-    inventario?: {
+    inventarios?: Array<{
+        idProducto: string;
+        idSucursal: string;
         stockTotal: number;
         fechaRevision: string;
-    };
-    lotes?: Array<{
-        id: string;
-        numeroLote: string;
-        fechaVencimiento: string;
-        cantidad: number;
+        sucursal?: Branch;
     }>;
+    lotes?: Batch[];
     promociones?: Array<{
         id: string;
         porcentajeDescuento: number;
@@ -55,6 +53,20 @@ export interface User {
     rol: 'admin' | 'farmaceutico' | 'vendedor' | 'cliente' | 'guest'
     email: string
     activo?: boolean
+    idSucursal?: string
+    sucursal?: Branch
+}
+
+export interface Batch {
+    id: string;
+    idProducto: string;
+    idSucursal: string | null;
+    numeroLote: string;
+    fechaVencimiento: string;
+    cantidad: number;
+    activo: boolean;
+    producto?: Product;
+    sucursal?: Branch;
 }
 
 interface LoginResponse {
@@ -95,13 +107,17 @@ export async function registerUser(nombre: string, email: string, password: stri
 }
 
 // Productos
-export async function fetchProducts(token?: string, includeDeactivated: boolean = false): Promise<Product[]> {
+export async function fetchProducts(token?: string, includeDeactivated: boolean = false, idSucursal?: string): Promise<Product[]> {
     const headers: HeadersInit = {};
     if (token) {
         headers['Authorization'] = `Bearer ${token}`;
     }
 
-    const query = includeDeactivated ? '?includeDeactivated=true' : '';
+    const params = new URLSearchParams();
+    if (includeDeactivated) params.append('includeDeactivated', 'true');
+    if (idSucursal) params.append('idSucursal', idSucursal);
+
+    const query = params.toString() ? `?${params.toString()}` : '';
     const response = await fetch(`${API_BASE_URL}/products${query}`, { headers });
     if (!response.ok) {
         throw new Error('Error al obtener productos');

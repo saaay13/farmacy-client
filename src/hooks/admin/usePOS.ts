@@ -1,7 +1,8 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { useAdminProducts } from "./useAdminProducts";
 import { useAdminSales } from "./useAdminSales";
 import { type Product, type SaleRequest, type User } from "../../services/api";
+import { useAuth } from "../../context/AuthContext";
 
 export interface POSCartItem extends Product {
     cartQuantity: number;
@@ -14,7 +15,9 @@ export interface POSCartItem extends Product {
 }
 
 export function usePOS() {
-    const { products, refreshProducts } = useAdminProducts();
+    const { user } = useAuth();
+    // Suponemos que useAdminProducts maneja correctamente el filtro por sucusal si se pasa idSucursal
+    const { products, loading: productsLoading, error: productsError, refreshProducts } = useAdminProducts(false, user?.idSucursal);
     const { executeSale, isProcessing, error: saleError, clearError: clearSaleError } = useAdminSales();
 
     const [cart, setCart] = useState<POSCartItem[]>([]);
@@ -43,7 +46,18 @@ export function usePOS() {
             const existing = prev.find(item => item.id === product.id);
             const { finalPrice, discount, promoId } = getDiscountedPrice(product);
 
-            // Actualizar cantidad
+            // Validar stock incluso al añadir por primera vez o repetir
+            const stockDisponible = product.inventarios?.reduce((acc, inv) => acc + inv.stockTotal, 0) || 0;
+            const currentQty = existing ? existing.cartQuantity : 0;
+
+            if (currentQty + 1 > stockDisponible) {
+                setLocalError(`Stock insuficiente para ${product.nombre}. Disponible: ${stockDisponible}`);
+                return prev;
+            }
+
+            setLocalError(null);
+            clearSaleError();
+
             if (existing) {
                 return prev.map(item =>
                     item.id === product.id
@@ -54,7 +68,6 @@ export function usePOS() {
 
             return [...prev, {
                 ...product,
-                // Precio final
                 precio: finalPrice,
                 originalPrice: Number(product.precio),
                 discountDetails: discount > 0 ? { percentage: discount, promoId: promoId! } : undefined,
@@ -63,18 +76,21 @@ export function usePOS() {
             }];
         });
         setSuccess(false);
-        setLocalError(null);
-        clearSaleError();
     }, [clearSaleError, getDiscountedPrice]);
 
     const updateQuantity = useCallback((id: string, delta: number) => {
         setCart(prev => prev.map(item => {
             if (item.id === id) {
                 const newQty = Math.max(1, item.cartQuantity + delta);
-                if (delta > 0 && item.inventario && newQty > item.inventario.stockTotal) {
+                const totalStock = item.inventarios?.reduce((acc, inv) => acc + inv.stockTotal, 0) || 0;
+
+                if (delta > 0 && totalStock < newQty) {
                     setLocalError(`No hay suficiente stock para ${item.nombre}`);
                     return item;
                 }
+
+                // Limpiar error si la actualización es válida
+                setLocalError(null);
                 return { ...item, cartQuantity: newQty };
             }
             return item;
@@ -83,6 +99,7 @@ export function usePOS() {
 
     const removeFromCart = useCallback((id: string) => {
         setCart(prev => prev.filter(item => item.id !== id));
+        setLocalError(null);
     }, []);
 
     const togglePrescription = useCallback((id: string) => {
@@ -92,17 +109,18 @@ export function usePOS() {
     }, []);
 
     const checkout = async () => {
+        if (cart.length === 0) {
+            setLocalError("El carrito está vacío");
+            return;
+        }
+
         const saleData: SaleRequest = {
+            idCliente: selectedCustomer?.id || null,
             detalles: cart.map(item => ({
                 idProducto: item.id,
                 cantidad: item.cartQuantity
             }))
         };
-
-        // ID Cliente
-        if (selectedCustomer) {
-            (saleData as any).idCliente = selectedCustomer.id;
-        }
 
         const result = await executeSale(saleData);
         if (result) {
@@ -117,8 +135,8 @@ export function usePOS() {
     return {
         cart,
         products,
-        loading: isProcessing,
-        error: localError || saleError,
+        loading: productsLoading || isProcessing,
+        error: localError || saleError || productsError,
         success,
         selectedCustomer,
         handlers: {
@@ -127,7 +145,11 @@ export function usePOS() {
             removeFromCart,
             togglePrescription,
             checkout,
-            setCustomer: setSelectedCustomer
+            setCustomer: setSelectedCustomer,
+            clearError: () => {
+                setLocalError(null);
+                clearSaleError();
+            }
         }
     };
 }

@@ -121,6 +121,11 @@ export const BatchHistoryModal = ({ product, isOpen, onClose, onBatchChange }: B
                                                         <Package className="w-3 h-3" />
                                                         {batch.cantidad} unidades
                                                     </span>
+                                                    <span className="text-muted-foreground/30">•</span>
+                                                    <span className="flex items-center gap-1 text-primary font-bold">
+                                                        <span>🏢</span>
+                                                        {batch.sucursal?.nombre || 'Sede N/A'}
+                                                    </span>
                                                 </div>
                                             </div>
                                         </div>

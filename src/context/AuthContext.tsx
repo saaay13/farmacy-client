@@ -10,6 +10,13 @@ interface User {
     rol: UserRole;
     email: string;
     avatarUrl?: string;
+    idSucursal?: string;
+    activo?: boolean;
+    sucursal?: {
+        idSucursal: string;
+        nombre: string;
+        direccion: string;
+    };
 }
 
 interface AuthContextType {

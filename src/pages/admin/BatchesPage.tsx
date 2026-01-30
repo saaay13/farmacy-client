@@ -93,9 +93,16 @@ export default function BatchesPage() {
                                                 </div>
                                                 <div>
                                                     <p className="font-bold text-foreground">{batch.producto?.nombre || 'Producto Desconocido'}</p>
-                                                    <p className="text-[10px] uppercase font-bold text-muted-foreground">
-                                                        {batch.activo === false ? 'LOTE INACTIVO' : 'Catálogo Maestro'}
-                                                    </p>
+                                                    <div className="flex items-center gap-2 mt-0.5">
+                                                        <p className="text-[10px] uppercase font-bold text-muted-foreground">
+                                                            {batch.activo === false ? 'LOTE INACTIVO' : 'Catálogo Maestro'}
+                                                        </p>
+                                                        <span className="text-[10px] text-muted-foreground/30">•</span>
+                                                        <p className="text-[10px] uppercase font-black text-primary flex items-center gap-1">
+                                                            <span className="text-xs">🏢</span>
+                                                            {batch.sucursal?.nombre || 'Sede no asignada'}
+                                                        </p>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </td>

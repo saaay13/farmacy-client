@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { useAdminProducts } from "./useAdminProducts";
+import { useBranch } from "../useBranch";
 import { createProductAPI, updateProductAPI, deleteProductAPI, restoreProductAPI } from "../../services/api";
 import type { Product } from "../../services/api";
 import { useAuth } from "../../context/AuthContext";
@@ -7,7 +8,10 @@ import { useAuth } from "../../context/AuthContext";
 export function useInventory() {
     const { token } = useAuth();
     const [showDeactivated, setShowDeactivated] = useState(false);
-    const { products, loading, refreshProducts } = useAdminProducts(showDeactivated);
+    const [idSucursal, setIdSucursal] = useState<string>("");
+    const { branches, loading: loadingBranches } = useBranch(false);
+
+    const { products, loading, refreshProducts } = useAdminProducts(showDeactivated, idSucursal || undefined);
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
     const [isRestockOpen, setIsRestockOpen] = useState(false);
@@ -83,8 +87,12 @@ export function useInventory() {
         products,
         filteredProducts,
         loading,
+        loadingBranches,
         searchTerm,
         setSearchTerm,
+        idSucursal,
+        setIdSucursal,
+        branches,
         selectedProduct,
         showDeactivated,
         setShowDeactivated,

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { createSale as apiCreateSale, type SaleRequest } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 
@@ -27,5 +27,7 @@ export function useAdminSales() {
         }
     };
 
-    return { executeSale, isProcessing, error, clearError: () => setError(null) };
+    const clearError = useCallback(() => setError(null), []);
+
+    return { executeSale, isProcessing, error, clearError };
 }

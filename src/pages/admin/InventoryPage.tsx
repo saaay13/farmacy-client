@@ -10,8 +10,12 @@ export default function InventoryPage() {
         products,
         filteredProducts,
         loading,
+        loadingBranches,
         searchTerm,
         setSearchTerm,
+        idSucursal,
+        setIdSucursal,
+        branches,
         selectedProduct,
         showDeactivated,
         setShowDeactivated,
@@ -39,27 +43,43 @@ export default function InventoryPage() {
             </div>
 
             {/* Filtros */}
-            <div className="bg-card border border-border rounded-3xl p-4 shadow-sm mb-6 flex flex-col md:flex-row gap-4 items-center">
+            <div className="bg-card border border-border rounded-3xl p-4 shadow-sm mb-6 flex flex-col xl:flex-row gap-4 items-center">
                 <div className="relative flex-grow w-full">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                     <input
                         type="text"
                         placeholder="Buscar por nombre, categoría o descripción..."
-                        className="w-full pl-12 pr-4 py-3 bg-muted/50 border-none rounded-2xl focus:ring-2 focus:ring-primary font-medium"
+                        className="w-full pl-12 pr-4 py-3 bg-muted/50 border-none rounded-2xl focus:ring-2 focus:ring-primary font-medium transition-all"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 </div>
-                <div className="flex gap-2 w-full md:w-auto">
+
+                <div className="flex flex-wrap md:flex-nowrap gap-3 w-full xl:w-auto">
+                    {/* Selector de Sucursal */}
+                    <div className="relative w-full md:w-64">
+                        <Filter className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" />
+                        <select
+                            className="w-full pl-10 pr-4 py-3 bg-muted/50 border-none rounded-2xl focus:ring-2 focus:ring-primary font-bold appearance-none cursor-pointer text-sm"
+                            value={idSucursal}
+                            onChange={(e) => setIdSucursal(e.target.value)}
+                        >
+                            <option value="">Todas las Sedes (Global)</option>
+                            {branches.map(b => (
+                                <option key={b.idSucursal} value={b.idSucursal}>🏢 {b.nombre}</option>
+                            ))}
+                        </select>
+                    </div>
+
                     <Button
                         variant="secondary"
                         onClick={() => setShowDeactivated(!showDeactivated)}
-                        className={`rounded-2xl px-6 py-6 border-none font-bold transition-all shadow-sm ${showDeactivated ? 'bg-primary text-primary-foreground hover:bg-primary/90' : 'bg-muted/50 text-muted-foreground hover:bg-muted'}`}
+                        className={`rounded-2xl px-6 py-6 border-none font-bold transition-all shadow-sm flex-grow md:flex-grow-0 ${showDeactivated ? 'bg-primary text-primary-foreground hover:bg-primary/90' : 'bg-muted/50 text-muted-foreground hover:bg-muted'}`}
                     >
-                        <Filter className="w-4 h-4 mr-2" />
                         {showDeactivated ? 'Ocultar Desactivados' : 'Ver Desactivados'}
                     </Button>
-                    <Button variant="ghost" className="rounded-2xl px-6 py-6 border-none bg-muted/50 text-muted-foreground font-bold">
+
+                    <Button variant="ghost" className="rounded-2xl px-6 py-6 border-none bg-muted/50 text-muted-foreground font-bold flex-grow md:flex-grow-0">
                         <Download className="w-4 h-4 mr-2" />
                         Exportar
                     </Button>

@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { fetchProducts, type Product } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 
-export function useAdminProducts(includeDeactivated: boolean = false) {
+export function useAdminProducts(includeDeactivated: boolean = false, idSucursal?: string) {
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -11,7 +11,7 @@ export function useAdminProducts(includeDeactivated: boolean = false) {
     const loadProducts = useCallback(async () => {
         try {
             setLoading(true);
-            const data = await fetchProducts(token || undefined, includeDeactivated);
+            const data = await fetchProducts(token || undefined, includeDeactivated, idSucursal);
             setProducts(data);
             setError(null);
         } catch (err) {
@@ -19,7 +19,7 @@ export function useAdminProducts(includeDeactivated: boolean = false) {
         } finally {
             setLoading(false);
         }
-    }, [token, includeDeactivated]);
+    }, [token, includeDeactivated, idSucursal]);
 
     useEffect(() => {
         loadProducts();
