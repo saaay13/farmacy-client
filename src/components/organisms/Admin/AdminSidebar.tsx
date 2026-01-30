@@ -11,7 +11,8 @@ import {
     ChevronRight,
     Settings,
     TrendingUp,
-    Store
+    Store,
+    ShieldAlert
 } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
@@ -84,6 +85,12 @@ export function AdminSidebar() {
             path: "/admin/alertas",
             badge: alerts.length > 0 ? alerts.length : undefined,
             roles: ["admin", "farmaceutico", "vendedor"]
+        },
+        {
+            title: "Intentos Bloqueados",
+            icon: ShieldAlert,
+            path: "/admin/intentos-bloqueados",
+            roles: ["admin", "farmaceutico"]
         },
         {
             title: "Usuarios",

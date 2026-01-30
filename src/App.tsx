@@ -29,6 +29,7 @@ import AdminCategoriesPage from './pages/admin/CategoriesPage';
 import SalesByProductPage from './pages/admin/SalesByProductPage';
 import ProfilePage from './pages/admin/ProfilePage';
 import AdminBranchesPage from './pages/admin/BranchesPage';
+import BlockedAttemptsPage from './pages/admin/BlockedAttemptsPage';
 
 function App() {
   return (
@@ -184,6 +185,14 @@ function App() {
               element={
                 <ProtectedRoute allowedRoles={['admin']}>
                   <UsersPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/intentos-bloqueados"
+              element={
+                <ProtectedRoute allowedRoles={['admin', 'farmaceutico']}>
+                  <BlockedAttemptsPage />
                 </ProtectedRoute>
               }
             />
